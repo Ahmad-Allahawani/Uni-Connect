@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Question Posted! — UniConnect</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+:root{--indigo:#3D52A0;--indigo-dark:#2d3f7a;--indigo-light:#EEF2FF;--violet:#7091E6;--amber:#F59E0B;--amber-light:#FEF3C7;--emerald:#10B981;--emerald-light:#D1FAE5;--rose:#F43F5E;--rose-light:#FFE4E6;--bg:#F8F9FF;--surface:#fff;--border:#E2E8F0;--text:#0F172A;--text-2:#64748B;--text-3:#94A3B8;--radius:12px;--sidebar-w:240px;--navbar-h:64px;--shadow-md:0 6px 24px rgba(61,82,160,.10);--shadow-lg:0 12px 40px rgba(61,82,160,.16)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;border:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 22px;border-radius:10px;font-weight:700;font-size:14px;border:none;transition:all .2s;min-height:44px;white-space:nowrap;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,var(--indigo),#5B73C7);color:#fff;box-shadow:0 4px 14px rgba(61,82,160,.3)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(61,82,160,.4)}
+.btn-ghost{background:transparent;color:var(--text-2);border:1.5px solid var(--border)}.btn-ghost:hover{background:var(--indigo-light);color:var(--indigo);border-color:var(--indigo)}
+.btn-lg{padding:14px 30px;font-size:15px;min-height:50px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px}
+.av{border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--indigo-light);display:block}.av img{width:100%;height:100%;object-fit:cover}
+.av-sm{width:36px;height:36px}.av-md{width:44px;height:44px}
+.form-input{width:100%;padding:11px 15px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none;background:var(--bg);color:var(--text)}
+.form-input::placeholder{color:var(--text-3)}
+/* Navbar */
+.navbar{position:sticky;top:0;z-index:400;height:var(--navbar-h);background:rgba(255,255,255,.97);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:12px}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:21px;color:var(--indigo);flex-shrink:0}
+.nav-logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--indigo),var(--violet));border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;box-shadow:0 4px 12px rgba(61,82,160,.28)}
+.nav-search{flex:1;max-width:440px;margin:0 14px}.nav-search .form-input{min-height:38px;font-size:14px}
+.nav-actions{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.nav-bell{position:relative;font-size:20px;cursor:pointer;line-height:1;padding:8px;border-radius:9px;color:var(--text-2)}
+.nav-bell-badge{position:absolute;top:4px;right:4px;background:var(--rose);color:#fff;border-radius:99px;font-size:9px;font-weight:800;padding:1px 5px;min-width:15px;text-align:center;line-height:1.5;border:2px solid #fff}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;background:transparent;border:none}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--text-2);border-radius:2px}
+.nav-user-btn{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;border-radius:99px;cursor:pointer;border:1.5px solid var(--border);transition:all .15s}
+.nav-user-btn:hover{background:var(--indigo-light);border-color:var(--indigo)}
+.app-wrap{display:flex;min-height:calc(100vh - var(--navbar-h))}
+.sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:var(--navbar-h);height:calc(100vh - var(--navbar-h));overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:0}
+.sidebar-user{display:flex;align-items:center;gap:11px;padding:14px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}.sidebar-user:hover{background:var(--indigo-light)}
+.sidebar-user-name{font-weight:800;font-size:14px}.sidebar-user-pts{font-size:11px;color:var(--amber);font-weight:700;margin-top:1px}
+.sidebar-nav{padding:8px 0;flex:1}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-size:13.5px;font-weight:600;color:var(--text-2);cursor:pointer;transition:all .15s;border-right:3px solid transparent}
+.nav-item:hover{background:var(--indigo-light);color:var(--indigo)}
+.nav-item.active{background:var(--indigo-light);color:var(--indigo);font-weight:800;border-right-color:var(--indigo)}
+.nav-item .ni{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--rose);color:#fff;border-radius:99px;font-size:10px;font-weight:800;padding:2px 7px}
+.pts-widget{margin:10px 14px 14px;background:linear-gradient(135deg,#F59E0B,#F97316);border-radius:12px;padding:14px 16px;color:#fff;flex-shrink:0;position:relative;overflow:hidden}
+.pts-widget::before{content:'🪙';position:absolute;right:-8px;bottom:-10px;font-size:60px;opacity:.12;pointer-events:none}
+.pts-widget-num{font-size:26px;font-weight:900;line-height:1}.pts-widget-label{font-size:11px;opacity:.85;margin-top:2px;font-weight:600}
+.pts-widget-bar{background:rgba(255,255,255,.3);border-radius:99px;height:5px;margin-top:10px;overflow:hidden}
+.pts-widget-fill{height:100%;background:#fff;border-radius:99px}.pts-widget-sub{font-size:11px;margin-top:5px;opacity:.85}
+.sidebar-logout{display:flex;align-items:center;gap:10px;padding:13px 18px;font-size:13px;font-weight:700;color:var(--rose);cursor:pointer;border-top:1px solid var(--border);transition:background .15s}.sidebar-logout:hover{background:var(--rose-light)}
+.main{flex:1;padding:26px 30px;min-width:0}
+/* Wizard — all done */
+.wizard-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:26px;box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.wizard-steps{display:flex}
+.wz-step{flex:1;display:flex;align-items:center;justify-content:center;gap:9px;padding:14px 10px;font-size:13px;font-weight:700;position:relative}
+.wz-step:not(:last-child){border-right:1px solid rgba(16,185,129,.3)}
+.wz-step.done{background:var(--emerald-light);color:#065F46}
+.wz-step.done::after{content:'✓';position:absolute;top:8px;right:10px;font-size:10px;font-weight:800;background:var(--emerald);color:#fff;border-radius:99px;padding:1px 6px}
+.wz-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0;background:rgba(16,185,129,.25);color:#065F46}
+.wizard-progress{height:4px;background:var(--emerald-light)}
+.wizard-progress-fill{height:100%;background:var(--emerald)}
+/* Success animations */
+@keyframes bounceIn{0%{transform:scale(0);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.bounce{animation:bounceIn .6s ease}
+.fade-up{animation:fadeUp .5s ease both}
+/* Confetti */
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.confetto{position:absolute;width:8px;height:8px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+@media(max-width:768px){.nav-hamburger{display:flex}.nav-search{display:none}.sidebar{display:none}.main{padding:18px 16px}}
+@media(max-width:480px){.main{padding:14px 12px}.wz-step .wz-label{display:none}}
+</style>
+</head>
+<body>
+
+<!-- Confetti container -->
+<div class="confetti-wrap" id="confetti"></div>
+
+<nav class="navbar">
+  <button class="nav-hamburger"><span></span><span></span><span></span></button>
+  <a href="dashboard.html" class="nav-logo">
+    <div class="nav-logo-icon">🎓</div><span>UniConnect</span>
+  </a>
+  <div class="nav-search"><input class="form-input" placeholder="🔍  Search..." autocomplete="off"></div>
+  <div class="nav-actions">
+    <a href="notifications.html" class="nav-bell">🔔<span class="nav-bell-badge">3</span></a>
+    <div class="nav-user-btn">
+      <div class="av av-sm"><img src="https://i.pravatar.cc/36?img=11" alt="Ahmad"></div>
+      <span style="font-size:13px;font-weight:700;color:var(--text)">Ahmad</span>
+      <span style="font-size:11px;color:var(--text-3)">▾</span>
+    </div>
+  </div>
+</nav>
+
+<div class="app-wrap">
+  <aside class="sidebar">
+    <a href="profile.html" class="sidebar-user">
+      <div class="av av-md"><img src="https://i.pravatar.cc/44?img=11" alt="Ahmad"></div>
+      <div><div class="sidebar-user-name">Ahmad K.</div><div class="sidebar-user-pts">🪙 830 pts</div></div>
+    </a>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html"><div class="nav-item active"><span class="ni">🏠</span>Home Feed</div></a>
+      <a href="create-post-step1.html"><div class="nav-item"><span class="ni">✏️</span>Ask a Question</div></a>
+      <a href="sessions.html"><div class="nav-item"><span class="ni">💬</span>My Sessions</div></a>
+      <a href="leaderboard.html"><div class="nav-item"><span class="ni">🏆</span>Leaderboard</div></a>
+      <a href="notifications.html"><div class="nav-item"><span class="ni">🔔</span>Notifications<span class="nav-badge">3</span></div></a>
+      <a href="profile.html"><div class="nav-item"><span class="ni">👤</span>My Profile</div></a>
+      <a href="points.html"><div class="nav-item"><span class="ni">🪙</span>Points & Rewards</div></a>
+      <a href="settings.html"><div class="nav-item"><span class="ni">⚙️</span>Settings</div></a>
+    </nav>
+    <a href="points.html">
+      <div class="pts-widget">
+        <div class="pts-widget-num">830</div>
+        <div class="pts-widget-label">🪙 Your Points</div>
+        <div class="pts-widget-bar"><div class="pts-widget-fill" style="width:83%"></div></div>
+        <div class="pts-widget-sub">170 pts to Verified Tutor</div>
+      </div>
+    </a>
+    <div class="sidebar-logout">🚪 Sign Out</div>
+  </aside>
+
+  <main class="main" style="max-width:780px">
+
+    <!-- Wizard — all 3 steps done -->
+    <div class="wizard-wrap">
+      <div class="wizard-steps">
+        <div class="wz-step done"><div class="wz-num">1</div><span class="wz-label">Search First</span></div>
+        <div class="wz-step done"><div class="wz-num">2</div><span class="wz-label">Write Question</span></div>
+        <div class="wz-step done"><div class="wz-num">3</div><span class="wz-label">Preview & Post</span></div>
+      </div>
+      <div class="wizard-progress">
+        <div class="wizard-progress-fill" style="width:100%"></div>
+      </div>
+    </div>
+
+    <!-- Success card -->
+    <div class="card" style="text-align:center;padding:48px 32px">
+
+      <!-- Animated icon -->
+      <div style="width:92px;height:92px;background:var(--emerald-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 22px" class="bounce">🎉</div>
+
+      <h2 style="font-size:28px;font-weight:900;margin-bottom:10px;letter-spacing:-.4px" class="fade-up" style="animation-delay:.1s">Question posted!</h2>
+
+      <p style="font-size:15px;color:var(--text-2);line-height:1.7;margin-bottom:8px" class="fade-up" style="animation-delay:.2s">
+        Your question is now live and the community will start answering soon.
+      </p>
+      <p style="font-size:14px;color:var(--text-3);margin-bottom:32px" class="fade-up" style="animation-delay:.25s">
+        You were charged <strong style="color:var(--rose)">−10 pts</strong> · Your new balance: <strong style="color:var(--indigo)">830 pts</strong>
+      </p>
+
+      <!-- Earn points back reminder -->
+      <div style="background:var(--indigo-light);border:1.5px solid #C7D7FF;border-radius:14px;padding:16px 20px;margin-bottom:28px;text-align:left" class="fade-up" style="animation-delay:.3s">
+        <div style="font-weight:800;font-size:14px;margin-bottom:10px;color:var(--indigo)">💰 Earn your points back by helping others:</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2)">
+            <span style="font-size:18px">💬</span>
+            <span>Answer any question on the platform = <strong>+5 pts</strong></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2)">
+            <span style="font-size:18px">👍</span>
+            <span>Get your answer upvoted = <strong>+10 pts per upvote</strong></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2)">
+            <span style="font-size:18px">✅</span>
+            <span>Get selected as Best Answer = <strong>+15 pts bonus</strong></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2)">
+            <span style="font-size:18px">🎓</span>
+            <span>Accept a tutoring session = <strong>+20 pts</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notify tip -->
+      <div style="background:var(--amber-light);border:1.5px solid #FDE68A;border-radius:12px;padding:13px 18px;margin-bottom:28px;display:flex;align-items:center;gap:12px;text-align:left" class="fade-up" style="animation-delay:.35s">
+        <span style="font-size:22px;flex-shrink:0">🔔</span>
+        <p style="font-size:13px;color:#92400E;line-height:1.6">You will receive a <strong>notification</strong> as soon as someone answers your question. Make sure notifications are enabled in Settings.</p>
+      </div>
+
+      <!-- Action buttons -->
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap" class="fade-up" style="animation-delay:.4s">
+        <a href="single-post.html"><button class="btn btn-primary btn-lg">View My Question →</button></a>
+        <a href="dashboard.html"><button class="btn btn-ghost btn-lg">Back to Home Feed</button></a>
+      </div>
+
+      <!-- Ask another -->
+      <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
+        <a href="create-post-step1.html" style="font-size:14px;color:var(--indigo);font-weight:700">✏️ Ask another question</a>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// Launch confetti
+function launchConfetti(){
+  const colors=['#3D52A0','#7091E6','#F59E0B','#10B981','#F43F5E','#8B5CF6'];
+  const container=document.getElementById('confetti');
+  for(let i=0;i<60;i++){
+    const el=document.createElement('div');
+    el.className='confetto';
+    el.style.cssText=`
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      width:${6+Math.random()*8}px;
+      height:${6+Math.random()*8}px;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      animation-duration:${1.5+Math.random()*2.5}s;
+      animation-delay:${Math.random()*0.8}s;
+    `;
+    container.appendChild(el);
+  }
+  setTimeout(()=>container.innerHTML='',4000);
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  launchConfetti();
+  // Clean up sessionStorage
+  ['q_title','q_faculty','q_course','q_body','q_tags'].forEach(k=>sessionStorage.removeItem(k));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Ask a Question — Step 3: Preview & Post — UniConnect</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+:root{--indigo:#3D52A0;--indigo-dark:#2d3f7a;--indigo-light:#EEF2FF;--violet:#7091E6;--violet-light:#EDE9FE;--amber:#F59E0B;--amber-light:#FEF3C7;--emerald:#10B981;--emerald-light:#D1FAE5;--rose:#F43F5E;--rose-light:#FFE4E6;--bg:#F8F9FF;--surface:#fff;--border:#E2E8F0;--text:#0F172A;--text-2:#64748B;--text-3:#94A3B8;--radius:12px;--sidebar-w:240px;--navbar-h:64px;--shadow-md:0 6px 24px rgba(61,82,160,.10);--shadow-lg:0 12px 40px rgba(61,82,160,.16)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;border:none}input,select,textarea{font-family:inherit}
+.fade-in{animation:fadeIn .3s ease}@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 22px;border-radius:10px;font-weight:700;font-size:14px;border:none;transition:all .2s;min-height:44px;white-space:nowrap;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,var(--indigo),#5B73C7);color:#fff;box-shadow:0 4px 14px rgba(61,82,160,.3)}
+.btn-primary:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(61,82,160,.4)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--text-2);border:1.5px solid var(--border)}.btn-ghost:hover{background:var(--indigo-light);color:var(--indigo);border-color:var(--indigo)}
+.btn-lg{padding:14px 30px;font-size:15px;min-height:50px}
+.chip{display:inline-flex;align-items:center;padding:4px 12px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+.chip-indigo{background:var(--indigo-light);color:var(--indigo)}.chip-violet{background:var(--violet-light);color:#5B21B6}.chip-gray{background:#F1F5F9;color:var(--text-2)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px}
+.av{border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--indigo-light);display:block}.av img{width:100%;height:100%;object-fit:cover}
+.av-sm{width:36px;height:36px}.av-md{width:44px;height:44px}
+.navbar{position:sticky;top:0;z-index:400;height:var(--navbar-h);background:rgba(255,255,255,.97);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:12px}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:21px;color:var(--indigo);flex-shrink:0}
+.nav-logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--indigo),var(--violet));border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;box-shadow:0 4px 12px rgba(61,82,160,.28)}
+.nav-search{flex:1;max-width:440px;margin:0 14px}
+.form-input{width:100%;padding:11px 15px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none;background:var(--bg);color:var(--text);transition:border-color .2s}
+.form-input:focus{border-color:var(--indigo)}
+.form-input::placeholder{color:var(--text-3)}
+.nav-actions{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.nav-bell{position:relative;font-size:20px;cursor:pointer;line-height:1;padding:8px;border-radius:9px;color:var(--text-2)}
+.nav-bell-badge{position:absolute;top:4px;right:4px;background:var(--rose);color:#fff;border-radius:99px;font-size:9px;font-weight:800;padding:1px 5px;min-width:15px;text-align:center;line-height:1.5;border:2px solid #fff}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;background:transparent;border:none}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--text-2);border-radius:2px}
+.nav-user-btn{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;border-radius:99px;cursor:pointer;border:1.5px solid var(--border);transition:all .15s}
+.nav-user-btn:hover{background:var(--indigo-light);border-color:var(--indigo)}
+.app-wrap{display:flex;min-height:calc(100vh - var(--navbar-h))}
+.sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:var(--navbar-h);height:calc(100vh - var(--navbar-h));overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:0}
+.sidebar-user{display:flex;align-items:center;gap:11px;padding:14px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}.sidebar-user:hover{background:var(--indigo-light)}
+.sidebar-user-name{font-weight:800;font-size:14px}.sidebar-user-pts{font-size:11px;color:var(--amber);font-weight:700;margin-top:1px}
+.sidebar-nav{padding:8px 0;flex:1}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-size:13.5px;font-weight:600;color:var(--text-2);cursor:pointer;transition:all .15s;border-right:3px solid transparent}
+.nav-item:hover{background:var(--indigo-light);color:var(--indigo)}
+.nav-item.active{background:var(--indigo-light);color:var(--indigo);font-weight:800;border-right-color:var(--indigo)}
+.nav-item .ni{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--rose);color:#fff;border-radius:99px;font-size:10px;font-weight:800;padding:2px 7px}
+.pts-widget{margin:10px 14px 14px;background:linear-gradient(135deg,#F59E0B,#F97316);border-radius:12px;padding:14px 16px;color:#fff;flex-shrink:0;position:relative;overflow:hidden}
+.pts-widget::before{content:'🪙';position:absolute;right:-8px;bottom:-10px;font-size:60px;opacity:.12;pointer-events:none}
+.pts-widget-num{font-size:26px;font-weight:900;line-height:1}.pts-widget-label{font-size:11px;opacity:.85;margin-top:2px;font-weight:600}
+.pts-widget-bar{background:rgba(255,255,255,.3);border-radius:99px;height:5px;margin-top:10px;overflow:hidden}
+.pts-widget-fill{height:100%;background:#fff;border-radius:99px}.pts-widget-sub{font-size:11px;margin-top:5px;opacity:.85}
+.sidebar-logout{display:flex;align-items:center;gap:10px;padding:13px 18px;font-size:13px;font-weight:700;color:var(--rose);cursor:pointer;border-top:1px solid var(--border);transition:background .15s}.sidebar-logout:hover{background:var(--rose-light)}
+.main{flex:1;padding:26px 30px;min-width:0}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);margin-bottom:20px;flex-wrap:wrap}
+.breadcrumb a{color:var(--indigo);font-weight:700}
+.wizard-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:26px;box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.wizard-steps{display:flex}
+.wz-step{flex:1;display:flex;align-items:center;justify-content:center;gap:9px;padding:14px 10px;font-size:13px;font-weight:700;color:var(--text-3);background:var(--bg);border-right:1px solid var(--border);position:relative}
+.wz-step:last-child{border-right:none}
+.wz-step.active{background:linear-gradient(135deg,var(--indigo),#5B73C7);color:#fff}
+.wz-step.done{background:var(--emerald-light);color:#065F46}
+.wz-step.done::after{content:'✓';position:absolute;top:8px;right:10px;font-size:10px;font-weight:800;background:var(--emerald);color:#fff;border-radius:99px;padding:1px 6px}
+.wz-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0}
+.wz-step.active .wz-num{background:rgba(255,255,255,.25)}
+.wz-step:not(.active):not(.done) .wz-num{background:var(--border);color:var(--text-3)}
+.wz-step.done .wz-num{background:rgba(16,185,129,.25);color:#065F46}
+.wizard-progress{height:4px;background:var(--border)}
+.wizard-progress-fill{height:100%;background:linear-gradient(90deg,var(--indigo),var(--violet))}
+/* Preview card highlight */
+.preview-card{background:var(--surface);border:2px solid var(--indigo-light);border-radius:var(--radius);padding:24px;margin-bottom:20px;transition:border-color .2s}
+/* Checkbox row */
+.chk-row{display:flex;align-items:center;gap:11px;cursor:pointer;font-size:14px;padding:10px 0;border-bottom:1px solid var(--border)}
+.chk-row:last-child{border-bottom:none}
+.chk-row input{width:18px;height:18px;accent-color:var(--indigo);flex-shrink:0;cursor:pointer}
+@media(max-width:768px){.nav-hamburger{display:flex}.nav-search{display:none}.sidebar{display:none}.main{padding:18px 16px}}
+@media(max-width:480px){.main{padding:14px 12px}.wz-step .wz-label{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <button class="nav-hamburger"><span></span><span></span><span></span></button>
+  <a href="dashboard.html" class="nav-logo">
+    <div class="nav-logo-icon">🎓</div><span>UniConnect</span>
+  </a>
+  <div class="nav-search"><input class="form-input" placeholder="🔍  Search..." autocomplete="off"></div>
+  <div class="nav-actions">
+    <a href="notifications.html" class="nav-bell">🔔<span class="nav-bell-badge">3</span></a>
+    <div class="nav-user-btn">
+      <div class="av av-sm"><img src="https://i.pravatar.cc/36?img=11" alt="Ahmad"></div>
+      <span style="font-size:13px;font-weight:700;color:var(--text)">Ahmad</span>
+      <span style="font-size:11px;color:var(--text-3)">▾</span>
+    </div>
+  </div>
+</nav>
+
+<div class="app-wrap">
+  <aside class="sidebar">
+    <a href="profile.html" class="sidebar-user">
+      <div class="av av-md"><img src="https://i.pravatar.cc/44?img=11" alt="Ahmad"></div>
+      <div><div class="sidebar-user-name">Ahmad K.</div><div class="sidebar-user-pts">🪙 840 pts</div></div>
+    </a>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html"><div class="nav-item"><span class="ni">🏠</span>Home Feed</div></a>
+      <a href="create-post-step1.html"><div class="nav-item active"><span class="ni">✏️</span>Ask a Question</div></a>
+      <a href="sessions.html"><div class="nav-item"><span class="ni">💬</span>My Sessions</div></a>
+      <a href="leaderboard.html"><div class="nav-item"><span class="ni">🏆</span>Leaderboard</div></a>
+      <a href="notifications.html"><div class="nav-item"><span class="ni">🔔</span>Notifications<span class="nav-badge">3</span></div></a>
+      <a href="profile.html"><div class="nav-item"><span class="ni">👤</span>My Profile</div></a>
+      <a href="points.html"><div class="nav-item"><span class="ni">🪙</span>Points & Rewards</div></a>
+      <a href="settings.html"><div class="nav-item"><span class="ni">⚙️</span>Settings</div></a>
+    </nav>
+    <a href="points.html">
+      <div class="pts-widget">
+        <div class="pts-widget-num">840</div>
+        <div class="pts-widget-label">🪙 Your Points</div>
+        <div class="pts-widget-bar"><div class="pts-widget-fill" style="width:84%"></div></div>
+        <div class="pts-widget-sub">160 pts to Verified Tutor</div>
+      </div>
+    </a>
+    <div class="sidebar-logout">🚪 Sign Out</div>
+  </aside>
+
+  <main class="main" style="max-width:780px">
+    <div class="breadcrumb">
+      <a href="dashboard.html">🏠 Home</a>
+      <span style="color:var(--text-3)">›</span>
+      <span>Ask a Question</span>
+    </div>
+
+    <div style="margin-bottom:24px">
+      <h1 style="font-size:26px;font-weight:900;letter-spacing:-.4px;margin-bottom:6px">✏️ Ask a Question</h1>
+      <p style="color:var(--text-2);font-size:14px">Posting costs <strong style="color:var(--rose)">−10 pts</strong>. A great answer earns you <strong style="color:var(--emerald)">+5 to +15 pts</strong> back!</p>
+    </div>
+
+    <!-- Wizard bar — Steps 1+2 done, Step 3 active -->
+    <div class="wizard-wrap">
+      <div class="wizard-steps">
+        <div class="wz-step done"><div class="wz-num">1</div><span class="wz-label">Search First</span></div>
+        <div class="wz-step done"><div class="wz-num">2</div><span class="wz-label">Write Question</span></div>
+        <div class="wz-step active"><div class="wz-num">3</div><span class="wz-label">Preview & Post</span></div>
+      </div>
+      <div class="wizard-progress">
+        <div class="wizard-progress-fill" style="width:83%"></div>
+      </div>
+    </div>
+
+    <!-- STEP 3 CONTENT -->
+
+    <!-- Cost warning -->
+    <div style="background:var(--amber-light);border:1.5px solid #FDE68A;border-radius:13px;padding:16px 20px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start" class="fade-in">
+      <span style="font-size:26px;flex-shrink:0">🪙</span>
+      <div>
+        <div style="font-weight:800;font-size:15px;color:#92400E;margin-bottom:3px">This will cost 10 points</div>
+        <div style="font-size:13px;color:#92400E;line-height:1.6">Your balance after posting: <strong>830 pts</strong>. You can earn them back — Best Answer earns <strong>+15 pts</strong>!</div>
+      </div>
+    </div>
+
+    <!-- Live Preview -->
+    <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);margin-bottom:12px">👁 Preview — how your question will look:</div>
+
+    <div class="preview-card fade-in">
+      <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:12px">
+        <div class="av av-sm"><img src="https://i.pravatar.cc/36?img=11" alt="Ahmad"></div>
+        <span style="font-weight:700;font-size:13px">Ahmad K.</span>
+        <span style="font-size:12px;color:var(--text-2)">· Just now</span>
+        <span id="prev-faculty" class="chip chip-indigo" style="margin-left:auto">IT Faculty</span>
+        <span id="prev-course" class="chip chip-violet">CS302</span>
+      </div>
+      <div id="prev-title" style="font-size:18px;font-weight:900;margin-bottom:12px;line-height:1.35;color:var(--text)">How does AVL tree rotation actually work?</div>
+      <div id="prev-body" style="font-size:14px;color:var(--text-2);line-height:1.75;margin-bottom:14px;white-space:pre-wrap">I understand BST insertion but confused about AVL rotations (LL, LR, RR, RL) when height difference exceeds 1. When does each case happen and why do some need double rotation?</div>
+      <div id="prev-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
+      <div style="display:flex;align-items:center;gap:14px;font-size:13px;color:var(--text-2);padding-top:12px;border-top:1px solid var(--border)">
+        <span>👍 0</span>
+        <span>💬 0 answers</span>
+        <span>👁 0 views</span>
+        <span class="chip" style="background:#F1F5F9;color:var(--text-2);margin-left:auto;font-size:11px">Open</span>
+      </div>
+    </div>
+
+    <!-- Pre-post checklist -->
+    <div class="card" style="margin-bottom:20px;background:var(--bg)">
+      <div style="font-size:14px;font-weight:800;margin-bottom:14px">✅ Before you post — quick checklist:</div>
+      <label class="chk-row"><input type="checkbox" id="c1" onchange="checkAll()"> My question title is clear and specific</label>
+      <label class="chk-row"><input type="checkbox" id="c2" onchange="checkAll()"> I described what I tried and where I'm stuck</label>
+      <label class="chk-row"><input type="checkbox" id="c3" onchange="checkAll()"> The faculty and course code are correct</label>
+      <label class="chk-row"><input type="checkbox" id="c4" onchange="checkAll()"> I searched first and this question doesn't already exist</label>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <a href="create-post-step2.html"><button class="btn btn-ghost">← Edit Question</button></a>
+      <button class="btn btn-primary btn-lg" id="post-btn" disabled onclick="postIt()">
+        🚀 Post Question <span style="opacity:.7;font-size:13px">(−10 pts)</span>
+      </button>
+    </div>
+  </main>
+</div>
+
+<script>
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// Load data from sessionStorage (written by step 2)
+document.addEventListener('DOMContentLoaded',()=>{
+  const title=sessionStorage.getItem('q_title')||'How does AVL tree rotation actually work?';
+  const faculty=sessionStorage.getItem('q_faculty')||'IT Faculty';
+  const course=sessionStorage.getItem('q_course')||'CS302';
+  const body=sessionStorage.getItem('q_body')||'I understand BST insertion but confused about AVL rotations (LL, LR, RR, RL) when height difference exceeds 1. When does each happen?';
+  const tags=JSON.parse(sessionStorage.getItem('q_tags')||'["AVL","CS302"]');
+
+  document.getElementById('prev-title').textContent=title;
+  document.getElementById('prev-faculty').textContent=faculty;
+  document.getElementById('prev-course').textContent=course;
+  document.getElementById('prev-body').textContent=body;
+
+  const tagContainer=document.getElementById('prev-tags');
+  tagContainer.innerHTML='';
+  tags.forEach(t=>{
+    const chip=document.createElement('span');
+    chip.className='chip';
+    chip.style.cssText='background:#F1F5F9;color:var(--text-2);font-size:12px';
+    chip.textContent=t;
+    tagContainer.appendChild(chip);
+  });
+});
+
+function checkAll(){
+  const allChecked=['c1','c2','c3','c4'].every(id=>document.getElementById(id).checked);
+  document.getElementById('post-btn').disabled=!allChecked;
+}
+
+function postIt(){
+  const btn=document.getElementById('post-btn');
+  btn.disabled=true;
+  btn.textContent='Posting...';
+  btn.style.opacity='.7';
+  setTimeout(()=>{
+    window.location.href='create-post-step4.html';
+  },900);
+}
+</script>
+</body>
+</html>
