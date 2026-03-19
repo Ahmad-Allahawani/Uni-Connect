@@ -1,34 +1,42 @@
 # Uni-Connect
 
-what we need to work at 
--Home/Login-
-0.Fixing the shared layout e.g( nav-bar , side-bar, footer)
-1.The login authentication
-2.The Registeraction
-3.Forgot password authentication
--dashboard-
-4.user state must be working 
-5.The like, comment, view must be working
-6.Request session
-7.trending Topics and adding Topics
-8.The search bar
-9.Sign-out
-10.search baner fix
-11.displaying the questions
-12.interacting with posts
-13.trending tab in the dashboard page
-14. Faculty specific questions
--profile-
-15.everything in the profile page
--leaderboard-
-16.faculty filtering
-17.time filtering
-18.Rank calculations(in general for the bottom board or at the top) 
--notifications-
-19.notifications system for the website
-other things still undone or touched
-20.Ask question, sessions, point & rewards, settings, admin-dashboard
+## What we need to work on
 
+### Home / Login
+0. Fixing the shared layout (nav-bar, side-bar, footer)  
+1. Login authentication  
+2. Registration  
+3. Forgot password authentication  
 
-**please if you want to take a task and start with it tell me first and if you are done with it remover it form here** 
+### Dashboard
+4. User state must be working  
+5. Like, comment, view must be working  
+6. Request session  
+7. Trending topics and adding topics  
+8. Search bar  
+9. Sign-out  
+10. Search banner fix  
+11. Displaying the questions  
+12. Interacting with posts  
+13. Trending tab in the dashboard page  
+14. Faculty-specific questions  
 
+### Profile
+15. Everything in the profile page  
+
+### Leaderboard
+16. Faculty filtering  
+17. Time filtering  
+18. Rank calculations (top and bottom boards)  
+
+### Notifications
+19. Notification system for the website  
+
+### Other (Not done yet)
+20. Ask question, sessions, points & rewards, settings, admin dashboard  
+
+---
+
+## ⚠️ Important
+**Please, if you want to take a task, tell me first.  
+When you finish it, remove it from this list.**
