@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width,initial-scale=1.0" name="viewport" />
+  <title>Private Sessions — UniConnect</title>
+
+  <link href="sessions.css" rel="stylesheet" />
+</head>
+
+<body>
+  <nav class="navbar">
+    <button class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    <a class="nav-logo" href="dashboard.html">
+      <div class="nav-logo-icon">🎓</div><span>UniConnect</span>
+    </a>
+    <div class="nav-search"><input autocomplete="off" class="form-input"
+        placeholder="🔍  Search questions, courses, topics..." /></div>
+    <div class="nav-actions">
+      <a href="create-post.html"><button class="btn btn-primary btn-sm">+ Ask</button></a>
+      <a class="nav-bell" href="notifications.html">🔔<span class="nav-bell-badge">3</span></a>
+      <div class="nav-user-menu">
+        <div class="div_cls_0" onclick="toggleUserMenu()">
+          <div class="av av-sm"><img alt="Ahmad" src="https://i.pravatar.cc/36?img=11" /></div>
+          <span class="span_cls_1">Ahmad ▾</span>
+        </div>
+        <div class="nav-user-dropdown" id="user-dropdown">
+          <a href="profile.html">
+            <div class="nav-dropdown-item">👤 My Profile</div>
+          </a>
+          <a href="settings.html">
+            <div class="nav-dropdown-item">⚙️ Settings</div>
+          </a>
+          <a href="points.html">
+            <div class="nav-dropdown-item">🪙 Points &amp; Rewards</div>
+          </a>
+          <div class="nav-dropdown-sep"></div>
+          <div class="nav-dropdown-item logout" onclick="doLogout()">🚪 Sign Out</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <div class="app-wrap">
+    <aside class="sidebar" id="sidebar">
+      <a class="sidebar-user" href="profile.html">
+        <div class="av av-md"><img alt="Ahmad" src="https://i.pravatar.cc/44?img=11" /></div>
+        <div>
+          <div class="sidebar-user-name">Ahmad K.</div>
+          <div class="sidebar-user-pts">🪙 840 pts</div>
+        </div>
+      </a>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">
+          <div class="nav-item"><span class="ni">🏠</span>Home Feed</div>
+        </a>
+        <a href="create-post.html">
+          <div class="nav-item"><span class="ni">✏️</span>Ask a Question</div>
+        </a>
+        <a href="sessions.html">
+          <div class="nav-item active"><span class="ni">💬</span>My Sessions</div>
+        </a>
+        <a href="leaderboard.html">
+          <div class="nav-item"><span class="ni">🏆</span>Leaderboard</div>
+        </a>
+        <a href="notifications.html">
+          <div class="nav-item"><span class="ni">🔔</span>Notifications<span class="nav-badge">3</span></div>
+        </a>
+        <a href="profile.html">
+          <div class="nav-item"><span class="ni">👤</span>My Profile</div>
+        </a>
+        <a href="points.html">
+          <div class="nav-item"><span class="ni">🪙</span>Points &amp; Rewards</div>
+        </a>
+        <a href="settings.html">
+          <div class="nav-item"><span class="ni">⚙️</span>Settings</div>
+        </a>
+      </nav>
+      <a href="points.html">
+        <div class="pts-widget">
+          <div class="pts-widget-num">840</div>
+          <div class="pts-widget-label">🪙 Your Points</div>
+          <div class="pts-widget-bar">
+            <div class="pts-widget-fill div_cls_2"></div>
+          </div>
+          <div class="pts-widget-sub">160 pts to Verified Tutor</div>
+        </div>
+      </a>
+      <div class="sidebar-logout" onclick="doLogout()">🚪 Sign Out</div>
+    </aside>
+    <main class="main main_cls_3">
+      <div class="div_cls_4">
+        <h1 class="h1_cls_5">Private Sessions</h1>
+        <p class="p_cls_6">One-on-one help · 100% voluntary</p>
+      </div>
+      <!-- Incoming request banner (shown when navigated from Request Session btn) -->
+      <div class="div_cls_7" id="new-request-banner">
+        <span class="span_cls_8">🎉</span>
+        <div class="div_cls_9">
+          <div class="div_cls_10">Session request sent!</div>
+          <div class="div_cls_11">You will be notified when they respond.</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="this.parentElement.style.display='none'">✕</button>
+      </div>
+      <div class="tabs">
+        <div class="tab active" onclick="showTab('tab-active',this)">Active Sessions</div>
+        <div class="tab" onclick="showTab('tab-requests',this)">Incoming Requests <span
+            class="nav-badge span_cls_12">2</span></div>
+        <div class="tab" onclick="showTab('tab-history',this)">History</div>
+      </div>
+      <div data-tabs-container="">
+        <div data-tab="" id="tab-active">
+          <div class="chat-wrap">
+            <div class="chat-sidebar-panel">
+              <div class="chat-panel-header">💬 Active (2)</div>
+              <div class="chat-list">
+                <div class="chat-item active">
+                  <div class="av av-sm"><img alt="Rania" src="https://i.pravatar.cc/36?img=20" /></div>
+                  <div class="div_cls_13">
+                    <div class="div_cls_14">Rania K.<span class="span_cls_15">2m</span></div>
+                    <div class="truncate div_cls_16">Sure! Let me explain the LL case...</div>
+                  </div>
+                </div>
+                <div class="chat-item">
+                  <div class="av av-sm"><img alt="Omar" src="https://i.pravatar.cc/36?img=33" /></div>
+                  <div class="div_cls_13">
+                    <div class="div_cls_14">Omar S.<span class="span_cls_15">1h</span></div>
+                    <div class="truncate div_cls_16">Great, see you next time!</div>
+                  </div>
+                </div>
+              </div>
+              <div class="div_cls_17">⏱️ Sessions auto-close after 24h</div>
+            </div>
+            <div class="chat-main">
+              <div class="chat-topbar">
+                <a href="user-profile.html?user=rania">
+                  <div class="av av-sm"><img alt="Rania" src="https://i.pravatar.cc/36?img=20" /></div>
+                </a>
+                <div class="div_cls_13">
+                  <div class="div_cls_10">Rania K. <span class="span_cls_18">✓ Verified Tutor</span></div>
+                  <div class="span_cls_18">● Online now</div>
+                </div>
+                <span class="chip chip-amber">Topic: AVL Trees</span>
+                <span class="chip chip-gray span_cls_19">⏱️ 22h left</span>
+              </div>
+              <div class="chat-messages">
+                <div class="div_cls_20"><span class="span_cls_21">Session started · Today 10:30 AM</span></div>
+                <div class="div_cls_22">
+                  <div class="av av-sm"><img alt="" src="https://i.pravatar.cc/36?img=20" /></div>
+                  <div>
+                    <div class="msg msg-them">Hi Ahmad! I can help you understand all 4 AVL rotation cases 😊</div>
+                    <div class="msg-time">10:31 AM</div>
+                  </div>
+                </div>
+                <div class="div_cls_23">
+                  <div class="msg msg-me">That would be amazing! I am particularly confused about the LR case.</div>
+                  <div class="msg-time div_cls_24">10:33 AM</div>
+                </div>
+                <div class="div_cls_22">
+                  <div class="av av-sm"><img alt="" src="https://i.pravatar.cc/36?img=20" /></div>
+                  <div>
+                    <div class="msg msg-them">LR happens when the imbalance is on the left subtree right child. You
+                      first do a left rotation, then a right rotation.</div>
+                    <div class="msg-time">10:35 AM</div>
+                  </div>
+                </div>
+              </div>
+              <div class="chat-input-bar">
+                <input onkeydown="if(event.key==='Enter')sendMsg()" placeholder="Type your message..." />
+                <button class="btn btn-primary btn-sm" onclick="sendMsg()">Send →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hidden" data-tab="" id="tab-requests">
+          <div class="div_cls_25">
+            <div class="card div_cls_26">
+              <a href="user-profile.html?user=lina">
+                <div class="av av-lg"><img alt="Lina" src="https://i.pravatar.cc/60?img=47" /></div>
+              </a>
+              <div class="div_cls_13">
+                <div class="div_cls_27">
+                  <a class="a_cls_28" href="user-profile.html?user=lina">Lina H.</a>
+                  <span class="chip chip-violet">Engineering · Year 2</span>
+                  <span class="div_cls_16">· 5 min ago</span>
+                </div>
+                <p class="p_cls_29">Requesting help with <strong>MATH201 — Eigenvalues</strong>. I need to understand
+                  the process before my exam tomorrow.</p>
+              </div>
+              <div class="div_cls_30">
+                <button class="btn btn-emerald btn-sm" onclick="showToast('✅ Session accepted! −5 pts')">✓
+                  Accept</button>
+                <button class="btn btn-ghost btn-sm button_cls_31">✗ Decline</button>
+              </div>
+            </div>
+            <div class="card div_cls_26">
+              <a href="user-profile.html?user=sami">
+                <div class="av av-lg"><img alt="Sami" src="https://i.pravatar.cc/60?img=65" /></div>
+              </a>
+              <div class="div_cls_13">
+                <div class="div_cls_27">
+                  <a class="a_cls_28" href="user-profile.html?user=sami">Sami T.</a>
+                  <span class="chip chip-indigo">IT · Year 4</span>
+                </div>
+                <p class="p_cls_29">Need help with <strong>CS401 — Dijkstra Algorithm</strong> and negative edge
+                  weights.</p>
+              </div>
+              <div class="div_cls_30">
+                <button class="btn btn-emerald btn-sm" onclick="showToast('✅ Session accepted!')">✓ Accept</button>
+                <button class="btn btn-ghost btn-sm button_cls_31">✗ Decline</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hidden" data-tab="" id="tab-history">
+          <div class="div_cls_32">
+            <div class="card div_cls_26">
+              <a href="user-profile.html?user=omar">
+                <div class="av av-lg"><img alt="Omar" src="https://i.pravatar.cc/60?img=33" /></div>
+              </a>
+              <div class="div_cls_9">
+                <div class="div_cls_10">Session with Omar S.</div>
+                <div class="div_cls_11">Topic: CS302 — Stack &amp; Queue · 45 min</div>
+                <div class="div_cls_33">⭐⭐⭐⭐⭐</div>
+              </div>
+              <div class="div_cls_24">
+                <div class="div_cls_11">2 days ago</div>
+                <div class="div_cls_34">+35 pts</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script>
+    // ── Sidebar hamburger ──
+    function initSidebar() {
+      const h = document.getElementById('hamburger'),
+        s = document.getElementById('sidebar'),
+        o = document.getElementById('sidebar-overlay');
+      if (!h || !s) return;
+      h.addEventListener('click', () => {
+        const open = s.classList.toggle('open');
+        h.classList.toggle('open', open);
+        if (o) o.classList.toggle('open', open);
+        document.body.style.overflow = open ? 'hidden' : ''
+      });
+      if (o) o.addEventListener('click', closeSidebar);
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeSidebar()
+      })
+    }
+
+    function closeSidebar() {
+      const s = document.getElementById('sidebar'),
+        o = document.getElementById('sidebar-overlay'),
+        h = document.getElementById('hamburger');
+      if (s) s.classList.remove('open');
+      if (o) o.classList.remove('open');
+      if (h) h.classList.remove('open');
+      document.body.style.overflow = ''
+    }
+
+    // ── Tabs ──
+    function showTab(id, el) {
+      const parent = el.closest('.tabs');
+      if (parent) parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('[data-tab]').forEach(c => c.classList.add('hidden'));
+      const t = document.getElementById(id);
+      if (t) {
+        t.classList.remove('hidden');
+        t.classList.add('fade-in')
+      }
+    }
+
+    // ── Wizard ──
+    function wzStep(n) {
+      [1, 2, 3].forEach(i => {
+        const p = document.getElementById('wz' + i),
+          s = document.getElementById('ws' + i);
+        if (!p || !s) return;
+        p.classList.toggle('hidden', i !== n);
+        s.classList.remove('active', 'done');
+        if (i === n) s.classList.add('active');
+        if (i < n) s.classList.add('done')
+      })
+    }
+
+    // ── Upvote ──
+    function toggleUpvote(el, base) {
+      const c = el.querySelector('.count');
+      if (!c) return;
+      if (el.dataset.voted) {
+        delete el.dataset.voted;
+        el.classList.remove('voted');
+        c.textContent = base
+      } else {
+        el.dataset.voted = 1;
+        el.classList.add('voted');
+        c.textContent = base + 1;
+        showToast('👍 Upvoted! +10 pts added')
+      }
+    }
+
+    // ── Toast ──
+    function showToast(msg, type = '') {
+      const ex = document.querySelector('.toast');
+      if (ex) ex.remove();
+      const el = document.createElement('div');
+      el.className = 'toast' + (type ? ' toast-' + type : '');
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity .3s';
+        setTimeout(() => el.remove(), 300)
+      }, 3000)
+    }
+
+    // ── Chat send ──
+    function sendMsg() {
+      const inp = document.querySelector('.chat-input-bar input'),
+        msgs = document.querySelector('.chat-messages');
+      if (!inp || !msgs) return;
+      const txt = inp.value.trim();
+      if (!txt) return;
+      const now = new Date(),
+        time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+      const w = document.createElement('div');
+      w.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end';
+      w.innerHTML =
+        `<div class="msg msg-me">${escapeHtml(txt)}</div><div class="msg-time" style="text-align:right">${time}</div>`;
+      msgs.appendChild(w);
+      msgs.scrollTop = msgs.scrollHeight;
+      inp.value = '';
+      inp.focus()
+    }
+
+    // ── Post answer ──
+    function postAnswer() {
+      const ta = document.querySelector('.answer-textarea');
+      if (ta && ta.value.trim().length < 10) {
+        showToast('Please write at least 10 characters', 'error');
+        return
+      }
+      showToast('🎉 Answer posted! +5 pts earned');
+      if (ta) ta.value = ''
+    }
+
+    // ── Register ──
+    function submitRegister() {
+      const f = document.getElementById('reg-form'),
+        s = document.getElementById('reg-success');
+      if (f && s) {
+        f.classList.add('hidden');
+        s.classList.remove('hidden');
+        s.classList.add('fade-in')
+      }
+    }
+
+    // ── Escape HTML ──
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+    }
+
+    // ── User menu dropdown ──
+    function toggleUserMenu() {
+      const d = document.getElementById('user-dropdown');
+      if (d) d.classList.toggle('open')
+    }
+    document.addEventListener('click', e => {
+      const d = document.getElementById('user-dropdown');
+      if (d && !e.target.closest('.nav-user-menu')) d.classList.remove('open')
+    })
+
+    // ── Logout ──
+    function doLogout() {
+      if (confirm('Are you sure you want to sign out?')) window.location.href = 'login.html'
+    }
+
+    // ── LIVE SEARCH ──
+    const QUESTIONS = [{
+        title: 'How does AVL tree rotation actually work?',
+        faculty: 'IT Faculty',
+        course: 'CS302',
+        url: 'single-post.html',
+        solved: true,
+        answers: 7,
+        votes: 42
+      },
+      {
+        title: 'Difference between Dijkstra and Bellman-Ford?',
+        faculty: 'IT Faculty',
+        course: 'CS401',
+        url: 'single-post.html',
+        solved: false,
+        answers: 4,
+        votes: 18
+      },
+      {
+        title: 'How to prepare a trial balance from journal entries?',
+        faculty: 'Business',
+        course: 'ACCT201',
+        url: 'single-post.html',
+        solved: true,
+        answers: 3,
+        votes: 9
+      },
+      {
+        title: 'Finding eigenvalues of a 3×3 matrix step by step?',
+        faculty: 'Engineering',
+        course: 'MATH201',
+        url: 'single-post.html',
+        solved: false,
+        answers: 5,
+        votes: 14
+      },
+      {
+        title: 'Mechanism of action of beta-blockers explained simply?',
+        faculty: 'Pharmacy',
+        course: 'PHARM301',
+        url: 'single-post.html',
+        solved: false,
+        answers: 6,
+        votes: 21
+      },
+      {
+        title: 'Best approach for solving memoization problems in DP?',
+        faculty: 'IT Faculty',
+        course: 'CS401',
+        url: 'single-post.html',
+        solved: false,
+        answers: 3,
+        votes: 9
+      },
+      {
+        title: 'How to implement a stack using two queues?',
+        faculty: 'IT Faculty',
+        course: 'CS302',
+        url: 'single-post.html',
+        solved: true,
+        answers: 4,
+        votes: 7
+      },
+      {
+        title: 'What is the time complexity of AVL tree operations?',
+        faculty: 'IT Faculty',
+        course: 'CS302',
+        url: 'single-post.html',
+        solved: true,
+        answers: 4,
+        votes: 18
+      },
+    ];
+
+    function initSearch() {
+      const inp = document.querySelector('.nav-search .form-input');
+      if (!inp) return;
+      const wrap = inp.closest('.nav-search') || inp.parentElement;
+      wrap.style.position = 'relative';
+      const dd = document.createElement('div');
+      dd.className = 'search-dropdown';
+      dd.id = 'search-dropdown';
+      wrap.appendChild(dd);
+      inp.addEventListener('input', () => runSearch(inp.value.trim()));
+      inp.addEventListener('focus', () => {
+        if (inp.value.trim()) runSearch(inp.value.trim())
+      });
+      document.addEventListener('click', e => {
+        if (!wrap.contains(e.target)) dd.classList.remove('open')
+      })
+    }
+
+    function runSearch(q) {
+      const dd = document.getElementById('search-dropdown');
+      if (!dd) return;
+      if (!q) {
+        dd.classList.remove('open');
+        return
+      }
+      const results = QUESTIONS.filter(x => x.title.toLowerCase().includes(q.toLowerCase()) || x.course.toLowerCase()
+        .includes(q.toLowerCase()) || x.faculty.toLowerCase().includes(q.toLowerCase()));
+      dd.innerHTML = '';
+      if (!results.length) {
+        dd.innerHTML = '<div class="search-no-results">No results found for "' + escapeHtml(q) + '"</div>'
+      } else {
+        results.slice(0, 6).forEach(r => {
+          const el = document.createElement('a');
+          el.href = r.url;
+          el.className = 'search-result-item';
+          el.innerHTML =
+            `<span style="font-size:20px;flex-shrink:0">${r.solved?'✅':'❓'}</span><div><div class="search-result-title">${escapeHtml(r.title)}</div><div class="search-result-meta">${r.faculty} · ${r.course} · ${r.answers} answers · ${r.votes} votes</div></div>`;
+          dd.appendChild(el)
+        })
+      }
+      dd.classList.add('open')
+    }
+
+    // ── Session Request Modal ──
+    function openSessionModal(name, img, topic) {
+      const existing = document.getElementById('session-modal');
+      if (existing) existing.remove();
+      const m = document.createElement('div');
+      m.id = 'session-modal';
+      m.className = 'modal-overlay';
+      m.onclick = e => {
+        if (e.target === m) m.remove()
+      };
+      m.innerHTML =
+        `<div class="modal-box"><div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><div class="av av-lg"><img src="${img}" alt="${name}"></div><div><div class="modal-title">Request Session with ${name}</div><div class="modal-sub">Send a session request — they can accept or decline</div></div></div><div class="form-group"><label class="form-label">Topic / Course</label><input class="form-input" id="modal-topic" value="${topic||''}" placeholder="e.g. CS302 — AVL Tree Rotations"></div><div class="form-group"><label class="form-label">Your message</label><textarea class="form-input form-textarea" id="modal-msg" style="min-height:90px" placeholder="Briefly describe what you need help with..."></textarea></div><div style="background:var(--amber-light);border:1px solid #FDE68A;border-radius:9px;padding:10px 14px;margin-bottom:18px;font-size:13px;color:#92400E">This will cost <strong>−5 pts</strong> from your balance.</div><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('session-modal').remove()">Cancel</button><button class="btn btn-primary" onclick="submitSessionReq('${name}')">Send Request (−5 pts)</button></div></div>`;
+      document.body.appendChild(m)
+    }
+
+    function submitSessionReq(name) {
+      document.getElementById('session-modal').remove();
+      showToast('✅ Session request sent to ' + name + '! −5 pts')
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initSidebar();
+      initSearch()
+    })
+  </script>
+</body>
+
+</html>

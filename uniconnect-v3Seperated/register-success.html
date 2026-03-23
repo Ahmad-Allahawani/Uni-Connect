@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width,initial-scale=1.0" name="viewport" />
+  <title>Verify Your Email — UniConnect</title>
+
+  <link href="register-success.css" rel="stylesheet" />
+</head>
+
+<body>
+  <nav class="nav">
+    <a class="nav-logo" href="login.html">
+      <div class="nav-logo-icon">🎓</div>
+      UniConnect
+    </a>
+  </nav>
+  <div class="body">
+    <div class="card">
+      <div class="envelope-wrap">
+        <div class="envelope">📧</div>
+      </div>
+      <h1 class="h1_cls_0">Check your email!</h1>
+      <p class="p_cls_1">We sent a verification link to:</p>
+      <div class="div_cls_2">202210882@philadelphia.edu.jo</div>
+      <!-- Welcome bonus notice -->
+      <div class="div_cls_3">
+        <div class="div_cls_4">🎁</div>
+        <div class="div_cls_5">
+          <div class="div_cls_6">+50 Welcome Points are waiting!</div>
+          <div class="div_cls_7">Confirm your email to activate your account and claim your welcome bonus points
+            instantly.</div>
+        </div>
+      </div>
+      <!-- Steps -->
+      <div class="div_cls_8">
+        <div class="div_cls_9">What to do next:</div>
+        <div class="step-row">
+          <div class="step-ico div_cls_10">📬</div>
+          <div>
+            <div class="div_cls_11">Open your university email</div>
+            <div class="div_cls_12">Check your inbox at philadelphia.edu.jo</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-ico div_cls_13">🔗</div>
+          <div>
+            <div class="div_cls_11">Click the verification link</div>
+            <div class="div_cls_12">The link expires in 24 hours</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-ico div_cls_14">🚀</div>
+          <div>
+            <div class="div_cls_11">Start earning points!</div>
+            <div class="div_cls_12">Begin helping classmates and redeeming rewards</div>
+          </div>
+        </div>
+      </div>
+      <a href="login.html"><button class="btn btn-primary btn-full btn-lg">Go to Sign In →</button></a>
+      <div class="div_cls_15">
+        Didn't receive the email?
+        <button class="button_cls_16" onclick="resend(this)">Resend</button>
+      </div>
+      <div class="countdown">Link expires in <strong id="timer">23:59:44</strong></div>
+      <div class="div_cls_17">
+        Wrong email? <a class="a_cls_18" href="register.html">Go back and change it</a>
+      </div>
+    </div>
+  </div>
+  <script>
+    function resend(btn) {
+      btn.textContent = 'Sent ✓';
+      btn.style.color = 'var(--emerald)';
+      setTimeout(() => {
+        btn.textContent = 'Resend';
+        btn.style.color = ''
+      }, 3000);
+    }
+    // Countdown timer
+    let secs = 86384;
+    const tmr = document.getElementById('timer');
+    setInterval(() => {
+      if (secs <= 0) return;
+      secs--;
+      const h = Math.floor(secs / 3600).toString().padStart(2, '0');
+      const m = Math.floor((secs % 3600) / 60).toString().padStart(2, '0');
+      const s = (secs % 60).toString().padStart(2, '0');
+      tmr.textContent = h + ':' + m + ':' + s;
+    }, 1000);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,235 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --indigo: #3D52A0;
+    --indigo-light: #EEF2FF;
+    --violet: #7091E6;
+    --amber: #F59E0B;
+    --border: #E2E8F0;
+    --text: #0F172A;
+    --text-2: #475569;
+    --text-3: #94A3B8
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box
+}
+
+html {
+    height: 100%
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: linear-gradient(145deg, #EEF2FF 0%, #F4F6FF 55%, #EDE9FE 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+    text-align: center;
+    padding: 30px 20px
+}
+
+a {
+    text-decoration: none;
+    color: inherit
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 24px;
+    border-radius: 11px;
+    font-weight: 700;
+    font-size: 14px;
+    transition: all .2s;
+    cursor: pointer
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3D52A0, #5B73C7);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(61, 82, 160, .3)
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(61, 82, 160, .4)
+}
+
+.btn-ghost {
+    background: transparent;
+    color: #475569;
+    border: 1.5px solid #E2E8F0
+}
+
+.btn-ghost:hover {
+    background: #EEF2FF;
+    color: #3D52A0;
+    border-color: #3D52A0
+}
+
+.btn-lg {
+    padding: 14px 30px;
+    font-size: 15px
+}
+
+/* Animated 404 */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0)
+    }
+
+    50% {
+        transform: translateY(-12px)
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0)
+    }
+}
+
+.fade-in {
+    animation: fadeIn .5s ease both;
+    animation-delay: .1s;
+    max-width: 520px;
+}
+
+.div-floating {
+    font-size: 80px;
+    animation: float 3s ease-in-out infinite;
+    margin-bottom: 10px;
+}
+
+.div-404 {
+    font-size: clamp(80px, 15vw, 140px);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -4px;
+    background: linear-gradient(135deg, #3D52A0, #7091E6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+.heading-not-found {
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 900;
+    margin-bottom: 12px;
+    letter-spacing: -.4px;
+}
+
+.paragraph-not-found {
+    font-size: 16px;
+    color: #475569;
+    line-height: 1.7;
+    margin-bottom: 32px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.div-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+.div-quick-links {
+    background: rgba(255, 255, 255, .7);
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 20px 24px;
+    backdrop-filter: blur(10px);
+}
+
+.div-looking-for {
+    font-size: 13px;
+    font-weight: 800;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    margin-bottom: 14px;
+}
+
+.div-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.div-indigo-links {
+    background: var(--indigo-light);
+    color: var(--indigo);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .15s;
+}
+
+.div-rewards {
+    background: #FEF3C7;
+    color: #92400E;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .15s;
+}
+
+.div-bottom {
+    margin-top: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    color: #94A3B8;
+}
+
+.div-bottom-logo {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #3D52A0, #7091E6);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+}
+
+.span-uniconnect {
+    font-weight: 900;
+    font-size: 16px;
+    color: #64748B;
+}

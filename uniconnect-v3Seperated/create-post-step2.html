@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width,initial-scale=1.0" name="viewport" />
+  <title>Ask a Question — Step 2: Write Question — UniConnect</title>
+
+  <link href="create-post-step2.css" rel="stylesheet" />
+</head>
+
+<body>
+  <nav class="navbar">
+    <button class="nav-hamburger"><span></span><span></span><span></span></button>
+    <a class="nav-logo" href="dashboard.html">
+      <div class="nav-logo-icon">🎓</div><span>UniConnect</span>
+    </a>
+    <div class="nav-search"><input autocomplete="off" class="form-input" placeholder="🔍  Search..." /></div>
+    <div class="nav-actions">
+      <a class="nav-bell" href="notifications.html">🔔<span class="nav-bell-badge">3</span></a>
+      <div class="nav-user-btn">
+        <div class="av av-sm"><img alt="Ahmad" src="https://i.pravatar.cc/36?img=11" /></div>
+        <span class="span_cls_0">Ahmad</span>
+        <span class="span_cls_1">▾</span>
+      </div>
+    </div>
+  </nav>
+  <div class="app-wrap">
+    <aside class="sidebar">
+      <a class="sidebar-user" href="profile.html">
+        <div class="av av-md"><img alt="Ahmad" src="https://i.pravatar.cc/44?img=11" /></div>
+        <div>
+          <div class="sidebar-user-name">Ahmad K.</div>
+          <div class="sidebar-user-pts">🪙 840 pts</div>
+        </div>
+      </a>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">
+          <div class="nav-item"><span class="ni">🏠</span>Home Feed</div>
+        </a>
+        <a href="create-post-step1.html">
+          <div class="nav-item active"><span class="ni">✏️</span>Ask a Question</div>
+        </a>
+        <a href="sessions.html">
+          <div class="nav-item"><span class="ni">💬</span>My Sessions</div>
+        </a>
+        <a href="leaderboard.html">
+          <div class="nav-item"><span class="ni">🏆</span>Leaderboard</div>
+        </a>
+        <a href="notifications.html">
+          <div class="nav-item"><span class="ni">🔔</span>Notifications<span class="nav-badge">3</span></div>
+        </a>
+        <a href="profile.html">
+          <div class="nav-item"><span class="ni">👤</span>My Profile</div>
+        </a>
+        <a href="points.html">
+          <div class="nav-item"><span class="ni">🪙</span>Points &amp; Rewards</div>
+        </a>
+        <a href="settings.html">
+          <div class="nav-item"><span class="ni">⚙️</span>Settings</div>
+        </a>
+      </nav>
+      <a href="points.html">
+        <div class="pts-widget">
+          <div class="pts-widget-num">840</div>
+          <div class="pts-widget-label">🪙 Your Points</div>
+          <div class="pts-widget-bar">
+            <div class="pts-widget-fill div_cls_2"></div>
+          </div>
+          <div class="pts-widget-sub">160 pts to Verified Tutor</div>
+        </div>
+      </a>
+      <div class="sidebar-logout">🚪 Sign Out</div>
+    </aside>
+    <main class="main main_cls_3">
+      <div class="breadcrumb">
+        <a href="dashboard.html">🏠 Home</a>
+        <span class="span_cls_4">›</span>
+        <span>Ask a Question</span>
+      </div>
+      <div class="div_cls_5">
+        <h1 class="h1_cls_6">✏️ Ask a Question</h1>
+        <p class="p_cls_7">Posting costs <strong class="strong_cls_8">−10 pts</strong>. A great answer earns you <strong
+            class="strong_cls_9">+5 to +15 pts</strong> back!</p>
+      </div>
+      <!-- Wizard bar — Step 1 done, Step 2 active -->
+      <div class="wizard-wrap">
+        <div class="wizard-steps">
+          <div class="wz-step done">
+            <div class="wz-num">1</div>
+            <span class="wz-label">Search First</span>
+          </div>
+          <div class="wz-step active">
+            <div class="wz-num">2</div>
+            <span class="wz-label">Write Question</span>
+          </div>
+          <div class="wz-step">
+            <div class="wz-num">3</div>
+            <span class="wz-label">Preview &amp; Post</span>
+          </div>
+        </div>
+        <div class="wizard-progress">
+          <div class="wizard-progress-fill div_cls_10"></div>
+        </div>
+      </div>
+      <!-- STEP 2 CONTENT -->
+      <div class="card fade-in">
+        <!-- Title -->
+        <div class="form-group">
+          <label class="form-label">Question Title <span class="form-req">*</span></label>
+          <input class="form-input" id="s2-title" maxlength="150" oninput="countChars(this,'tc-title',10,150)"
+            placeholder="Start with How, Why, What, When, Where..." />
+          <div class="div_cls_11">
+            <div class="form-hint">Good: "How does AVL LL rotation work?" · Bad: "help with AVL"</div>
+            <div class="char-counter" id="tc-title">0/150</div>
+          </div>
+          <div class="form-error" id="err-title">⚠ Please enter a title (minimum 10 characters)</div>
+        </div>
+        <!-- Faculty + Course -->
+        <div class="two-col div_cls_12">
+          <div>
+            <label class="form-label">Faculty <span class="form-req">*</span></label>
+            <select class="form-input form-select" id="s2-faculty">
+              <option value="">Select your faculty...</option>
+              <option value="IT Faculty">💻 Information Technology</option>
+              <option value="Engineering">⚙️ Engineering &amp; Technology</option>
+              <option value="Business">💼 Business &amp; Finance</option>
+              <option value="Law">⚖️ Faculty of Law</option>
+              <option value="Arts">🎨 Arts &amp; Educational Sciences</option>
+              <option value="Pharmacy">💊 Faculty of Pharmacy</option>
+              <option value="Administrative">📊 Administrative Sciences</option>
+            </select>
+            <div class="form-error" id="err-faculty">⚠ Please select your faculty</div>
+          </div>
+          <div>
+            <label class="form-label">Course Code <span class="form-req">*</span></label>
+            <input class="form-input" id="s2-course" maxlength="10" placeholder="e.g. CS302, MATH201, ACCT101" />
+            <div class="form-hint">The course this question is about</div>
+            <div class="form-error" id="err-course">⚠ Please enter the course code</div>
+          </div>
+        </div>
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label">Describe Your Question <span class="form-req">*</span></label>
+          <textarea class="form-input form-textarea" id="s2-body" maxlength="2000"
+            oninput="countChars(this,'tc-body',50,2000)" placeholder="Explain your question clearly:
+• What exactly are you trying to understand?
+• What have you already tried?
+• Where exactly are you stuck?
+• Add code examples or formulas if relevant"></textarea>
+          <div class="div_cls_11">
+            <div class="form-hint">Minimum 50 characters — more detail gets faster, better answers</div>
+            <div class="char-counter" id="tc-body">0/2000</div>
+          </div>
+          <div class="form-error" id="err-body">⚠ Please describe your question (minimum 50 characters)</div>
+        </div>
+        <!-- Tags -->
+        <div class="form-group div_cls_13">
+          <label class="form-label">Tags <span class="span_cls_14">(optional, max 5)</span></label>
+          <div class="tags-wrap" id="tags-wrap" onclick="document.getElementById('tags-input').focus()">
+            <input class="tags-input" id="tags-input" maxlength="20" onkeydown="handleTag(event)"
+              placeholder="Type a tag and press Enter..." type="text" />
+          </div>
+          <div class="form-hint">Press Enter to add a tag. Click × to remove. Examples: AVL, recursion, accounting</div>
+        </div>
+      </div>
+      <div class="div_cls_15">
+        <a href="create-post-step1.html"><button class="btn btn-ghost">← Back</button></a>
+        <button class="btn btn-primary btn-lg" onclick="goNext()">Preview Question →</button>
+      </div>
+      <div class="toast" id="toast">⚠ Please fix the errors above</div>
+    </main>
+  </div>
+  <script>
+    const tags = [];
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    }
+
+    function countChars(el, cntId, min, max) {
+      const cnt = document.getElementById(cntId);
+      if (!cnt) return;
+      const len = el.value.length;
+      cnt.textContent = len + '/' + max;
+      cnt.className = 'char-counter' + (len === 0 ? '' : len < min ? ' err' : len > max * .85 ? ' warn' : ' ok');
+    }
+
+    function handleTag(e) {
+      const inp = document.getElementById('tags-input');
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        const val = inp.value.replace(',', '').trim();
+        if (val && tags.length < 5 && !tags.includes(val)) {
+          tags.push(val);
+          renderTags();
+        }
+        inp.value = '';
+      }
+      if (e.key === 'Backspace' && inp.value === '' && tags.length) {
+        tags.pop();
+        renderTags();
+      }
+    }
+
+    function removeTag(i) {
+      tags.splice(i, 1);
+      renderTags()
+    }
+
+    function renderTags() {
+      const wrap = document.getElementById('tags-wrap');
+      const inp = document.getElementById('tags-input');
+      wrap.querySelectorAll('.tag-chip').forEach(t => t.remove());
+      tags.forEach((t, i) => {
+        const chip = document.createElement('div');
+        chip.className = 'tag-chip';
+        chip.innerHTML = escapeHtml(t) + `<button type="button" onclick="removeTag(${i})">×</button>`;
+        wrap.insertBefore(chip, inp);
+      });
+    }
+
+    function goNext() {
+      const title = document.getElementById('s2-title').value.trim();
+      const faculty = document.getElementById('s2-faculty').value;
+      const course = document.getElementById('s2-course').value.trim();
+      const body = document.getElementById('s2-body').value.trim();
+      let ok = true;
+
+      function check(val, minLen, inputId, errId) {
+        const inp = document.getElementById(inputId);
+        const err = document.getElementById(errId);
+        if (val.length < minLen) {
+          inp.classList.add('error');
+          err.style.display = 'block';
+          ok = false
+        } else {
+          inp.classList.remove('error');
+          inp.classList.add('ok');
+          err.style.display = 'none'
+        }
+      }
+      check(title, 10, 's2-title', 'err-title');
+      check(faculty, 1, 's2-faculty', 'err-faculty');
+      check(course, 2, 's2-course', 'err-course');
+      check(body, 50, 's2-body', 'err-body');
+
+      if (!ok) {
+        const t = document.getElementById('toast');
+        t.style.display = 'flex';
+        t.style.animation = 'toastIn .3s ease';
+        setTimeout(() => {
+          t.style.display = 'none'
+        }, 3000);
+        document.querySelector('.form-input.error') ? .scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+        return;
+      }
+      // Save to sessionStorage so step 3 can read it
+      sessionStorage.setItem('q_title', title);
+      sessionStorage.setItem('q_faculty', faculty);
+      sessionStorage.setItem('q_course', course);
+      sessionStorage.setItem('q_body', body);
+      sessionStorage.setItem('q_tags', JSON.stringify(tags));
+      window.location.href = 'create-post-step3.html';
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width,initial-scale=1.0" name="viewport" />
+  <title>User Detail — UniConnect Admin</title>
+
+
+  <link href="admin-user-detail.css" rel="stylesheet" />
+</head>
+
+<body>
+  <nav class="admin-navbar">
+    <button class="nav-hamburger" id="hamburger"><span class="span-gray"></span><span class="span-gray"></span><span
+        class="span-gray"></span></button>
+    <div class="admin-logo">
+      <div class="admin-logo-icon">🛡️</div>UniConnect Admin
+    </div>
+    <div class="top-page-links">
+      <a href="admin.html"><button class="btn btn-ghost btn-sm btn-head">← Back to Admin</button></a>
+      <a href="dashboard.html"><button class="btn btn-ghost btn-sm btn-head">Student View</button></a>
+    </div>
+  </nav>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <div class="app-wrap">
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="side-panel">
+        <div class="admin-panel">Admin Panel</div>
+        <div class="admin-university">Philadelphia University</div>
+      </div>
+      <div class="admin-overview">
+        <div class="admin-nav-section">Overview</div>
+        <a href="admin.html">
+          <div class="admin-nav-item"><span class="ni">📊</span>Dashboard</div>
+        </a>
+        <div class="admin-nav-section">Moderation</div>
+        <a href="admin.html">
+          <div class="admin-nav-item"><span class="ni">⚑</span>Reports<span class="admin-nav-badge">5</span></div>
+        </a>
+        <a href="admin.html">
+          <div class="admin-nav-item active"><span class="ni">👥</span>Users</div>
+        </a>
+        <a href="admin.html">
+          <div class="admin-nav-item"><span class="ni">❓</span>Questions</div>
+        </a>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="breadcrumb">
+        <a href="admin.html">Admin</a><span>›</span>
+        <a href="admin.html">Users</a><span>›</span>
+        <span>Sami T.</span>
+      </div>
+      <!-- Header card -->
+      <div class="card">
+        <div class="card-body">
+          <div class="av av-xl card-profile-picture"><img alt="Sami" src="https://i.pravatar.cc/80?img=65" /></div>
+          <div class="alligned-text">
+            <div class="card-top-info">
+              <h1 class="card-user-name">Sami T.</h1>
+              <span class="chip chip-emerald">✓ Verified Tutor</span>
+              <span class="chip chip-indigo">Active</span>
+            </div>
+            <div class="card-email">📧 202110050@philadelphia.edu.jo</div>
+            <div class="card-info-bottom">
+              <span>💻 IT Faculty</span>
+              <span>📅 Year 4</span>
+              <span>🗓️ Joined Sep 2021</span>
+              <span>🔥 Streak: 12 days</span>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-ghost btn-sm" onclick="showToast('Warning sent to user')">⚠️ Warn</button>
+            <button class="btn btn-amber btn-sm" onclick="showToast('User suspended for 24h','warn')">⏸️
+              Suspend</button>
+            <button class="btn btn-rose btn-sm" onclick="showToast('Account banned','error')">🚫 Ban</button>
+          </div>
+        </div>
+      </div>
+      <!-- Stats grid -->
+      <div class="grid-4-col quick-stats">
+        <div class="stat-card">
+          <div class="stat-icon background-amber-light">🪙</div>
+          <div class="stat-num background-amber">1,240</div>
+          <div class="stat-label">Total Points</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon background-violet-light">💬</div>
+          <div class="stat-num background-violet">112</div>
+          <div class="stat-label">Answers Given</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon background-emerald-light">🎓</div>
+          <div class="stat-num background-emerald">31</div>
+          <div class="stat-label">Sessions Held</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon background-rose-light">⚑</div>
+          <div class="stat-num background-rose">0</div>
+          <div class="stat-label">Reports Against</div>
+        </div>
+      </div>
+      <!-- Details + Activity -->
+      <div class="grid-2-col grid-2-col-style">
+        <div class="card">
+          <div class="grid-2-col-heading">👤 Account Details</div>
+          <div class="account-details-info">
+            <div class="account-details-rows"><span class="details-row-data-1">Student ID</span><span
+                class="details-row-data-2">202110050</span></div>
+            <div class="account-details-rows"><span class="details-row-data-1">Faculty</span><span
+                class="details-row-data-2">IT Faculty</span>
+            </div>
+            <div class="account-details-rows"><span class="details-row-data-1">Year</span><span
+                class="details-row-data-2">Year 4</span></div>
+            <div class="account-details-rows"><span class="details-row-data-1">Status</span><span
+                class="chip chip-emerald row-data-status">Active</span></div>
+            <div class="account-details-rows"><span class="details-row-data-1">Verified Tutor</span><span
+                class="chip chip-indigo row-data-status">✓ Yes</span></div>
+            <div class=".row-data-session-rating"><span class="details-row-data-1">Session Rating</span><span
+                class="row-data-stars">4.9
+                ⭐</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="grid-2-col-heading">📊 Activity</div>
+          <div class="activity-row">
+            <div class="activity-row-body"><span class="activity-row-data-1">Questions asked</span><span
+                class="details-row-data-2">8</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill details-quetions-bar"></div>
+            </div>
+          </div>
+          <div class="activity-row">
+            <div class="activity-row-body"><span class="activity-row-data-1">Answers posted</span><span
+                class="details-row-data-2">112</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill details-posted-bar"></div>
+            </div>
+          </div>
+          <div class="activity-row">
+            <div class="activity-row-body"><span class="activity-row-data-1">Best answers</span><span
+                class="details-row-data-2">28</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill details-best-bar"></div>
+            </div>
+          </div>
+          <div>
+            <div class="activity-row-body"><span class="activity-row-data-1">Sessions held</span><span
+                class="details-row-data-2">31</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill details-sessions-bar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Recent Questions -->
+      <div class="card card-recent-answers">
+        <div class="recent-answers-head">
+          💬 Recent Answers
+          <span class="chip chip-gray">112 total</span>
+        </div>
+        <div class="table-row">
+          <div class="alligned-text">
+            <div class="truncate recent-answers-question">How does AVL tree rotation actually work?</div>
+            <div class="recent-answers-question-info">CS302 · Best Answer · +15 pts · 2 hours ago</div>
+          </div>
+          <span class="chip chip-emerald recent-answers-answer-ranking">Best</span>
+        </div>
+        <div class="table-row">
+          <div class="alligned-text">
+            <div class="truncate recent-answers-question">Difference between Dijkstra and Bellman-Ford?</div>
+            <div class="recent-answers-question-info">CS401 · 14 upvotes · 3 days ago</div>
+          </div>
+          <span class="chip chip-indigo recent-answers-answer-ranking">Top</span>
+        </div>
+        <div class="table-row recent-answers-bottom">
+          <div class="alligned-text">
+            <div class="truncate recent-answers-question">What is O(n log n) time complexity?</div>
+            <div class="recent-answers-question-info">CS201 · 8 upvotes · 1 week ago</div>
+          </div>
+          <span class="chip chip-gray recent-answers-answer-ranking">Good</span>
+        </div>
+      </div>
+      <!-- Admin Notes -->
+      <div class="card">
+        <div class="admin-notes">🗒️ Admin Notes</div>
+        <textarea class="form-input note-text"
+          placeholder="Add internal admin notes about this user (not visible to the user)..."></textarea>
+        <div class="note-save">
+          <button class="btn btn-primary btn-sm" onclick="showToast('Notes saved')">Save Notes</button>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script>
+    // ── Sidebar hamburger ──
+    function initSidebar() {
+      const h = document.getElementById('hamburger'),
+        s = document.getElementById('sidebar'),
+        o = document.getElementById('sidebar-overlay');
+      if (!h || !s) return;
+      h.addEventListener('click', () => {
+        const open = s.classList.toggle('open');
+        h.classList.toggle('open', open);
+        if (o) o.classList.toggle('open', open);
+        document.body.style.overflow = open ? 'hidden' : ''
+      });
+      if (o) o.addEventListener('click', closeSidebar);
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeSidebar()
+      })
+    }
+
+    function closeSidebar() {
+      const s = document.getElementById('sidebar'),
+        o = document.getElementById('sidebar-overlay'),
+        h = document.getElementById('hamburger');
+      if (s) s.classList.remove('open');
+      if (o) o.classList.remove('open');
+      if (h) h.classList.remove('open');
+      document.body.style.overflow = ''
+    }
+
+    // ── Tabs ──
+    function showTab(id, el) {
+      const parent = el.closest('.tabs');
+      if (parent) parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('[data-tab]').forEach(c => c.classList.add('hidden'));
+      const t = document.getElementById(id);
+      if (t) {
+        t.classList.remove('hidden');
+        t.classList.add('fade-in')
+      }
+    }
+
+    // ── Wizard ──
+    function wzStep(n) {
+      [1, 2, 3].forEach(i => {
+        const p = document.getElementById('wz' + i),
+          s = document.getElementById('ws' + i);
+        if (!p || !s) return;
+        p.classList.toggle('hidden', i !== n);
+        s.classList.remove('active', 'done');
+        if (i === n) s.classList.add('active');
+        if (i < n) s.classList.add('done')
+      })
+    }
+
+    // ── Upvote ──
+    function toggleUpvote(el, base) {
+      const c = el.querySelector('.count');
+      if (!c) return;
+      if (el.dataset.voted) {
+        delete el.dataset.voted;
+        el.classList.remove('voted');
+        c.textContent = base
+      } else {
+        el.dataset.voted = 1;
+        el.classList.add('voted');
+        c.textContent = base + 1;
+        showToast('👍 Upvoted! +10 pts added')
+      }
+    }
+
+    // ── Toast ──
+    function showToast(msg, type = '') {
+      const ex = document.querySelector('.toast');
+      if (ex) ex.remove();
+      const el = document.createElement('div');
+      el.className = 'toast' + (type ? ' toast-' + type : '');
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity .3s';
+        setTimeout(() => el.remove(), 300)
+      }, 3000)
+    }
+
+    // ── Chat send ──
+    function sendMsg() {
+      const inp = document.querySelector('.chat-input-bar input'),
+        msgs = document.querySelector('.chat-messages');
+      if (!inp || !msgs) return;
+      const txt = inp.value.trim();
+      if (!txt) return;
+      const now = new Date(),
+        time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+      const w = document.createElement('div');
+      w.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end';
+      w.innerHTML =
+        `<div class="msg msg-me">${escapeHtml(txt)}</div><div class="msg-time" style="text-align:right">${time}</div>`;
+      msgs.appendChild(w);
+      msgs.scrollTop = msgs.scrollHeight;
+      inp.value = '';
+      inp.focus()
+    }
+
+    // ── Post answer ──
+    function postAnswer() {
+      const ta = document.querySelector('.answer-textarea');
+      if (ta && ta.value.trim().length < 10) {
+        showToast('Please write at least 10 characters', 'error');
+        return
+      }
+      showToast('🎉 Answer posted! +5 pts earned');
+      if (ta) ta.value = ''
+    }
+
+    // ── Register ──
+    function submitRegister() {
+      const f = document.getElementById('reg-form'),
+        s = document.getElementById('reg-success');
+      if (f && s) {
+        f.classList.add('hidden');
+        s.classList.remove('hidden');
+        s.classList.add('fade-in')
+      }
+    }
+
+    // ── Escape HTML ──
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+    }
+
+    // ── User menu dropdown ──
+    function toggleUserMenu() {
+      const d = document.getElementById('user-dropdown');
+      if (d) d.classList.toggle('open')
+    }
+    document.addEventListener('click', e => {
+      const d = document.getElementById('user-dropdown');
+      if (d && !e.target.closest('.nav-user-menu')) d.classList.remove('open')
+    })
+
+    // ── Logout ──
+    function doLogout() {
+      if (confirm('Are you sure you want to sign out?')) window.location.href = 'login.html'
+    }
+
+    // ── LIVE SEARCH ──
+    const QUESTIONS = [{
+        title: 'How does AVL tree rotation actually work?',
+        faculty: 'IT Faculty',
+        course: 'CS302',
+        url: 'single-post.html',
+        solved: true,
+        answers: 7,
+        votes: 42
+      },
+      {
+        title: 'Difference between Dijkstra and Bellman-Ford?',
+        faculty: 'IT Faculty',
+        course: 'CS401',
+        url: 'single-post.html',
+        solved: false,
+        answers: 4,
+        votes: 18
+      },
+      {
+        title: 'How to prepare a trial balance from journal entries?',
+        faculty: 'Business',
+        course: 'ACCT201',
+        url: 'single-post.html',
+        solved: true,
+        answers: 3,
+        votes: 9
+      },
+      {
+        title: 'Finding eigenvalues of a 3×3 matrix step by step?',
+        faculty: 'Engineering',
+        course: 'MATH201',
+        url: 'single-post.html',
+        solved: false,
+        answers: 5,
+        votes: 14
+      },
+      {
+        title: 'Mechanism of action of beta-blockers explained simply?',
+        faculty: 'Pharmacy',
+        course: 'PHARM301',
+        url: 'single-post.html',
+        solved: false,
+        answers: 6,
+        votes: 21
+      },
+      {
+        title: 'Best approach for solving memoization problems in DP?',
+        faculty: 'IT Faculty',
+        course: 'CS401',
+        url: 'single-post.html',
+        solved: false,
+        answers: 3,
+        votes: 9
+      },
+      {
+        title: 'How to implement a stack using two queues?',
+        faculty: 'IT Faculty',
+        course: 'CS302',
+        url: 'single-post.html',
+        solved: true,
+        answers: 4,
+        votes: 7
+      },
+      {
+        title: 'What is the time complexity of AVL tree operations?',
+        faculty: 'IT Faculty',
+        course: 'CS302',
+        url: 'single-post.html',
+        solved: true,
+        answers: 4,
+        votes: 18
+      },
+    ];
+
+    function initSearch() {
+      const inp = document.querySelector('.nav-search .form-input');
+      if (!inp) return;
+      const wrap = inp.closest('.nav-search') || inp.parentElement;
+      wrap.style.position = 'relative';
+      const dd = document.createElement('div');
+      dd.className = 'search-dropdown';
+      dd.id = 'search-dropdown';
+      wrap.appendChild(dd);
+      inp.addEventListener('input', () => runSearch(inp.value.trim()));
+      inp.addEventListener('focus', () => {
+        if (inp.value.trim()) runSearch(inp.value.trim())
+      });
+      document.addEventListener('click', e => {
+        if (!wrap.contains(e.target)) dd.classList.remove('open')
+      })
+    }
+
+    function runSearch(q) {
+      const dd = document.getElementById('search-dropdown');
+      if (!dd) return;
+      if (!q) {
+        dd.classList.remove('open');
+        return
+      }
+      const results = QUESTIONS.filter(x => x.title.toLowerCase().includes(q.toLowerCase()) || x.course.toLowerCase()
+        .includes(q.toLowerCase()) || x.faculty.toLowerCase().includes(q.toLowerCase()));
+      dd.innerHTML = '';
+      if (!results.length) {
+        dd.innerHTML = '<div class="search-no-results">No results found for "' + escapeHtml(q) + '"</div>'
+      } else {
+        results.slice(0, 6).forEach(r => {
+          const el = document.createElement('a');
+          el.href = r.url;
+          el.className = 'search-result-item';
+          el.innerHTML =
+            `<span style="font-size:20px;flex-shrink:0">${r.solved?'✅':'❓'}</span><div><div class="search-result-title">${escapeHtml(r.title)}</div><div class="search-result-meta">${r.faculty} · ${r.course} · ${r.answers} answers · ${r.votes} votes</div></div>`;
+          dd.appendChild(el)
+        })
+      }
+      dd.classList.add('open')
+    }
+
+    // ── Session Request Modal ──
+    function openSessionModal(name, img, topic) {
+      const existing = document.getElementById('session-modal');
+      if (existing) existing.remove();
+      const m = document.createElement('div');
+      m.id = 'session-modal';
+      m.className = 'modal-overlay';
+      m.onclick = e => {
+        if (e.target === m) m.remove()
+      };
+      m.innerHTML =
+        `<div class="modal-box"><div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><div class="av av-lg"><img src="${img}" alt="${name}"></div><div><div class="modal-title">Request Session with ${name}</div><div class="modal-sub">Send a session request — they can accept or decline</div></div></div><div class="form-group"><label class="form-label">Topic / Course</label><input class="form-input" id="modal-topic" value="${topic||''}" placeholder="e.g. CS302 — AVL Tree Rotations"></div><div class="form-group"><label class="form-label">Your message</label><textarea class="form-input form-textarea" id="modal-msg" style="min-height:90px" placeholder="Briefly describe what you need help with..."></textarea></div><div style="background:var(--amber-light);border:1px solid #FDE68A;border-radius:9px;padding:10px 14px;margin-bottom:18px;font-size:13px;color:#92400E">This will cost <strong>−5 pts</strong> from your balance.</div><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('session-modal').remove()">Cancel</button><button class="btn btn-primary" onclick="submitSessionReq('${name}')">Send Request (−5 pts)</button></div></div>`;
+      document.body.appendChild(m)
+    }
+
+    function submitSessionReq(name) {
+      document.getElementById('session-modal').remove();
+      showToast('✅ Session request sent to ' + name + '! −5 pts')
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initSidebar();
+      initSearch()
+    })
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const h = document.getElementById('hamburger'),
+        s = document.getElementById('admin-sidebar'),
+        o = document.getElementById('sidebar-overlay');
+      if (h && s) {
+        h.addEventListener('click', () => {
+          const op = s.classList.toggle('open');
+          h.classList.toggle('open', op);
+          if (o) o.classList.toggle('open', op)
+        });
+        if (o) o.addEventListener('click', () => {
+          s.classList.remove('open');
+          o.classList.remove('open');
+          h.classList.remove('open')
+        })
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width,initial-scale=1.0" name="viewport" />
+  <title>Sign In — UniConnect</title>
+
+  <link href="login.css" rel="stylesheet" />
+</head>
+
+<body class="auth-bg">
+  <nav class="auth-navbar">
+    <a class="nav-logo" href="login.html">
+      <div class="nav-logo-icon">🎓</div><span>UniConnect</span>
+    </a>
+    <div class="div_cls_0">
+      <span class="span_cls_1">New student?</span>
+      <a href="register.html"><button class="btn btn-primary btn-sm">Join Free</button></a>
+    </div>
+  </nav>
+  <div class="auth-body">
+    <div class="div_cls_2">
+      <div class="div_cls_3">
+        <div class="auth-logo-icon">🎓</div>
+        <h1 class="auth-title">Welcome back</h1>
+        <p class="auth-subtitle">Sign in with your university credentials</p>
+      </div>
+      <div class="auth-card">
+        <div class="form-group"><label class="form-label">University Email</label><input class="form-input" type="email"
+            value="202210882@philadelphia.edu.jo" /></div>
+        <div class="form-group div_cls_4"><label class="form-label">Password</label><input class="form-input"
+            placeholder="Enter your password" type="password" /></div>
+        <div class="div_cls_5"><a class="a_cls_6" href="forgot-password.html">Forgot password?</a></div>
+        <a href="dashboard.html"><button class="btn btn-primary btn-full btn-lg">Sign In →</button></a>
+        <div class="auth-divider"><span>or</span></div>
+        <p class="p_cls_7">Don't have an account? <a class="a_cls_8" href="register.html">Join Free →</a></p>
+      </div>
+      <div class="auth-notice"><span class="span_cls_9">🔒</span>
+        <p>UniConnect is exclusively for enrolled Philadelphia University students.</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    // ── Sidebar hamburger ──
+    function initSidebar() {
+      const h = document.getElementById('hamburger'),
+        s = document.getElementById('sidebar'),
+        o = document.getElementById('sidebar-overlay');
+      if (!h || !s) return;
+      h.addEventListener('click', () => {
+        const open = s.classList.toggle('open');
+        h.classList.toggle('open', open);
+        if (o) o.classList.toggle('open', open);
+        document.body.style.overflow = open ? 'hidden' : ''
+      });
+      if (o) o.addEventListener('click', closeSidebar);
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeSidebar()
+      })
+    }
+
+    function closeSidebar() {
+      const s = document.getElementById('sidebar'),
+        o = document.getElementById('sidebar-overlay'),
+        h = document.getElementById('hamburger');
+      if (s) s.classList.remove('open');
+      if (o) o.classList.remove('open');
+      if (h) h.classList.remove('open');
+      document.body.style.overflow = ''
+    }
+
+    // ── Tabs ──
+    function showTab(id, el) {
+      const parent = el.closest('.tabs');
+      if (parent) parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('[data-tab]').forEach(c => c.classList.add('hidden'));
+      const t = document.getElementById(id);
+      if (t) {
+        t.classList.remove('hidden');
+        t.classList.add('fade-in')
+      }
+    }
+
+    // ── Wizard ──
+    function wzStep(n) {
+      [1, 2, 3].forEach(i => {
+        const p = document.getElementById('wz' + i),
+          s = document.getElementById('ws' + i);
+        if (!p || !s) return;
+        p.classList.toggle('hidden', i !== n);
+        s.classList.remove('active', 'done');
+        if (i === n) s.classList.add('active');
+        if (i < n) s.classList.add('done')
+      })
+    }
+
+    // ── Upvote ──
+    function toggleUpvote(el, base) {
+      const c = el.querySelector('.count');
+      if (!c) return;
+      if (el.dataset.voted) {
+        delete el.dataset.voted;
+        el.classList.remove('voted');
+        c.textContent = base
+      } else {
+        el.dataset.voted = 1;
+        el.classList.add('voted');
+        c.textContent = base + 1;
+        showToast('👍 Upvoted! +10 pts added')
+      }
+    }
+
+    // ── Toast ──
+    function showToast(msg, type = '') {
+      const ex = document.querySelector('.toast');
+      if (ex) ex.remove();
+      const el = document.createElement('div');
+      el.className = 'toast' + (type ? ' toast-' + type : '');
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity .3s';
+        setTimeout(() => el.remove(), 300)
+      }, 3000)
+    }
+
+    // ── Chat send ──
+    function sendMsg() {
+      const inp = document.querySelector('.chat-input-bar input'),
+        msgs = document.querySelector('.chat-messages');
+      if (!inp || !msgs) return;
+      const txt = inp.value.trim();
+      if (!txt) return;
+      const now = new Date(),
+        time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+      const w = document.createElement('div');
+      w.style.cssText = 'display:flex;flex-direction:column;align-items:flex-end';
+      w.innerHTML =
+        `<div class="msg msg-me">${escapeHtml(txt)}</div><div class="msg-time" style="text-align:right">${time}</div>`;
+      msgs.appendChild(w);
+      msgs.scrollTop = msgs.scrollHeight;
+      inp.value = '';
+      inp.focus()
+    }
+
+    // ── Post answer ──
+    function postAnswer() {
+      const ta = document.querySelector('.answer-textarea');
+      if (ta && ta.value.trim().length < 10) {
+        showToast('Please write at least 10 characters', 'error');
+        return
+      }
+      showToast('🎉 Answer posted! +5 pts earned');
+      if (ta) ta.value = ''
+    }
+
+    // ── Register ──
+    function submitRegister() {
+      const f = document.getElementById('reg-form'),
+        s = document.getElementById('reg-success');
+      if (f && s) {
+        f.classList.add('hidden');
+        s.classList.remove('hidden');
+        s.classList.add('fade-in')
+      }
+    }
+
+    // ── Escape HTML ──
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+    }
+
+    // ── User menu dropdown ──
+    function toggleUserMenu() {
+      const d = document.getElementById('user-dropdown');
+      if (d) d.classList.toggle('open')
+    }
+    document.addEventListener('click', e => {
+      const d = document.getElementById('user-dropdown');
+      if (d && !e.target.closest('.nav-user-menu')) d.classList.remove('open')
+    })
+
+    // ── Logout ──
+    function doLogout() {
+      if (confirm('Are you sure you want to sign out?')) window.location.href = 'login.html'
+    }
+
+    // ── LIVE SEARCH ──
+    const QUESTIONS = [{
+        title: 'How does AVL tree rotation actually work?',
+        faculty: 'IT Faculty',
+        course: 'CS302',
+        url: 'single-post.html',
+        solved: true,
+        answers: 7,
+        votes: 42
+      },
+      {
+        title: 'Difference between Dijkstra and Bellman-Ford?',
+        faculty: 'IT Faculty',
+        course: 'CS401',
+        url: 'single-post.html',
+        solved: false,
+        answers: 4,
+        votes: 18
+      },
+      {
+        title: 'How to prepare a trial balance from journal entries?',
+        faculty: 'Business',
+        course: 'ACCT201',
+        url: 'single-post.html',
+        solved: true,
+        answers: 3,
+        votes: 9
+      },
+      {
+        title: 'Finding eigenvalues of a 3×3 matrix step by step?',
+        faculty: 'Engineering',
+        course: 'MATH201',
+        url: 'single-post.html',
+        solved: false,
+        answers: 5,
+        votes: 14
+      },
+      {
+        title: 'Mechanism of action of beta-blockers explained simply?',
+        faculty: 'Pharmacy',
+        course: 'PHARM301',
+        url: 'single-post.html',
+        solved: false,
+        answers: 6,
+        votes: 21
+      },
+      {
+        title: 'Best approach for solving memoization problems in DP?',
+        faculty: 'IT Faculty',
+        course: 'CS401',
+        url: 'single-post.html',
+        solved: false,
+        answers: 3,
+        votes: 9
+      },
+      {
+        title: 'How to implement a stack using two queues?',
+        faculty: 'IT Faculty',
+        course: 'CS302',
+        url: 'single-post.html',
+        solved: true,
+        answers: 4,
+        votes: 7
+      },
+      {
+        title: 'What is the time complexity of AVL tree operations?',
+        faculty: 'IT Faculty',
+        course: 'CS302',
+        url: 'single-post.html',
+        solved: true,
+        answers: 4,
+        votes: 18
+      },
+    ];
+
+    function initSearch() {
+      const inp = document.querySelector('.nav-search .form-input');
+      if (!inp) return;
+      const wrap = inp.closest('.nav-search') || inp.parentElement;
+      wrap.style.position = 'relative';
+      const dd = document.createElement('div');
+      dd.className = 'search-dropdown';
+      dd.id = 'search-dropdown';
+      wrap.appendChild(dd);
+      inp.addEventListener('input', () => runSearch(inp.value.trim()));
+      inp.addEventListener('focus', () => {
+        if (inp.value.trim()) runSearch(inp.value.trim())
+      });
+      document.addEventListener('click', e => {
+        if (!wrap.contains(e.target)) dd.classList.remove('open')
+      })
+    }
+
+    function runSearch(q) {
+      const dd = document.getElementById('search-dropdown');
+      if (!dd) return;
+      if (!q) {
+        dd.classList.remove('open');
+        return
+      }
+      const results = QUESTIONS.filter(x => x.title.toLowerCase().includes(q.toLowerCase()) || x.course.toLowerCase()
+        .includes(q.toLowerCase()) || x.faculty.toLowerCase().includes(q.toLowerCase()));
+      dd.innerHTML = '';
+      if (!results.length) {
+        dd.innerHTML = '<div class="search-no-results">No results found for "' + escapeHtml(q) + '"</div>'
+      } else {
+        results.slice(0, 6).forEach(r => {
+          const el = document.createElement('a');
+          el.href = r.url;
+          el.className = 'search-result-item';
+          el.innerHTML =
+            `<span style="font-size:20px;flex-shrink:0">${r.solved?'✅':'❓'}</span><div><div class="search-result-title">${escapeHtml(r.title)}</div><div class="search-result-meta">${r.faculty} · ${r.course} · ${r.answers} answers · ${r.votes} votes</div></div>`;
+          dd.appendChild(el)
+        })
+      }
+      dd.classList.add('open')
+    }
+
+    // ── Session Request Modal ──
+    function openSessionModal(name, img, topic) {
+      const existing = document.getElementById('session-modal');
+      if (existing) existing.remove();
+      const m = document.createElement('div');
+      m.id = 'session-modal';
+      m.className = 'modal-overlay';
+      m.onclick = e => {
+        if (e.target === m) m.remove()
+      };
+      m.innerHTML =
+        `<div class="modal-box"><div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><div class="av av-lg"><img src="${img}" alt="${name}"></div><div><div class="modal-title">Request Session with ${name}</div><div class="modal-sub">Send a session request — they can accept or decline</div></div></div><div class="form-group"><label class="form-label">Topic / Course</label><input class="form-input" id="modal-topic" value="${topic||''}" placeholder="e.g. CS302 — AVL Tree Rotations"></div><div class="form-group"><label class="form-label">Your message</label><textarea class="form-input form-textarea" id="modal-msg" style="min-height:90px" placeholder="Briefly describe what you need help with..."></textarea></div><div style="background:var(--amber-light);border:1px solid #FDE68A;border-radius:9px;padding:10px 14px;margin-bottom:18px;font-size:13px;color:#92400E">This will cost <strong>−5 pts</strong> from your balance.</div><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('session-modal').remove()">Cancel</button><button class="btn btn-primary" onclick="submitSessionReq('${name}')">Send Request (−5 pts)</button></div></div>`;
+      document.body.appendChild(m)
+    }
+
+    function submitSessionReq(name) {
+      document.getElementById('session-modal').remove();
+      showToast('✅ Session request sent to ' + name + '! −5 pts')
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initSidebar();
+      initSearch()
+    })
+  </script>
+</body>
+
+</html>

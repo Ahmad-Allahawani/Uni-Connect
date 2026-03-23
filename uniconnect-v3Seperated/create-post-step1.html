@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width,initial-scale=1.0" name="viewport" />
+  <title>Ask a Question — Step 1: Search First — UniConnect</title>
+
+  <link href="create-post-step1.css" rel="stylesheet" />
+</head>
+
+<body>
+  <nav class="navbar">
+    <button class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    <a class="nav-logo" href="dashboard.html">
+      <div class="nav-logo-icon">🎓</div>
+      <span>UniConnect</span>
+    </a>
+    <div class="nav-search"><input autocomplete="off" class="form-input"
+        placeholder="🔍  Search questions, courses..." /></div>
+    <div class="nav-actions">
+      <a class="nav-bell" href="notifications.html">🔔<span class="nav-bell-badge">3</span></a>
+      <div class="nav-user-btn">
+        <div class="av av-sm"><img alt="Ahmad" src="https://i.pravatar.cc/36?img=11" /></div>
+        <span class="span_cls_0">Ahmad</span>
+        <span class="span_cls_1">▾</span>
+      </div>
+    </div>
+  </nav>
+  <div class="app-wrap">
+    <aside class="sidebar" id="sidebar">
+      <a class="sidebar-user" href="profile.html">
+        <div class="av av-md"><img alt="Ahmad" src="https://i.pravatar.cc/44?img=11" /></div>
+        <div>
+          <div class="sidebar-user-name">Ahmad K.</div>
+          <div class="sidebar-user-pts">🪙 840 pts</div>
+        </div>
+      </a>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">
+          <div class="nav-item"><span class="ni">🏠</span>Home Feed</div>
+        </a>
+        <a href="create-post-step1.html">
+          <div class="nav-item active"><span class="ni">✏️</span>Ask a Question</div>
+        </a>
+        <a href="sessions.html">
+          <div class="nav-item"><span class="ni">💬</span>My Sessions</div>
+        </a>
+        <a href="leaderboard.html">
+          <div class="nav-item"><span class="ni">🏆</span>Leaderboard</div>
+        </a>
+        <a href="notifications.html">
+          <div class="nav-item"><span class="ni">🔔</span>Notifications<span class="nav-badge">3</span></div>
+        </a>
+        <a href="profile.html">
+          <div class="nav-item"><span class="ni">👤</span>My Profile</div>
+        </a>
+        <a href="points.html">
+          <div class="nav-item"><span class="ni">🪙</span>Points &amp; Rewards</div>
+        </a>
+        <a href="settings.html">
+          <div class="nav-item"><span class="ni">⚙️</span>Settings</div>
+        </a>
+      </nav>
+      <a href="points.html">
+        <div class="pts-widget">
+          <div class="pts-widget-num">840</div>
+          <div class="pts-widget-label">🪙 Your Points</div>
+          <div class="pts-widget-bar">
+            <div class="pts-widget-fill div_cls_2"></div>
+          </div>
+          <div class="pts-widget-sub">160 pts to Verified Tutor</div>
+        </div>
+      </a>
+      <div class="sidebar-logout">🚪 Sign Out</div>
+    </aside>
+    <main class="main main_cls_3">
+      <div class="breadcrumb">
+        <a href="dashboard.html">🏠 Home</a>
+        <span class="span_cls_4">›</span>
+        <span>Ask a Question</span>
+      </div>
+      <div class="div_cls_5">
+        <h1 class="h1_cls_6">✏️ Ask a Question</h1>
+        <p class="p_cls_7">Posting costs <strong class="strong_cls_8">−10 pts</strong>. A great answer earns you <strong
+            class="strong_cls_9">+5 to +15 pts</strong> back!</p>
+      </div>
+      <!-- Wizard bar — Step 1 active -->
+      <div class="wizard-wrap">
+        <div class="wizard-steps">
+          <div class="wz-step active">
+            <div class="wz-num">1</div>
+            <span class="wz-label">Search First</span>
+          </div>
+          <div class="wz-step">
+            <div class="wz-num">2</div>
+            <span class="wz-label">Write Question</span>
+          </div>
+          <div class="wz-step">
+            <div class="wz-num">3</div>
+            <span class="wz-label">Preview &amp; Post</span>
+          </div>
+        </div>
+        <div class="wizard-progress">
+          <div class="wizard-progress-fill div_cls_10"></div>
+        </div>
+      </div>
+      <!-- STEP 1 CONTENT -->
+      <div class="card div_cls_11">
+        <div class="div_cls_12">
+          <div class="div_cls_13">🔍</div>
+          <div>
+            <div class="div_cls_14">Check if your question already exists</div>
+            <div class="div_cls_15">Search first — you might find an instant answer and save your <strong
+                class="strong_cls_16">10 pts</strong>. Most questions have already been answered!</div>
+          </div>
+        </div>
+        <div class="div_cls_17">
+          <input autocomplete="off" class="form-input input_cls_18" id="search-inp" oninput="doSearch(this.value)"
+            placeholder="e.g. AVL tree rotation, trial balance, eigenvalues..." />
+          <button class="btn btn-ghost btn-sm" onclick="doSearch(document.getElementById('search-inp').value)">🔍
+            Search</button>
+        </div>
+      </div>
+      <!-- Similar questions found (shown after typing) -->
+      <div class="div_cls_19" id="results-box">
+        <div class="div_cls_20">📋 Similar questions found — check these first:</div>
+        <div id="results-list"></div>
+        <div class="div_cls_21">
+          <span class="span_cls_22">💡</span>
+          <p class="p_cls_23">Is your question answered above? <a class="a_cls_24" href="single-post.html">Click to view
+              the full answer</a> and save your 10 pts!</p>
+        </div>
+      </div>
+      <!-- No results found -->
+      <div class="div_cls_25" id="no-results-box">
+        <span class="span_cls_26">✅</span>
+        <p class="p_cls_27">No similar questions found — yours is unique! Go ahead and post it.</p>
+      </div>
+      <div class="div_cls_28">
+        <a href="dashboard.html"><button class="btn btn-ghost">← Cancel</button></a>
+        <a href="create-post-step2.html">
+          <button class="btn btn-primary btn-lg">
+            My question is different → <span class="span_cls_29">(−10 pts)</span>
+          </button>
+        </a>
+      </div>
+    </main>
+  </div>
+  <script>
+    const QUESTIONS = [{
+        title: 'How does AVL tree rotation actually work?',
+        course: 'CS302',
+        faculty: 'IT Faculty',
+        solved: true,
+        answers: 7,
+        votes: 42
+      },
+      {
+        title: 'What is the time complexity of AVL tree operations?',
+        course: 'CS302',
+        faculty: 'IT Faculty',
+        solved: true,
+        answers: 4,
+        votes: 18
+      },
+      {
+        title: 'Difference between Dijkstra and Bellman-Ford?',
+        course: 'CS401',
+        faculty: 'IT Faculty',
+        solved: false,
+        answers: 4,
+        votes: 18
+      },
+      {
+        title: 'How to prepare a trial balance from journal entries?',
+        course: 'ACCT201',
+        faculty: 'Business',
+        solved: true,
+        answers: 3,
+        votes: 9
+      },
+      {
+        title: 'Finding eigenvalues of a 3×3 matrix step by step?',
+        course: 'MATH201',
+        faculty: 'Engineering',
+        solved: false,
+        answers: 5,
+        votes: 14
+      },
+      {
+        title: 'Mechanism of action of beta-blockers explained?',
+        course: 'PHARM301',
+        faculty: 'Pharmacy',
+        solved: false,
+        answers: 6,
+        votes: 21
+      },
+      {
+        title: 'How to implement a stack using two queues?',
+        course: 'CS302',
+        faculty: 'IT Faculty',
+        solved: true,
+        answers: 4,
+        votes: 7
+      },
+      {
+        title: 'Best approach for memoization in dynamic programming?',
+        course: 'CS401',
+        faculty: 'IT Faculty',
+        solved: false,
+        answers: 3,
+        votes: 9
+      },
+    ];
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    }
+
+    function doSearch(q) {
+      const box = document.getElementById('results-box');
+      const nobox = document.getElementById('no-results-box');
+      const list = document.getElementById('results-list');
+      q = q.trim().toLowerCase();
+      if (q.length < 3) {
+        box.style.display = 'none';
+        nobox.style.display = 'none';
+        return
+      }
+      const matches = QUESTIONS.filter(x => x.title.toLowerCase().includes(q) || x.course.toLowerCase().includes(q) || x
+        .faculty.toLowerCase().includes(q));
+      if (matches.length) {
+        list.innerHTML = '';
+        matches.slice(0, 3).forEach(m => {
+          const el = document.createElement('a');
+          el.href = 'single-post.html';
+          el.className = 'q-result';
+          el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:9px">
+          <span style="display:inline-flex;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;background:${m.solved?'var(--emerald-light)':'var(--indigo-light)'};color:${m.solved?'#065F46':'var(--indigo)'}">${m.solved?'✅ Solved':'❓ Open'}</span>
+          <span style="display:inline-flex;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;background:var(--violet-light);color:#5B21B6">${escapeHtml(m.course)}</span>
+          <span style="font-size:11px;color:var(--text-3);margin-left:auto">${m.answers} answers · ${m.votes} votes</span>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:var(--indigo)">${escapeHtml(m.title)}</div>`;
+          list.appendChild(el);
+        });
+        box.style.display = 'block';
+        nobox.style.display = 'none';
+      } else {
+        box.style.display = 'none';
+        nobox.style.display = 'flex';
+      }
+    }
+  </script>
+</body>
+
+</html>
