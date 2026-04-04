@@ -220,12 +220,13 @@ namespace Uni_Connect.Controllers
         }
 
         // =====================================================================
-        // FORGOT PASSWORD PAGE — POST (Task #2: Full forgot password flow)
+        // FORGOT PASSWORD PAGE — POST (checks if email exists, generates token)
         // =====================================================================
         [HttpPost]
-        [ValidateAntiForgeryToken]  // Task #4: CSRF Protection
+        [ValidateAntiForgeryToken]  // ← Add this for CSRF protection
         public async Task<IActionResult> ForgotPass_Page(ForgotPasswordViewModel model)
         {
+            // Step 1: Validate form is filled out correctly
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -233,56 +234,78 @@ namespace Uni_Connect.Controllers
 
             try
             {
+                // Step 2: Find user by email
                 var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.Email.ToLower() == model.Email.ToLower());
 
-                // Generate 6-digit reset token
+                // Step 3: Generate a random 6-digit reset token (100000-999999)
                 string resetToken = new Random().Next(100000, 999999).ToString();
-
+                
+                // Step 4: If user exists, store the token in database
                 if (user != null)
                 {
+                    // Store token + set expiry to 30 minutes from now
                     user.PasswordResetToken = resetToken;
                     user.PasswordResetTokenExpiry = DateTime.Now.AddMinutes(30);
+                    
                     await _context.SaveChangesAsync();
 
-                    // TODO: Send email with reset token here
-                    // For now, token is stored in DB — can be tested manually
+                    // TODO: Send email with reset link here
+                    // Example of what email should contain:
+                    // "Click here to reset your password: 
+                    //  https://yourwebsite.com/Login/ResetPassword?token=ABC123DEF456"
+                    // For now, the 6-digit code is stored in DB for manual verification
                 }
 
-                // Always show success (security: don't reveal if email exists)
+                // Step 5: Always show success page (security: don't reveal if email exists)
                 ViewBag.EmailSent = true;
                 ViewBag.SentToEmail = model.Email;
                 return View(model);
             }
+            catch (DbUpdateException)
+            {
+                // Database error
+                ModelState.AddModelError("", "Database error: Please try again later.");
+                return View(model);
+            }
             catch (Exception)
             {
-                ModelState.AddModelError("", "An error occurred. Please try again.");
+                // Unexpected error
+                ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
                 return View(model);
             }
         }
 
         // =====================================================================
-        // RESET PASSWORD PAGE — GET (Task #2)
+        // RESET PASSWORD PAGE — GET (shows reset form with token)
         // =====================================================================
+        // This action is called when user visits: /Login/ResetPassword?token=XXXXX
+        // It displays the form where they enter their new password
         [HttpGet]
         public IActionResult ResetPassword(string token)
         {
+            // If no token provided, redirect back to forgot password page
             if (string.IsNullOrEmpty(token))
             {
+                ModelState.AddModelError("", "Invalid or expired reset link");
                 return RedirectToAction("ForgotPass_Page");
             }
-
+            
+            // Create a new ViewModel and put the token in it (hidden field in form)
             var model = new ResetPasswordViewModel { ResetToken = token };
             return View("ResetPassword_Page", model);
         }
 
         // =====================================================================
-        // RESET PASSWORD PAGE — POST (Task #2)
+        // RESET PASSWORD PAGE — POST (validates token and updates password)
         // =====================================================================
+        // This action is called when user clicks "Reset Password" button on the form
+        // It validates the token and updates the password
         [HttpPost]
-        [ValidateAntiForgeryToken]  // Task #4: CSRF Protection
+        [ValidateAntiForgeryToken]  // ← CSRF protection
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
+            // Step 1: Validate the form (token, password, confirm match, etc.)
             if (!ModelState.IsValid)
             {
                 return View("ResetPassword_Page", model);
@@ -290,36 +313,51 @@ namespace Uni_Connect.Controllers
 
             try
             {
-                // Find user with matching reset token
+                // Step 2: Find user with matching reset token
                 var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.PasswordResetToken == model.ResetToken);
 
+                // Step 3: Validate token exists in database
                 if (user == null)
                 {
-                    ModelState.AddModelError("", "Invalid reset code");
+                    ModelState.AddModelError("", "Invalid reset code. Please try again.");
                     return View("ResetPassword_Page", model);
                 }
 
-                // Check if token expired
-                if (user.PasswordResetTokenExpiry < DateTime.Now)
+                // Step 4: Validate token hasn't expired (30 minutes)
+                if (user.PasswordResetTokenExpiry.HasValue && user.PasswordResetTokenExpiry < DateTime.Now)
                 {
                     ModelState.AddModelError("", "Reset code has expired. Please request a new one.");
                     return View("ResetPassword_Page", model);
                 }
 
-                // Hash new password and save
-                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
-                user.PasswordResetToken = null;
-                user.PasswordResetTokenExpiry = null;
+                // Step 5: Hash new password using BCrypt
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
 
+                // Step 6: Update user password and clear reset token
+                user.PasswordHash = hashedPassword;
+                user.PasswordResetToken = null;           // Clear the token
+                user.PasswordResetTokenExpiry = null;     // Clear the expiry
+                user.FailedLoginAttempts = 0;             // Reset failed attempts counter
+                user.AccountLockedUntil = null;           // Unlock if locked
+
+                // Step 7: Save changes to database
                 await _context.SaveChangesAsync();
 
-                TempData["SuccessMessage"] = "Password reset successfully! Please sign in with your new password.";
+                // Step 8: Redirect to login with success message
+                TempData["SuccessMessage"] = "✅ Password reset successfully! Please sign in with your new password.";
                 return RedirectToAction("Login_Page");
+            }
+            catch (DbUpdateException)
+            {
+                // Database error
+                ModelState.AddModelError("", "Database error: Please try again later.");
+                return View("ResetPassword_Page", model);
             }
             catch (Exception)
             {
-                ModelState.AddModelError("", "An error occurred during password reset. Please try again.");
+                // Unexpected error
+                ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
                 return View("ResetPassword_Page", model);
             }
         }
