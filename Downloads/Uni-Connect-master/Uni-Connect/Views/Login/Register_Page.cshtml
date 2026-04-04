@@ -1,0 +1,144 @@
+@* 
+    ===== WHAT IS @model? =====
+    This line tells the page: "I expect to receive a RegisterViewModel object from the controller"
+    This is how the form knows WHAT data to send back when submitted.
+    The controller's Register_Page() [GET] method sends: View(new RegisterViewModel())
+    So this page receives that empty RegisterViewModel and builds the form around it.
+*@
+@model Uni_Connect.Models.RegisterViewModel
+
+@* 
+    Layout = null means: "Don't use the shared _Layout.cshtml wrapper"
+    Because this page has its own full HTML structure (DOCTYPE, head, body)
+*@
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Register — UniConnect</title>
+    <link href="~/css/login.css" rel="stylesheet" />
+</head>
+<body class="auth-bg">
+<nav class="auth-navbar">
+        <a asp-controller="Home" asp-action="Index" class="nav-logo"><div class="nav-logo-icon">🎓</div><span>UniConnect</span></a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:14px;color:var(--text-2)">Already have an account?</span>
+    <a asp-controller="Login" asp-action="Login_Page"><button class="btn btn-ghost btn-sm">Sign In</button></a>
+  </div>
+</nav>
+<div class="auth-body">
+  <div style="width:100%;max-width:460px">
+    <div style="text-align:center;margin-bottom:24px">
+      <div class="auth-logo-icon">🎓</div>
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-subtitle">Only enrolled Philadelphia University students</p>
+    </div>
+
+    @* 
+        ===== WHAT IS asp-action? =====
+        <form asp-action="Register_Page"> means:
+        "When this form is submitted, send the data to the Register_Page method in this controller"
+        method="post" means it will call the [HttpPost] version of Register_Page
+    *@
+    <form asp-action="Register_Page" method="post">
+      <div class="auth-card" id="reg-form">
+
+        @* 
+            ===== GENERAL ERROR MESSAGES =====
+            asp-validation-summary="ModelOnly" shows errors that are NOT tied to a specific field.
+            For example, if we add ModelState.AddModelError("", "Something went wrong"), 
+            it shows here.
+        *@
+        <div asp-validation-summary="ModelOnly" class="validation-error-box"></div>
+
+        @* --- Full Name Field --- *@
+        @* asp-for="Name" does TWO things:
+           1. Sets the input's name="Name" so the form sends the value to model.Name
+           2. Sets the input's id="Name" for the label connection
+           asp-validation-for="Name" shows the error message for the Name field if validation fails *@
+        <div class="form-group">
+          <label class="form-label" asp-for="Name">Full Name</label>
+          <input class="form-input" asp-for="Name" type="text" placeholder="e.g. Ahmad Khalil" />
+          <span asp-validation-for="Name" class="field-validation-error"></span>
+        </div>
+
+        @* --- University Email Field --- *@
+        <div class="form-group">
+          <label class="form-label" asp-for="Email">University Email</label>
+          <input class="form-input" asp-for="Email" type="email" placeholder="202210882@philadelphia.edu.jo" />
+          <div class="form-hint">Format: StudentID@philadelphia.edu.jo</div>
+          <span asp-validation-for="Email" class="field-validation-error"></span>
+        </div>
+
+        @* --- Faculty Dropdown --- *@
+        <div class="form-group">
+          <label class="form-label" asp-for="Faculty">Faculty</label>
+          <select class="form-input form-select" asp-for="Faculty">
+            <option value="">Select faculty...</option>
+            <option value="Faculty of Information Technology">Faculty of Information Technology</option>
+            <option value="Faculty of Engineering">Faculty of Engineering</option>
+            <option value="Faculty of Business">Faculty of Business</option>
+            <option value="Faculty of Law">Faculty of Law</option>
+            <option value="Faculty of Arts">Faculty of Arts</option>
+            <option value="Faculty of Pharmacy">Faculty of Pharmacy</option>
+          </select>
+          <span asp-validation-for="Faculty" class="field-validation-error"></span>
+        </div>
+
+        @* --- Year of Study Dropdown --- *@
+        <div class="form-group">
+          <label class="form-label" asp-for="YearOfStudy">Year of Study</label>
+          <select class="form-input form-select" asp-for="YearOfStudy">
+            <option value="">Select year...</option>
+            <option value="Year 1">Year 1</option>
+            <option value="Year 2">Year 2</option>
+            <option value="Year 3">Year 3</option>
+            <option value="Year 4">Year 4</option>
+          </select>
+          <span asp-validation-for="YearOfStudy" class="field-validation-error"></span>
+        </div>
+
+        @* --- Password Field --- *@
+        <div class="form-group">
+          <label class="form-label" asp-for="Password">Password</label>
+          <input class="form-input" asp-for="Password" type="password" placeholder="Minimum 8 characters" />
+          <span asp-validation-for="Password" class="field-validation-error"></span>
+        </div>
+
+        @* --- Confirm Password Field --- *@
+        <div class="form-group" style="margin-bottom:22px">
+          <label class="form-label" asp-for="ConfirmPassword">Confirm Password</label>
+          <input class="form-input" asp-for="ConfirmPassword" type="password" placeholder="Repeat password" />
+          <span asp-validation-for="ConfirmPassword" class="field-validation-error"></span>
+        </div>
+
+        @* 
+            This is a real submit button now (not wrapped in <a>)
+            type="submit" means clicking it sends the form to the controller
+        *@
+        <button type="submit" class="btn btn-primary btn-full btn-lg">Create Account →</button>
+      </div>
+    </form>
+
+    @* --- Notice at the bottom --- *@
+    <div class="auth-notice"><span style="font-size:18px;flex-shrink:0">🔒</span><p>UniConnect is exclusively for enrolled Philadelphia University students. Only @@philadelphia.edu.jo emails are accepted.</p></div>
+  </div>
+</div>
+
+@* 
+    ===== CLIENT-SIDE VALIDATION =====
+    These scripts add instant validation in the browser BEFORE the form is submitted.
+    For example, if the user leaves "Full Name" empty and clicks submit,
+    it shows the error immediately without contacting the server.
+*@
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+</body>
+</html>
