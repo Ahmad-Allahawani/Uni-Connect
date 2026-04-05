@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Register — UniConnect</title>
+    <link href="~/css/login.css" rel="stylesheet" />
+</head>
+<body class="auth-bg">
+<nav class="auth-navbar">
+        <a asp-controller="Home" asp-action="Index" class="nav-logo"><div class="nav-logo-icon">🎓</div><span>UniConnect</span></a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:14px;color:var(--text-2)">Already have an account?</span>
+    <a href="Login_Page"><button class="btn btn-ghost btn-sm">Sign In</button></a>
+  </div>
+</nav>
+<div class="auth-body">
+  <div style="width:100%;max-width:460px">
+    <div style="text-align:center;margin-bottom:24px">
+      <div class="auth-logo-icon">🎓</div>
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-subtitle">Only enrolled Philadelphia University students</p>
+    </div>
+    <div class="auth-card" id="reg-form">
+      <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" type="text" placeholder="e.g. Ahmad Khalil"></div>
+      <div class="form-group"><label class="form-label">University Email</label><input class="form-input" type="email" placeholder="202210882@philadelphia.edu.jo"><div class="form-hint">Format: StudentID@philadelphia.edu.jo</div></div>
+      <div class="form-group"><label class="form-label">Faculty</label><select class="form-input form-select"><option value="">Select faculty...</option><option>Faculty of Information Technology</option><option>Faculty of Engineering</option><option>Faculty of Business</option><option>Faculty of Law</option><option>Faculty of Arts</option><option>Faculty of Pharmacy</option></select></div>
+      <div class="form-group"><label class="form-label">Year of Study</label><select class="form-input form-select"><option>Year 1</option><option>Year 2</option><option>Year 3</option><option>Year 4</option></select></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Minimum 8 characters"></div>
+      <div class="form-group" style="margin-bottom:22px"><label class="form-label">Confirm Password</label><input class="form-input" type="password" placeholder="Repeat password"></div>
+      <button class="btn btn-primary btn-full btn-lg" >Create Account →</button>
+    </div>
+    <div class="auth-card hidden fade-in" id="reg-success" style="text-align:center;padding:40px 28px">
+      <div style="width:72px;height:72px;background:var(--emerald-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 20px">✅</div>
+      <h2 style="font-size:22px;font-weight:800;margin-bottom:8px">Check your inbox!</h2>
+      <p style="font-size:14px;color:var(--text-2);line-height:1.7;margin-bottom:24px">We sent a verification link to your email. Confirm to claim <strong style="color:var(--amber)">+50 welcome points 🎁</strong></p>
+      <a href="login.html"><button class="btn btn-primary btn-full">Go to Login →</button></a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

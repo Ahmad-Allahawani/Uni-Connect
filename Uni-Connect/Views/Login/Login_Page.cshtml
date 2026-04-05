@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+	<title>Sign In — UniConnect</title>
+    <link href="~/css/login.css" rel="stylesheet" />
+</head>
+<body class="auth-bg">
+<nav class="auth-navbar">
+  <a asp-controller="Home" asp-action="Index" class="nav-logo"><div class="nav-logo-icon">🎓</div><span>UniConnect</span></a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:14px;color:var(--text-2)">New student?</span>
+    <a href="Register_Page"><button class="btn btn-primary btn-sm">Join Free</button></a>
+  </div>
+</nav>
+<div class="auth-body">
+  <div style="width:100%;max-width:460px">
+    <div style="text-align:center;margin-bottom:24px">
+      <div class="auth-logo-icon">🎓</div>
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-subtitle">Sign in with your university credentials</p>
+    </div>
+    <div class="auth-card">
+      <div class="form-group"><label class="form-label">University Email</label><input class="form-input" type="email" value="202210882@philadelphia.edu.jo"></div>
+      <div class="form-group" style="margin-bottom:8px"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Enter your password"></div>
+      <div style="text-align:right;margin-bottom:22px"><a href="ForgotPass_Page" style="font-size:13px;color:var(--indigo);font-weight:600">Forgot password?</a></div>
+      <a href="dashboard.html"><button class="btn btn-primary btn-full btn-lg">Sign In →</button></a>
+      <div class="auth-divider"><span>or</span></div>
+      <p style="text-align:center;font-size:14px;color:var(--text-2)">Don't have an account? <a href="Register_Page" style="color:var(--indigo);font-weight:700">Join Free →</a></p>
+    </div>
+    <div class="auth-notice"><span style="font-size:18px;flex-shrink:0">🔒</span><p>UniConnect is exclusively for enrolled Philadelphia University students.</p></div>
+  </div>
+</div>
+
+</body>
+</html>

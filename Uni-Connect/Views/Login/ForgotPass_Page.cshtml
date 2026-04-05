@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Forgot Password — UniConnect</title>
+    <link href="~/css/ForgotPass.css" rel="stylesheet" />
+
+</head>
+<body>
+
+<nav class="nav">
+        <a asp-controller="Home" asp-action="Index" class="nav-logo">
+    <div class="nav-logo-icon">🎓</div>
+    UniConnect
+  </a>
+</nav>
+
+<div class="body">
+  <div style="width:100%;max-width:460px">
+
+    <!-- STEP 1: Enter email -->
+    <div class="card step active" id="step1">
+      <div style="text-align:center;margin-bottom:28px">
+        <div style="width:72px;height:72px;background:linear-gradient(135deg,var(--indigo),var(--violet));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px;box-shadow:0 8px 24px rgba(61,82,160,.28)">🔑</div>
+        <h1 style="font-size:26px;font-weight:900;margin-bottom:8px;letter-spacing:-.4px">Forgot password?</h1>
+        <p style="font-size:14px;color:var(--text-2);line-height:1.6">No worries! Enter your university email and we will send you a reset link.</p>
+      </div>
+
+      <div style="margin-bottom:22px">
+        <label class="form-label">University Email</label>
+        <input class="form-input" type="email" id="email-input" placeholder="202210882@philadelphia.edu.jo" value="">
+        <div class="form-hint">We will send a reset link to this email</div>
+      </div>
+
+      <button class="btn btn-primary btn-full btn-lg" >Send Reset Link →</button>
+
+      <div style="text-align:center;margin-top:20px">
+        <a href="Login_Page" style="font-size:14px;color:var(--indigo);font-weight:700">← Back to Sign In</a>
+      </div>
+    </div>
+
+    <!-- STEP 2: Email sent confirmation -->
+    <div class="card step" id="step2">
+      <div style="text-align:center;padding:10px 0">
+        <div style="width:80px;height:80px;background:var(--emerald-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 20px">📧</div>
+        <h1 style="font-size:24px;font-weight:900;margin-bottom:10px">Check your inbox!</h1>
+        <p style="font-size:14px;color:var(--text-2);line-height:1.7;margin-bottom:8px">We sent a password reset link to:</p>
+        <div id="sent-email" style="font-size:15px;font-weight:800;color:var(--indigo);background:var(--indigo-light);border-radius:10px;padding:10px 18px;margin-bottom:22px;display:inline-block">202210882@philadelphia.edu.jo</div>
+        <p style="font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:28px">Click the link in the email to reset your password. The link expires in <strong>15 minutes</strong>.</p>
+        <a href="reset-password.html"><button class="btn btn-primary btn-full btn-lg">I got the email →</button></a>
+        <div style="margin-top:16px;font-size:13px;color:var(--text-2)">
+          Didn't receive it? <button onclick="resendEmail()" style="background:none;border:none;color:var(--indigo);font-weight:700;cursor:pointer;font-size:13px;font-family:inherit">Resend email</button>
+        </div>
+        <div style="margin-top:18px"><a href="Login_Page" style="font-size:14px;color:var(--text-2);font-weight:600">← Back to Sign In</a></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+</body>
+</html>
