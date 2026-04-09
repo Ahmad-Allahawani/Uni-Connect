@@ -10,18 +10,18 @@
 <body>
 <nav class="navbar">
   <button class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></button>
-  <a href="dashboard.html" class="nav-logo"><div class="nav-logo-icon">🎓</div><span>UniConnect</span></a>
+  <a asp-action="Dashboard" class="nav-logo"><div class="nav-logo-icon">🎓</div><span>UniConnect</span></a>
   <div class="nav-search"><input class="form-input" placeholder="🔍  Search questions, courses, topics..." autocomplete="off"></div>
   <div class="nav-actions">
-    <a href="create-post.html"><button class="btn btn-primary btn-sm">+ Ask</button></a>
-    <a href="Notifications" class="nav-bell">🔔<span class="nav-bell-badge">3</span></a>
+    <a asp-action="CreatePost"><button class="btn btn-primary btn-sm">+ Ask</button></a>
+    <a asp-action="Notifications" class="nav-bell">🔔<span class="nav-bell-badge">3</span></a>
     <div class="nav-user-menu">
       <div onclick="toggleUserMenu()" style="cursor:pointer;display:flex;align-items:center;gap:7px">
         <div class="av av-sm"><img src="https://i.pravatar.cc/36?img=11" alt="Ahmad"></div>
         <span style="font-size:13px;font-weight:600;color:var(--text)">Ahmad ▾</span>
       </div>
       <div class="nav-user-dropdown" id="user-dropdown">
-        <a href="Profile"><div class="nav-dropdown-item">👤 My Profile</div></a>
+        <a asp-action="Profile"><div class="nav-dropdown-item">👤 My Profile</div></a>
         <a href="settings.html"><div class="nav-dropdown-item">⚙️ Settings</div></a>
         <a href="points.html"><div class="nav-dropdown-item">🪙 Points &amp; Rewards</div></a>
         <div class="nav-dropdown-sep"></div>
@@ -33,17 +33,17 @@
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
 <div class="app-wrap">
   <aside class="sidebar" id="sidebar">
-    <a href="Profile" class="sidebar-user">
+    <a asp-action="Profile" class="sidebar-user">
       <div class="av av-md"><img src="https://i.pravatar.cc/44?img=11" alt="Ahmad"></div>
       <div><div class="sidebar-user-name">Ahmad K.</div><div class="sidebar-user-pts">🪙 840 pts</div></div>
     </a>
     <nav class="sidebar-nav">
-      <a href="Dashboard"><div class="nav-item"><span class="ni">🏠</span>Home Feed</div></a>
-<a href="create-post.html"><div class="nav-item"><span class="ni">✏️</span>Ask a Question</div></a>
+      <a asp-action="Dashboard"><div class="nav-item"><span class="ni">🏠</span>Home Feed</div></a>
+<a asp-action="CreatePost"><div class="nav-item"><span class="ni">✏️</span>Ask a Question</div></a>
 <a href="sessions.html"><div class="nav-item"><span class="ni">💬</span>My Sessions</div></a>
-<a href="Leaderboard"><div class="nav-item active"><span class="ni">🏆</span>Leaderboard</div></a>
-<a href="Notifications"><div class="nav-item"><span class="ni">🔔</span>Notifications<span class='nav-badge'>3</span></div></a>
-<a href="Profile"><div class="nav-item"><span class="ni">👤</span>My Profile</div></a>
+<a asp-action="Leaderboard"><div class="nav-item active"><span class="ni">🏆</span>Leaderboard</div></a>
+<a asp-action="Notifications"><div class="nav-item"><span class="ni">🔔</span>Notifications<span class='nav-badge'>3</span></div></a>
+<a asp-action="Profile"><div class="nav-item"><span class="ni">👤</span>My Profile</div></a>
 <a href="points.html"><div class="nav-item"><span class="ni">🪙</span>Points &amp; Rewards</div></a>
 <a href="settings.html"><div class="nav-item"><span class="ni">⚙️</span>Settings</div></a>
     </nav>

@@ -20,7 +20,7 @@
   ══════════════════════════════════════════ -->
     <nav class="navbar">
         <button class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></button>
-        <a class="nav-logo" href="dashboard.html">
+        <a class="nav-logo" asp-action="Dashboard">
             <div class="nav-logo-icon">🎓</div>
             <span>UniConnect</span>
         </a>
@@ -28,7 +28,7 @@
             <input autocomplete="off" class="form-input" placeholder="🔍  Search questions, courses..." />
         </div>
         <div class="nav-actions">
-            <a class="nav-bell" href="notifications.html">🔔<span class="nav-bell-badge">3</span></a>
+            <a class="nav-bell" asp-action="Notifications">🔔<span class="nav-bell-badge">3</span></a>
             <div class="nav-user-menu">
                 <div class="nav-user-btn" onclick="toggleUserMenu()">
                     <div class="av av-sm"><img alt="Ahmad" src="https://i.pravatar.cc/36?img=11" /></div>
@@ -36,7 +36,7 @@
                     <span class="nav-user-chevron">▾</span>
                 </div>
                 <div class="nav-user-dropdown" id="user-dropdown">
-                    <a href="profile.html"><div class="nav-dropdown-item">👤 My Profile</div></a>
+                    <a asp-action="Profile"><div class="nav-dropdown-item">👤 My Profile</div></a>
                     <a href="settings.html"><div class="nav-dropdown-item">⚙️ Settings</div></a>
                     <a href="points.html"><div class="nav-dropdown-item">🪙 Points &amp; Rewards</div></a>
                     <div class="nav-dropdown-sep"></div>
@@ -54,7 +54,7 @@
          SIDEBAR
     ══════════════════════════════════════════ -->
         <aside class="sidebar" id="sidebar">
-            <a class="sidebar-user" href="profile.html">
+            <a class="sidebar-user" asp-action="Profile">
                 <div class="av av-md"><img alt="Ahmad" src="https://i.pravatar.cc/44?img=11" /></div>
                 <div>
                     <div class="sidebar-user-name">Ahmad K.</div>
@@ -62,22 +62,22 @@
                 </div>
             </a>
             <nav class="sidebar-nav">
-                <a href="dashboard.html">
+                <a asp-action="Dashboard">
                     <div class="nav-item"><span class="ni">🏠</span>Home Feed</div>
                 </a>
-                <a href="create-post.html">
+                <a asp-action="CreatePost">
                     <div class="nav-item active"><span class="ni">✏️</span>Ask a Question</div>
                 </a>
                 <a href="sessions.html">
                     <div class="nav-item"><span class="ni">💬</span>My Sessions</div>
                 </a>
-                <a href="leaderboard.html">
+                <a asp-action="Leaderboard">
                     <div class="nav-item"><span class="ni">🏆</span>Leaderboard</div>
                 </a>
-                <a href="notifications.html">
+                <a asp-action="Notifications">
                     <div class="nav-item"><span class="ni">🔔</span>Notifications<span class="nav-badge">3</span></div>
                 </a>
-                <a href="profile.html">
+                <a asp-action="Profile">
                     <div class="nav-item"><span class="ni">👤</span>My Profile</div>
                 </a>
                 <a href="points.html">
@@ -107,7 +107,7 @@
 
             <!-- Breadcrumb -->
             <div class="breadcrumb">
-                <a href="dashboard.html">🏠 Home</a>
+                <a asp-action="Dashboard">🏠 Home</a>
                 <span class="breadcrumb-sep">›</span>
                 <span>Ask a Question</span>
             </div>
@@ -165,7 +165,7 @@
                         <input autocomplete="off" class="form-input search-field" id="s1-search"
                                oninput="step1Search(this.value)"
                                placeholder="e.g. AVL tree rotation, trial balance, eigenvalues..." />
-                        <button class="btn btn-ghost btn-sm"
+                        <button class="btn btn-ghost btn-sm"z
                                 onclick="step1Search(document.getElementById('s1-search').value)">
                             🔍 Search
                         </button>
@@ -196,7 +196,7 @@
 
                 <!-- Step navigation -->
                 <div class="wizard-step-actions">
-                    <a href="dashboard.html"><button class="btn btn-ghost">← Cancel</button></a>
+                    <a asp-action="Dashboard"><button class="btn btn-ghost">← Cancel</button></a>
                     <button class="btn btn-primary btn-lg" onclick="goToStep2()">
                         My question is different → <span class="btn-cost-label">(−10 pts)</span>
                     </button>
@@ -396,7 +396,7 @@
                     <!-- Action buttons -->
                     <div class="success-action-buttons">
                         <a href="single-post.html"><button class="btn btn-primary btn-lg">View My Question →</button></a>
-                        <a href="dashboard.html"><button class="btn btn-ghost">Back to Home Feed</button></a>
+                        <a asp-action="Dashboard"><button class="btn btn-ghost">Back to Home Feed</button></a>
                     </div>
 
                 </div>
