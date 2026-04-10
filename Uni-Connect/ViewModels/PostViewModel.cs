@@ -1,4 +1,4 @@
-﻿namespace Uni_Connect.Models
+﻿namespace Uni_Connect.ViewModels
 {
     public class PostViewModel
     {

@@ -103,7 +103,7 @@ namespace Uni_Connect.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
+                ModelState.AddModelError("", ex.Message);
                 return View(model);
             }
 
@@ -170,9 +170,9 @@ namespace Uni_Connect.Controllers
                 ModelState.AddModelError("", "Database error: Please try again later.");
                 return View(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
+                ModelState.AddModelError("", ex.Message);
                 return View(model);
             }
         }

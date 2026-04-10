@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Uni_Connect.Hubs;
 using Uni_Connect.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,11 +12,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Login/Login_Page";        
+        options.LoginPath = "/Login/Login_Page";       
         options.LogoutPath = "/Login/Logout";            
         options.ExpireTimeSpan = TimeSpan.FromHours(24); 
         options.SlidingExpiration = true;              
     });
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -38,6 +41,9 @@ app.UseRouting();
 // Order matters! You can't check permissions before you know who they are.
 app.UseAuthentication();
 app.UseAuthorization();
+
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.MapControllerRoute(
     name: "default",
