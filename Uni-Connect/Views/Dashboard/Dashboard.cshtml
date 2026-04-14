@@ -127,7 +127,7 @@
                                 </div>
                                 <span style="font-size:12px; color:var(--text-2)">· @post.CreatedAt.ToString("h:mm tt")</span>
                                 <span class="chip chip-indigo" style="margin-left:auto">@post.Category?.Name</span>
-                                @if (post.BestAnswerID.HasValue)
+                                @if (post.Answers?.Any(a => a.IsAccepted && !a.IsDeleted) == true)
                                 {
                                     <span class="chip chip-emerald">✓ Solved</span>
                                 }
@@ -135,7 +135,7 @@
                             <div class="q-card-title">@post.Title</div>
                             <p style="font-size: 14px; color: var(--text-2); line-height: 1.6; margin-bottom: 12px" class="clamp-2">@post.Content.Substring(0, Math.Min(post.Content.Length, 150))...</p>
                             <div style="display: flex; gap: 16px; font-size: 13px; font-weight: 600; color: var(--text-2)">
-                                <span>👍 @(post.Upvotes ?? 0)</span><span>💬 @(post.Answers?.Count ?? 0) answers</span>
+                                <span>👍 @post.Upvotes</span><span>💬 @(post.Answers?.Count ?? 0) answers</span>
                                 <button class="btn btn-primary btn-sm" style="margin-left: auto">💬 Request Session</button>
                             </div>
                         </a>

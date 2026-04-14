@@ -42,6 +42,15 @@ namespace Uni_Connect.Controllers
         {
             var user = await GetCurrentUser();
             if (user == null) return RedirectToAction("Login_Page", "Login");
+            
+            // Ensure navigation properties are loaded
+            await _context.Entry(user)
+                .Collection(u => u.Posts)
+                .LoadAsync();
+            await _context.Entry(user)
+                .Collection(u => u.Answers)
+                .LoadAsync();
+            
             return View(user);
         }
         public async Task<IActionResult> Notifications()
@@ -54,6 +63,15 @@ namespace Uni_Connect.Controllers
         {
             var user = await GetCurrentUser();
             if (user == null) return RedirectToAction("Login_Page", "Login");
+            
+            // Fetch all users ranked by points
+            var leaderboardUsers = await _context.Users
+                .Where(u => !u.IsDeleted)
+                .OrderByDescending(u => u.Points)
+                .Take(100)
+                .ToListAsync();
+
+            ViewBag.Leaderboard = leaderboardUsers;
             return View(user);
         }
         public async Task<IActionResult> CreatePost()
