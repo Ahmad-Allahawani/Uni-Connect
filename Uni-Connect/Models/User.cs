@@ -1,4 +1,4 @@
-﻿namespace Uni_Connect.Models
+namespace Uni_Connect.Models
 {
     public class User
     {
@@ -10,6 +10,8 @@
         public string PasswordHash { get; set; }
         public string Role { get; set; } 
         public int Points { get; set; }
+        public string Faculty { get; set; }
+        public string YearOfStudy { get; set; }
         public bool IsDeleted { get; set; } = false;
 
         public string? ProfileImageUrl { get; set; }

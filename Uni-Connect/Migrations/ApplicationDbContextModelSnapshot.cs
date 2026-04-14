@@ -106,11 +106,7 @@ namespace Uni_Connect.Migrations
                     b.Property<DateTime>("SentAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SessionID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SessionPrivateSessionID")
+                    b.Property<int>("SessionID")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserID")
@@ -120,7 +116,7 @@ namespace Uni_Connect.Migrations
 
                     b.HasIndex("SenderID");
 
-                    b.HasIndex("SessionPrivateSessionID");
+                    b.HasIndex("SessionID");
 
                     b.HasIndex("UserID");
 
@@ -363,6 +359,10 @@ namespace Uni_Connect.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Faculty")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("FailedLoginAttempts")
                         .HasColumnType("int");
 
@@ -404,6 +404,10 @@ namespace Uni_Connect.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("YearOfStudy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("UserID");
 
                     b.ToTable("Users");
@@ -438,7 +442,7 @@ namespace Uni_Connect.Migrations
 
                     b.HasOne("Uni_Connect.Models.PrivateSession", "Session")
                         .WithMany("Messages")
-                        .HasForeignKey("SessionPrivateSessionID")
+                        .HasForeignKey("SessionID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -153,6 +153,8 @@ namespace Uni_Connect.Controllers
                     Email = model.Email?.ToLower().Trim() ?? "",
                     PasswordHash = hashedPassword,
                     Role = "Student",
+                    Faculty = model.Faculty,
+                    YearOfStudy = model.YearOfStudy,
                     Points = 50,
                     IsDeleted = false,
                     CreatedAt = DateTime.Now,

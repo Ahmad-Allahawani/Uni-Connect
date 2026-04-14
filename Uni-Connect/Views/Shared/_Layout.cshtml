@@ -1,53 +1,94 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Uni_Connect</title>
-    <link href="~/css/login.css" rel="stylesheet" />
-</head>
-<style>
-    .footer {
-        background: #0F172A;
-        color: #64748B;
-        padding: 48px;
-        text-align: center
-    }
-</style>
-<body>
-    @* shared side nav-bar *@
-   
-
-
-
+    <title>@ViewData["Title"] - UniConnect</title>
     
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-   
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/css/Home.css" rel="stylesheet" />
+    
+    <style>
+        :root {
+            --indigo: #3D52A0; --indigo-dark: #2d3f7a; --indigo-light: #EEF2FF;
+            --violet: #7091E6; --violet-light: #EDE9FE;
+            --amber: #F59E0B; --amber-light: #FEF3C7;
+            --bg: #F8F9FF; --surface: #fff; --border: #E2E8F0;
+            --text: #0F172A; --text-2: #64748B;
+            --radius: 12px;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+        
+        .footer { background: #0F172A; color: #94A3B8; padding: 64px 5% 48px; }
+        .ftr-lnk { color: #64748B; text-decoration: none; font-size: 14px; font-weight: 600; transition: color .2s; }
+        .ftr-lnk:hover { color: #fff; }
+        
+        .nav-logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--indigo), var(--violet)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <!-- NAV -->
+    <nav class="nav">
+        <a asp-controller="Home" asp-action="Index" class="nav-logo" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; font-weight:900; font-size:20px;">
+            <div class="nav-logo-icon">🎓</div>
+            UniConnect
+        </a>
+        <div class="nav-links">
+            <a href="/#how" class="nav-link">How it works</a>
+            <a href="/#features" class="nav-link">Features</a>
+            <a href="/#rewards" class="nav-link">Points</a>
+            <a href="/#venues" class="nav-link">Campus Rewards</a>
+        </div>
+        <div class="nav-actions">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Dashboard" asp-action="Dashboard"><button class="btn btn-primary btn-sm">My Dashboard →</button></a>
+                <a asp-controller="Login" asp-action="Logout" class="ftr-lnk" style="margin-left:15px">Sign Out</a>
+            }
+            else
+            {
+                <a asp-controller="Login" asp-action="Login_Page"><button class="btn btn-ghost btn-sm">Sign In</button></a>
+                <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-primary btn-sm">Join Free 🚀</button></a>
+            }
+        </div>
+    </nav>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
     <footer class="footer">
-        <div style="max-width:900px;margin:0 auto">
-            <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px">
-                <div style="width:36px;height:36px;background:linear-gradient(135deg,#3D52A0,#7091E6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px">🎓</div>
-                <span style="font-weight:900;font-size:18px;color:#CBD5E1">UniConnect</span>
+        <div style="max-width:1100px; margin:0 auto">
+            <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:24px">
+                <div class="nav-logo-icon">🎓</div>
+                <span style="font-weight:900; font-size:20px; color:#fff">UniConnect</span>
             </div>
-            <p style="font-size:14px;margin-bottom:18px">Philadelphia University Peer Learning Platform</p>
-            <div style="display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin-bottom:24px">
+            <p style="font-size:15px; margin-bottom:28px; color:#64748B">The exclusive peer-learning platform for Philadelphia University students.</p>
+            <div style="display:flex; gap:32px; justify-content:center; flex-wrap:wrap; margin-bottom:32px">
+                <a asp-controller="Home" asp-action="Index" class="ftr-lnk">Home Page</a>
                 <a asp-controller="Login" asp-action="Login_Page" class="ftr-lnk">Sign In</a>
-                <a asp-controller="Login" asp-action="Register_Page" class="ftr-lnk">Register</a>
-                <a href="dashboard.html" class="ftr-lnk">Dashboard</a>
-                <a href="leaderboard.html" class="ftr-lnk">Leaderboard</a>
-                <a href="points.html" class="ftr-lnk">Rewards</a>
+                <a asp-controller="Login" asp-action="Register_Page" class="ftr-lnk">Create Account</a>
+                <a href="/#how" class="ftr-lnk">How it Works</a>
+                <a href="/#features" class="ftr-lnk">Platform Features</a>
             </div>
-            <div style="border-top:1px solid #1E293B;padding-top:22px;font-size:13px;line-height:1.8">
-                Built by <strong style="color:#94A3B8">Ahmad Al-Hawwani · Ahmad Al-Atrash · Mustafa Maqousi · Abdul-Razzaq Qara</strong><br>
-                Philadelphia University · Graduation Project 2026
+            <div style="border-top:1px solid #1E293B; padding-top:32px; font-size:14px; line-height:1.8">
+                Created for Graduation Project 2026<br>
+                <strong style="color:#CBD5E1">Ahmad Al-Hawwani · Ahmad Al-Atrash · Mustafa Maqousi · Abdul-Razzaq Qara</strong><br>
+                Philadelphia University · Faculty of Information Technology
             </div>
         </div>
     </footer>
-   
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

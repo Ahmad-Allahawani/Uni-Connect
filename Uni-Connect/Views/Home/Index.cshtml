@@ -1,220 +1,183 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "UniConnect — Philadelphia University Peer Learning Platform";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<link href="~/css/Home.css" rel="stylesheet" />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>UniConnect — Philadelphia University Peer Learning Platform</title>
-    <style>
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-badge">🎓 Exclusive to Philadelphia University Students</div>
+    <h1 class="hero-title">
+        Help Each Other.<br>
+        <span class="grad">Earn Real Rewards.</span>
+    </h1>
+    <p class="hero-sub">The peer-learning platform built only for Philadelphia University students. Ask questions, share knowledge, earn points — then spend them at the university cafeteria, library, bookshop and more.</p>
+    <div class="hero-btns">
+        <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-primary btn-lg">Get Started Free 🚀</button></a>
+        <a href="#how"><button class="btn btn-ghost btn-lg">See How It Works ↓</button></a>
+    </div>
 
-    </style>
-</head>
-<body>
+    <div class="hero-stats">
+        <div style="text-align:center"><div class="stat-num">1,284+</div><div class="stat-lbl">Active Students</div></div>
+        <div style="text-align:center"><div class="stat-num">342+</div><div class="stat-lbl">Questions Answered</div></div>
+        <div style="text-align:center"><div class="stat-num">1,890+</div><div class="stat-lbl">Helpful Answers</div></div>
+        <div style="text-align:center"><div class="stat-num">7</div><div class="stat-lbl">Campus Venues</div></div>
+    </div>
 
-    <!-- NAV -->
-    <nav class="nav">
-        <a asp-controller="Home" asp-action="Index" class="nav-logo">
-            <div class="nav-logo-icon">🎓</div>
-            UniConnect
-        </a>
-        <div class="nav-links">
-            <a href="#how" class="nav-link">How it works</a>
-            <a href="#features" class="nav-link">Features</a>
-            <a href="#rewards" class="nav-link">Points</a>
-            <a href="#venues" class="nav-link">Campus Rewards</a>
-        </div>
-        <div class="nav-actions">
-            <a asp-controller="Login" asp-action="Login_Page"><button class="btn btn-ghost btn-sm">Sign In</button></a>
-            <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-primary btn-sm">Join Free 🚀</button></a>
-        </div>
-    </nav>
-
-    <!-- HERO -->
-    <section class="hero">
-        <div class="hero-badge">🎓 Exclusive to Philadelphia University Students</div>
-        <h1 class="hero-title">
-            Help Each Other.<br>
-            <span class="grad">Earn Real Rewards.</span>
-        </h1>
-        <p class="hero-sub">The peer-learning platform built only for Philadelphia University students. Ask questions, share knowledge, earn points — then spend them at the university cafeteria, library, bookshop and more.</p>
-        <div class="hero-btns">
-            <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-primary btn-lg">Get Started Free 🚀</button></a>
-            <a href="#how"><button class="btn btn-ghost btn-lg">See How It Works ↓</button></a>
-        </div>
-
-        <div class="hero-stats">
-            <div style="text-align:center"><div class="stat-num">1,284+</div><div class="stat-lbl">Active Students</div></div>
-            <div style="text-align:center"><div class="stat-num">342+</div><div class="stat-lbl">Questions Answered</div></div>
-            <div style="text-align:center"><div class="stat-num">1,890+</div><div class="stat-lbl">Helpful Answers</div></div>
-            <div style="text-align:center"><div class="stat-num">7</div><div class="stat-lbl">Campus Venues</div></div>
-        </div>
-
-        <!-- Mock UI preview -->
-        <div class="hero-mockup">
-            <div class="mock">
-                <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
-                    <div class="av av-sm"><img src="https://i.pravatar.cc/38?img=11" alt="Ahmad"></div>
-                    <div><div style="font-weight:700;font-size:13px">Ahmad K.</div><div style="font-size:11px;color:#64748B">2 hours ago</div></div>
-                    <span style="margin-left:auto;background:#D1FAE5;color:#065F46;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700">✅ Solved</span>
-                </div>
-                <div style="font-size:14px;font-weight:800;margin-bottom:10px;line-height:1.4">How does AVL tree rotation actually work?</div>
-                <div style="display:flex;gap:12px;font-size:12px;color:#64748B"><span>👍 42</span><span>💬 7 answers</span><span>👁 124 views</span></div>
+    <!-- Mock UI preview -->
+    <div class="hero-mockup">
+        <div class="mock">
+            <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
+                <div class="av av-sm"><img src="https://i.pravatar.cc/38?img=11" alt="Ahmad"></div>
+                <div><div style="font-weight:700;font-size:13px">Ahmad K.</div><div style="font-size:11px;color:#64748B">2 hours ago</div></div>
+                <span style="margin-left:auto;background:#D1FAE5;color:#065F46;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700">✅ Solved</span>
             </div>
-            <div class="mock">
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-                    <div style="width:44px;height:44px;background:linear-gradient(135deg,#FEF3C7,#FDE68A);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px">🪙</div>
-                    <div><div style="font-size:14px;font-weight:800;color:#F59E0B">+15 pts earned!</div><div style="font-size:12px;color:#64748B">Best Answer selected</div></div>
-                </div>
-                <div style="background:#E2E8F0;border-radius:99px;height:8px;overflow:hidden;margin-bottom:7px"><div style="width:84%;height:100%;background:linear-gradient(90deg,#3D52A0,#7091E6);border-radius:99px"></div></div>
-                <div style="font-size:12px;color:#64748B">840 / 1000 pts — 160 to Verified Tutor 🏅</div>
+            <div style="font-size:14px;font-weight:800;margin-bottom:10px;line-height:1.4">How does AVL tree rotation actually work?</div>
+            <div style="display:flex;gap:12px;font-size:12px;color:#64748B"><span>👍 42</span><span>💬 7 answers</span><span>👁 124 views</span></div>
+        </div>
+        <div class="mock">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+                <div style="width:44px;height:44px;background:linear-gradient(135deg,#FEF3C7,#FDE68A);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px">🪙</div>
+                <div><div style="font-size:14px;font-weight:800;color:#F59E0B">+15 pts earned!</div><div style="font-size:12px;color:#64748B">Best Answer selected</div></div>
             </div>
-            <div class="mock" style="background:linear-gradient(135deg,#FEF9C3,#FFFBEB)">
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:13px">
-                    <span style="font-size:30px">☕</span>
-                    <div><div style="font-weight:800;font-size:14px">Cafeteria Discount</div><div style="font-size:12px;color:#64748B">10% off your next meal</div></div>
-                    <span style="background:#F43F5E;color:#fff;border-radius:99px;padding:3px 10px;font-size:11px;font-weight:800;margin-left:auto">10% OFF</span>
-                </div>
-                <div style="background:#F59E0B;color:#fff;padding:9px;border-radius:10px;text-align:center;font-weight:800;font-size:13px">Redeem — 200 pts 🪙</div>
+            <div style="background:#E2E8F0;border-radius:99px;height:8px;overflow:hidden;margin-bottom:7px"><div style="width:84%;height:100%;background:linear-gradient(90deg,#3D52A0,#7091E6);border-radius:99px"></div></div>
+            <div style="font-size:12px;color:#64748B">840 / 1000 pts — 160 to Verified Tutor 🏅</div>
+        </div>
+        <div class="mock" style="background:linear-gradient(135deg,#FEF9C3,#FFFBEB)">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:13px">
+                <span style="font-size:30px">☕</span>
+                <div><div style="font-weight:800;font-size:14px">Cafeteria Discount</div><div style="font-size:12px;color:#64748B">10% off your next meal</div></div>
+                <span style="background:#F43F5E;color:#fff;border-radius:99px;padding:3px 10px;font-size:11px;font-weight:800;margin-left:auto">10% OFF</span>
             </div>
-            <div class="mock">
-                <div style="font-size:13px;font-weight:800;margin-bottom:11px;color:#64748B">🏆 Leaderboard — This Month</div>
-                <div style="display:flex;flex-direction:column;gap:9px">
-                    <div style="display:flex;align-items:center;gap:9px"><span style="font-size:17px">🥇</span><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=65" alt="Sami"></div><span style="font-size:13px;font-weight:700;flex:1">Sami T. ✓</span><span style="font-weight:900;font-size:13px;color:#F59E0B">1,240</span></div>
-                    <div style="display:flex;align-items:center;gap:9px"><span style="font-size:17px">🥈</span><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=20" alt="Mona"></div><span style="font-size:13px;font-weight:700;flex:1">Mona A.</span><span style="font-weight:900;font-size:13px;color:#F59E0B">1,080</span></div>
-                    <div style="display:flex;align-items:center;gap:9px"><span style="font-size:17px">🥉</span><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=47" alt="Rania"></div><span style="font-size:13px;font-weight:700;flex:1">Rania K.</span><span style="font-weight:900;font-size:13px;color:#F59E0B">960</span></div>
-                </div>
+            <div style="background:#F59E0B;color:#fff;padding:9px;border-radius:10px;text-align:center;font-weight:800;font-size:13px">Redeem — 200 pts 🪙</div>
+        </div>
+        <div class="mock">
+            <div style="font-size:13px;font-weight:800;margin-bottom:11px;color:#64748B">🏆 Leaderboard — This Month</div>
+            <div style="display:flex;flex-direction:column;gap:9px">
+                <div style="display:flex;align-items:center;gap:9px"><span style="font-size:17px">🥇</span><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=65" alt="Sami"></div><span style="font-size:13px;font-weight:700;flex:1">Sami T. ✓</span><span style="font-weight:900;font-size:13px;color:#F59E0B">1,240</span></div>
+                <div style="display:flex;align-items:center;gap:9px"><span style="font-size:17px">🥈</span><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=20" alt="Mona"></div><span style="font-size:13px;font-weight:700;flex:1">Mona A.</span><span style="font-weight:900;font-size:13px;color:#F59E0B">1,080</span></div>
+                <div style="display:flex;align-items:center;gap:9px"><span style="font-size:17px">🥉</span><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=47" alt="Rania"></div><span style="font-size:13px;font-weight:700;flex:1">Rania K.</span><span style="font-weight:900;font-size:13px;color:#F59E0B">960</span></div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- HOW IT WORKS -->
-    <section class="section" id="how">
-        <div style="max-width:1100px;margin:0 auto">
-            <div class="center">
-                <div class="section-tag">⚡ Simple Process</div>
-                <h2 class="section-title">How UniConnect works</h2>
-                <p class="section-sub">Six steps — from creating your account to redeeming real discounts at campus venues.</p>
-            </div>
-            <div class="steps-grid">
-                <div class="step"><span class="step-ico">📧</span><div class="step-num">01</div><div class="step-title">Register with university email</div><div class="step-desc">Sign up using your official Philadelphia University email. Only enrolled students can join — verified against the university registry. You receive <strong>+50 welcome points</strong> instantly.</div></div>
-                <div class="step"><span class="step-ico">🙋</span><div class="step-num">02</div><div class="step-title">Ask questions or help others</div><div class="step-desc">Post academic questions (costs 10 pts) and answer others to earn points back. Better answers get more upvotes. Best Answer earns +15 pts bonus automatically.</div></div>
-                <div class="step"><span class="step-ico">🪙</span><div class="step-num">03</div><div class="step-title">Earn points for every contribution</div><div class="step-desc">Every helpful action earns points — upvotes, best answers, private tutoring sessions, daily logins. Reach 1,000 pts to unlock <strong>Verified Tutor</strong> badge.</div></div>
-                <div class="step"><span class="step-ico">💬</span><div class="step-num">04</div><div class="step-title">Request private tutoring sessions</div><div class="step-desc">Need deeper help? Request a one-on-one private chat session with a verified tutor. Rate your session to help others in the future.</div></div>
-                <div class="step"><span class="step-ico">🏆</span><div class="step-num">05</div><div class="step-title">Climb the faculty leaderboard</div><div class="step-desc">Monthly rankings for each faculty. Top contributors earn special recognition and unlock exclusive rewards. Compete with classmates in a friendly academic environment.</div></div>
-                <div class="step" style="background:linear-gradient(135deg,#EEF2FF,#E8EEFF);border-color:#C7D7FF"><span class="step-ico">🎁</span><div class="step-num">06</div><div class="step-title">Redeem at campus venues</div><div class="step-desc">Exchange points for <strong>real discounts</strong> at the university cafeteria, library, bookshop, print centre and more. A QR code is sent to your university email — scan it at the venue.</div></div>
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+    <div style="max-width:1100px;margin:0 auto">
+        <div class="center">
+            <div class="section-tag">⚡ Simple Process</div>
+            <h2 class="section-title">How UniConnect works</h2>
+            <p class="section-sub">Six steps — from creating your account to redeeming real discounts at campus venues.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step"><span class="step-ico">📧</span><div class="step-num">01</div><div class="step-title">Register with university email</div><div class="step-desc">Sign up using your official Philadelphia University email. Only enrolled students can join — verified against the university registry. You receive <strong>+50 welcome points</strong> instantly.</div></div>
+            <div class="step"><span class="step-ico">🙋</span><div class="step-num">02</div><div class="step-title">Ask questions or help others</div><div class="step-desc">Post academic questions (costs 10 pts) and answer others to earn points back. Better answers get more upvotes. Best Answer earns +15 pts bonus automatically.</div></div>
+            <div class="step"><span class="step-ico">🪙</span><div class="step-num">03</div><div class="step-title">Earn points for every contribution</div><div class="step-desc">Every helpful action earns points — upvotes, best answers, private tutoring sessions, daily logins. Reach 1,000 pts to unlock <strong>Verified Tutor</strong> badge.</div></div>
+            <div class="step"><span class="step-ico">💬</span><div class="step-num">04</div><div class="step-title">Request private tutoring sessions</div><div class="step-desc">Need deeper help? Request a one-on-one private chat session with a verified tutor. Rate your session to help others in the future.</div></div>
+            <div class="step"><span class="step-ico">🏆</span><div class="step-num">05</div><div class="step-title">Climb the faculty leaderboard</div><div class="step-desc">Monthly rankings for each faculty. Top contributors earn special recognition and unlock exclusive rewards. Compete with classmates in a friendly academic environment.</div></div>
+            <div class="step" style="background:linear-gradient(135deg,#EEF2FF,#E8EEFF);border-color:#C7D7FF"><span class="step-ico">🎁</span><div class="step-num">06</div><div class="step-title">Redeem at campus venues</div><div class="step-desc">Exchange points for <strong>real discounts</strong> at the university cafeteria, library, bookshop, print centre and more. A QR code is sent to your university email — scan it at the venue.</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section features-bg" id="features">
+    <div style="max-width:1100px;margin:0 auto">
+        <div class="center">
+            <div class="section-tag">✨ Platform Features</div>
+            <h2 class="section-title">Built for university life</h2>
+            <p class="section-sub">Every feature designed around how students actually study, ask for help, and collaborate.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feat"><div class="feat-ico" style="background:#EEF2FF">🔍</div><div class="feat-title">Smart Question Feed</div><div class="feat-desc">Browse questions by faculty, course, or topic. Live search finds existing answers before you post — saving your 10 pts asking cost.</div></div>
+            <div class="feat"><div class="feat-ico" style="background:#D1FAE5">✅</div><div class="feat-title">Best Answer System</div><div class="feat-desc">Question owners mark the most helpful answer. Best answers are pinned at the top and earn the contributor an automatic +15 pt reward.</div></div>
+            <div class="feat"><div class="feat-ico" style="background:#EDE9FE">💬</div><div class="feat-title">Private Tutoring Chat</div><div class="feat-desc">One-on-one real-time chat with verified tutors. Sessions are private and rated by both parties for transparency and quality.</div></div>
+            <div class="feat"><div class="feat-ico" style="background:#FEF3C7">🪙</div><div class="feat-title">Points & Campus Rewards</div><div class="feat-desc">Earn points helping others and spend them at real campus locations — cafeteria, library, bookshop, print centre, gym and more.</div></div>
+            <div class="feat"><div class="feat-ico" style="background:#FFE4E6">🏆</div><div class="feat-title">Faculty Leaderboard</div><div class="feat-desc">Monthly rankings per faculty. Top 3 contributors earn special recognition badges and exclusive rewards for their academic community.</div></div>
+            <div class="feat"><div class="feat-ico" style="background:#E0F2FE">🛡️</div><div class="feat-title">AI-Assisted Moderation</div><div class="feat-desc">Content reviewed by AI and human admins. Report inappropriate posts anytime — admins review within 24 hours to keep the platform safe.</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- POINTS SYSTEM -->
+<section class="pts-bg" id="rewards">
+    <div class="pts-2col">
+        <div>
+            <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:7px 18px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px">🪙 The Points System</div>
+            <h2 style="font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-1px;line-height:1.15;color:#fff;margin-bottom:14px">Earn real rewards for helping others</h2>
+            <p style="font-size:16px;color:rgba(255,255,255,.75);line-height:1.75;margin-bottom:24px">Every contribution earns points. Spend them on real discounts across the university campus — because helping classmates should have real benefits.</p>
+            <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><span style="font-size:19px">🔒</span><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">University emails only — 100% verified students</span></div>
+                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><span style="font-size:19px">📧</span><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">QR codes sent directly to your university email</span></div>
+                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><span style="font-size:19px">🆓</span><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">Completely free — no credit card ever needed</span></div>
             </div>
         </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="section features-bg" id="features">
-        <div style="max-width:1100px;margin:0 auto">
-            <div class="center">
-                <div class="section-tag">✨ Platform Features</div>
-                <h2 class="section-title">Built for university life</h2>
-                <p class="section-sub">Every feature designed around how students actually study, ask for help, and collaborate.</p>
-            </div>
-            <div class="features-grid">
-                <div class="feat"><div class="feat-ico" style="background:#EEF2FF">🔍</div><div class="feat-title">Smart Question Feed</div><div class="feat-desc">Browse questions by faculty, course, or topic. Live search finds existing answers before you post — saving your 10 pts asking cost.</div></div>
-                <div class="feat"><div class="feat-ico" style="background:#D1FAE5">✅</div><div class="feat-title">Best Answer System</div><div class="feat-desc">Question owners mark the most helpful answer. Best answers are pinned at the top and earn the contributor an automatic +15 pt reward.</div></div>
-                <div class="feat"><div class="feat-ico" style="background:#EDE9FE">💬</div><div class="feat-title">Private Tutoring Chat</div><div class="feat-desc">One-on-one real-time chat with verified tutors. Sessions are private and rated by both parties for transparency and quality.</div></div>
-                <div class="feat"><div class="feat-ico" style="background:#FEF3C7">🪙</div><div class="feat-title">Points & Campus Rewards</div><div class="feat-desc">Earn points helping others and spend them at real campus locations — cafeteria, library, bookshop, print centre, gym and more.</div></div>
-                <div class="feat"><div class="feat-ico" style="background:#FFE4E6">🏆</div><div class="feat-title">Faculty Leaderboard</div><div class="feat-desc">Monthly rankings per faculty. Top 3 contributors earn special recognition badges and exclusive rewards for their academic community.</div></div>
-                <div class="feat"><div class="feat-ico" style="background:#E0F2FE">🛡️</div><div class="feat-title">AI-Assisted Moderation</div><div class="feat-desc">Content reviewed by AI and human admins. Report inappropriate posts anytime — admins review within 24 hours to keep the platform safe.</div></div>
+        <div>
+            <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.09em;margin-bottom:14px">HOW POINTS WORK:</div>
+            <div class="pts-grid">
+                <div class="pts-item"><div class="pts-ico">💬</div><div><div style="font-weight:700;font-size:13px">Post an Answer</div><div style="font-size:11px;opacity:.7">Help a classmate</div></div><div class="pts-val earn">+5</div></div>
+                <div class="pts-item"><div class="pts-ico">👍</div><div><div style="font-weight:700;font-size:13px">Get Upvoted</div><div style="font-size:11px;opacity:.7">Per upvote received</div></div><div class="pts-val earn">+10</div></div>
+                <div class="pts-item"><div class="pts-ico">✅</div><div><div style="font-weight:700;font-size:13px">Best Answer</div><div style="font-size:11px;opacity:.7">Marked as best</div></div><div class="pts-val earn">+15</div></div>
+                <div class="pts-item"><div class="pts-ico">🎓</div><div><div style="font-weight:700;font-size:13px">Tutor Session</div><div style="font-size:11px;opacity:.7">Accept a request</div></div><div class="pts-val earn">+20</div></div>
+                <div class="pts-item"><div class="pts-ico">⭐</div><div><div style="font-weight:700;font-size:13px">5-Star Rating</div><div style="font-size:11px;opacity:.7">Perfect session</div></div><div class="pts-val earn">+15</div></div>
+                <div class="pts-item"><div class="pts-ico">📅</div><div><div style="font-weight:700;font-size:13px">Daily Login</div><div style="font-size:11px;opacity:.7">Log in every day</div></div><div class="pts-val earn">+2</div></div>
+                <div class="pts-item"><div class="pts-ico">❓</div><div><div style="font-weight:700;font-size:13px">Post Question</div><div style="font-size:11px;opacity:.7">Costs points</div></div><div class="pts-val cost">−10</div></div>
+                <div class="pts-item"><div class="pts-ico">💬</div><div><div style="font-weight:700;font-size:13px">Request Session</div><div style="font-size:11px;opacity:.7">Costs per request</div></div><div class="pts-val cost">−5</div></div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- POINTS SYSTEM -->
-    <section class="pts-bg" id="rewards">
-        <div class="pts-2col">
-            <div>
-                <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:7px 18px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px">🪙 The Points System</div>
-                <h2 style="font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-1px;line-height:1.15;color:#fff;margin-bottom:14px">Earn real rewards for helping others</h2>
-                <p style="font-size:16px;color:rgba(255,255,255,.75);line-height:1.75;margin-bottom:24px">Every contribution earns points. Spend them on real discounts across the university campus — because helping classmates should have real benefits.</p>
-                <div style="display:flex;flex-direction:column;gap:10px">
-                    <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><span style="font-size:19px">🔒</span><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">University emails only — 100% verified students</span></div>
-                    <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><span style="font-size:19px">📧</span><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">QR codes sent directly to your university email</span></div>
-                    <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><span style="font-size:19px">🆓</span><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">Completely free — no credit card ever needed</span></div>
-                </div>
-            </div>
-            <div>
-                <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.09em;margin-bottom:14px">HOW POINTS WORK:</div>
-                <div class="pts-grid">
-                    <div class="pts-item"><div class="pts-ico">💬</div><div><div style="font-weight:700;font-size:13px">Post an Answer</div><div style="font-size:11px;opacity:.7">Help a classmate</div></div><div class="pts-val earn">+5</div></div>
-                    <div class="pts-item"><div class="pts-ico">👍</div><div><div style="font-weight:700;font-size:13px">Get Upvoted</div><div style="font-size:11px;opacity:.7">Per upvote received</div></div><div class="pts-val earn">+10</div></div>
-                    <div class="pts-item"><div class="pts-ico">✅</div><div><div style="font-weight:700;font-size:13px">Best Answer</div><div style="font-size:11px;opacity:.7">Marked as best</div></div><div class="pts-val earn">+15</div></div>
-                    <div class="pts-item"><div class="pts-ico">🎓</div><div><div style="font-weight:700;font-size:13px">Tutor Session</div><div style="font-size:11px;opacity:.7">Accept a request</div></div><div class="pts-val earn">+20</div></div>
-                    <div class="pts-item"><div class="pts-ico">⭐</div><div><div style="font-weight:700;font-size:13px">5-Star Rating</div><div style="font-size:11px;opacity:.7">Perfect session</div></div><div class="pts-val earn">+15</div></div>
-                    <div class="pts-item"><div class="pts-ico">📅</div><div><div style="font-weight:700;font-size:13px">Daily Login</div><div style="font-size:11px;opacity:.7">Log in every day</div></div><div class="pts-val earn">+2</div></div>
-                    <div class="pts-item"><div class="pts-ico">❓</div><div><div style="font-weight:700;font-size:13px">Post Question</div><div style="font-size:11px;opacity:.7">Costs points</div></div><div class="pts-val cost">−10</div></div>
-                    <div class="pts-item"><div class="pts-ico">💬</div><div><div style="font-weight:700;font-size:13px">Request Session</div><div style="font-size:11px;opacity:.7">Costs per request</div></div><div class="pts-val cost">−5</div></div>
-                </div>
-            </div>
+<!-- CAMPUS VENUES -->
+<section class="section" id="venues">
+    <div style="max-width:1100px;margin:0 auto">
+        <div class="center">
+            <div class="section-tag">🏪 Campus Partner Venues</div>
+            <h2 class="section-title">Spend your points on campus</h2>
+            <p class="section-sub">Exchange earned points for real discounts at university partner venues. New venues added every semester!</p>
         </div>
-    </section>
-
-    <!-- CAMPUS VENUES -->
-    <section class="section" id="venues">
-        <div style="max-width:1100px;margin:0 auto">
-            <div class="center">
-                <div class="section-tag">🏪 Campus Partner Venues</div>
-                <h2 class="section-title">Spend your points on campus</h2>
-                <p class="section-sub">Exchange earned points for real discounts at university partner venues. New venues added every semester!</p>
-            </div>
-            <div class="venues-grid">
-                <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#FEF9C3,#FDE68A)">☕<div class="venue-off">10% OFF</div></div><div class="venue-body"><div class="venue-name">University Cafeteria</div><div class="venue-pts">🪙 200 pts to redeem</div><div class="venue-loc">📍 Main Building, Ground Floor</div></div></div>
-                <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#EEF2FF,#C7D7FF)">📚<div class="venue-off">5 JD OFF</div></div><div class="venue-body"><div class="venue-name">University Library</div><div class="venue-pts">🪙 400 pts to redeem</div><div class="venue-loc">📍 Library Building, Level 2</div></div></div>
-                <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0)">📖<div class="venue-off">15% OFF</div></div><div class="venue-body"><div class="venue-name">Campus Bookshop</div><div class="venue-pts">🪙 350 pts to redeem</div><div class="venue-loc">📍 Student Centre, Level 1</div></div></div>
-                <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#FFE4E6,#FFC4CE)">🖨️<div class="venue-off">20 Pages Free</div></div><div class="venue-body"><div class="venue-name">Print & Copy Centre</div><div class="venue-pts">🪙 150 pts to redeem</div><div class="venue-loc">📍 IT Building, Room 102</div></div></div>
-                <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#E0F2FE,#BAE6FD)">🥤<div class="venue-off">Free Drink</div></div><div class="venue-body"><div class="venue-name">Student Canteen</div><div class="venue-pts">🪙 180 pts to redeem</div><div class="venue-loc">📍 Engineering Building</div></div></div>
-                <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE)">🏃<div class="venue-off">1 Week Free</div></div><div class="venue-body"><div class="venue-name">Sports & Gym Centre</div><div class="venue-pts">🪙 500 pts to redeem</div><div class="venue-loc">📍 Sports Complex</div></div></div>
-                <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA)">🖥️<div class="venue-off">2hr Free</div></div><div class="venue-body"><div class="venue-name">Computer Lab Booking</div><div class="venue-pts">🪙 100 pts to redeem</div><div class="venue-loc">📍 IT Building, Lab 3</div></div></div>
-                <div class="venue" style="background:linear-gradient(135deg,#EEF2FF,#F4F6FF);border-color:#C7D7FF;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:210px;text-align:center"><div style="font-size:36px;margin-bottom:12px">➕</div><div style="font-weight:800;font-size:15px;color:#3D52A0;margin-bottom:6px">More Coming Soon</div><div style="font-size:13px;color:#64748B;padding:0 16px">New venues added every semester</div></div>
-            </div>
+        <div class="venues-grid">
+            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#FEF9C3,#FDE68A)">☕<div class="venue-off">10% OFF</div></div><div class="venue-body"><div class="venue-name">University Cafeteria</div><div class="venue-pts">🪙 200 pts to redeem</div><div class="venue-loc">📍 Main Building, Ground Floor</div></div></div>
+            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#EEF2FF,#C7D7FF)">📚<div class="venue-off">5 JD OFF</div></div><div class="venue-body"><div class="venue-name">University Library</div><div class="venue-pts">🪙 400 pts to redeem</div><div class="venue-loc">📍 Library Building, Level 2</div></div></div>
+            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0)">📖<div class="venue-off">15% OFF</div></div><div class="venue-body"><div class="venue-name">Campus Bookshop</div><div class="venue-pts">🪙 350 pts to redeem</div><div class="venue-loc">📍 Student Centre, Level 1</div></div></div>
+            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#FFE4E6,#FFC4CE)">🖨️<div class="venue-off">20 Pages Free</div></div><div class="venue-body"><div class="venue-name">Print & Copy Centre</div><div class="venue-pts">🪙 150 pts to redeem</div><div class="venue-loc">📍 IT Building, Room 102</div></div></div>
+            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#E0F2FE,#BAE6FD)">🥤<div class="venue-off">Free Drink</div></div><div class="venue-body"><div class="venue-name">Student Canteen</div><div class="venue-pts">🪙 180 pts to redeem</div><div class="venue-loc">📍 Engineering Building</div></div></div>
+            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE)">🏃<div class="venue-off">1 Week Free</div></div><div class="venue-body"><div class="venue-name">Sports & Gym Centre</div><div class="venue-pts">🪙 500 pts to redeem</div><div class="venue-loc">📍 Sports Complex</div></div></div>
+            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA)">🖥️<div class="venue-off">2hr Free</div></div><div class="venue-body"><div class="venue-name">Computer Lab Booking</div><div class="venue-pts">🪙 100 pts to redeem</div><div class="venue-loc">📍 IT Building, Lab 3</div></div></div>
+            <div class="venue" style="background:linear-gradient(135deg,#EEF2FF,#F4F6FF);border-color:#C7D7FF;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:210px;text-align:center"><div style="font-size:36px;margin-bottom:12px">➕</div><div style="font-weight:800;font-size:15px;color:#3D52A0;margin-bottom:6px">More Coming Soon</div><div style="font-size:13px;color:#64748B;padding:0 16px">New venues added every semester</div></div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- TESTIMONIALS -->
-    <section class="section features-bg">
-        <div style="max-width:1100px;margin:0 auto">
-            <div class="center">
-                <div class="section-tag">💬 Student Stories</div>
-                <h2 class="section-title">What students are saying</h2>
-            </div>
-            <div class="testi-grid">
-                <div class="testi"><div class="testi-q">"</div><div class="testi-txt">UniConnect saved me the night before my algorithms final. I asked about Dijkstra at midnight and got a perfect answer with code examples in 20 minutes!</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=11" alt="Ahmad"></div><div><div style="font-weight:800;font-size:14px">Ahmad K.</div><div style="font-size:12px;color:#64748B">IT Faculty · Year 3</div></div><div style="margin-left:auto;font-size:14px">⭐⭐⭐⭐⭐</div></div></div>
-                <div class="testi"><div class="testi-q">"</div><div class="testi-txt">I earned 1,200+ points answering CS questions and have redeemed library credit twice. Helping classmates and getting real rewards — this platform is genius!</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=65" alt="Sami"></div><div><div style="font-weight:800;font-size:14px">Sami T. ✓</div><div style="font-size:12px;color:#64748B">Verified Tutor · IT Faculty</div></div><div style="margin-left:auto;font-size:14px">⭐⭐⭐⭐⭐</div></div></div>
-                <div class="testi"><div class="testi-q">"</div><div class="testi-txt">I used 200 points for a cafeteria discount — 10% off my lunch! The system motivates me to actually participate and help classmates every day.</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=47" alt="Lina"></div><div><div style="font-weight:800;font-size:14px">Lina H.</div><div style="font-size:12px;color:#64748B">Engineering · Year 2</div></div><div style="margin-left:auto;font-size:14px">⭐⭐⭐⭐⭐</div></div></div>
-            </div>
+<!-- TESTIMONIALS -->
+<section class="section features-bg">
+    <div style="max-width:1100px;margin:0 auto">
+        <div class="center">
+            <div class="section-tag">💬 Student Stories</div>
+            <h2 class="section-title">What students are saying</h2>
         </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="cta">
-        <div style="max-width:720px;margin:0 auto">
-            <div style="font-size:56px;margin-bottom:20px">🎓</div>
-            <h2 style="font-size:clamp(34px,5vw,56px);font-weight:900;line-height:1.1;letter-spacing:-1.5px;margin-bottom:18px">Ready to learn smarter?</h2>
-            <p style="font-size:18px;opacity:.8;line-height:1.7;margin-bottom:40px;max-width:560px;margin-left:auto;margin-right:auto">Join 1,284+ Philadelphia University students already helping each other, earning points, and getting real discounts across campus.</p>
-            <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-                <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-white btn-lg">Create Free Account →</button></a>
-                <a asp-controller="Login" asp-action="Login_Page"><button class="btn btn-outline-white btn-lg">Sign In</button></a>
-            </div>
-            <div class="cta-checks">
-                <span>✓ Free forever</span>
-                <span>✓ University email only</span>
-                <span>✓ No credit card</span>
-                <span>✓ Real campus rewards</span>
-            </div>
+        <div class="testi-grid">
+            <div class="testi"><div class="testi-q">"</div><div class="testi-txt">UniConnect saved me the night before my algorithms final. I asked about Dijkstra at midnight and got a perfect answer with code examples in 20 minutes!</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=11" alt="Ahmad"></div><div><div style="font-weight:800;font-size:14px">Ahmad K.</div><div style="font-size:12px;color:#64748B">IT Faculty · Year 3</div></div><div style="margin-left:auto;font-size:14px">⭐⭐⭐⭐⭐</div></div></div>
+            <div class="testi"><div class="testi-q">"</div><div class="testi-txt">I earned 1,200+ points answering CS questions and have redeemed library credit twice. Helping classmates and getting real rewards — this platform is genius!</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=65" alt="Sami"></div><div><div style="font-weight:800;font-size:14px">Sami T. ✓</div><div style="font-size:12px;color:#64748B">Verified Tutor · IT Faculty</div></div><div style="margin-left:auto;font-size:14px">⭐⭐⭐⭐⭐</div></div></div>
+            <div class="testi"><div class="testi-q">"</div><div class="testi-txt">I used 200 points for a cafeteria discount — 10% off my lunch! The system motivates me to actually participate and help classmates every day.</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=47" alt="Lina"></div><div><div style="font-weight:800;font-size:14px">Lina H.</div><div style="font-size:12px;color:#64748B">Engineering · Year 2</div></div><div style="margin-left:auto;font-size:14px">⭐⭐⭐⭐⭐</div></div></div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- FOOTER -->
-    
-
-</body>
-</html>
+<!-- CTA -->
+<section class="cta">
+    <div style="max-width:720px;margin:0 auto">
+        <div style="font-size:56px;margin-bottom:20px">🎓</div>
+        <h2 style="font-size:clamp(34px,5vw,56px);font-weight:900;line-height:1.1;letter-spacing:-1.5px;margin-bottom:18px">Ready to learn smarter?</h2>
+        <p style="font-size:18px;opacity:.8;line-height:1.7;margin-bottom:40px;max-width:560px;margin-left:auto;margin-right:auto">Join 1,284+ Philadelphia University students already helping each other, earning points, and getting real discounts across campus.</p>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+            <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-white btn-lg">Create Free Account →</button></a>
+            <a asp-controller="Login" asp-action="Login_Page"><button class="btn btn-outline-white btn-lg">Sign In</button></a>
+        </div>
+        <div class="cta-checks">
+            <span>✓ Free forever</span>
+            <span>✓ University email only</span>
+            <span>✓ No credit card</span>
+            <span>✓ Real campus rewards</span>
+        </div>
+    </div>
+</section>
