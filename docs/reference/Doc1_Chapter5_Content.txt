@@ -1,0 +1,31 @@
+===== DOCUMENT 1: CHAPTER 5 - SOFTWARE DESIGN DOCUMENT =====
+Source: SE_BSc_SDD_Mid_2023_2024 (Uni-Connect Graduation Project)
+Chapter: 5 (Software Design)
+Content Version: Original Project Documentation
+
+---
+
+[PLACEHOLDER — This file is reserved for Chapter 5 content]
+
+Purpose: Store design specifications, architecture diagrams, class diagrams, 
+entity-relationship models, and system design patterns from the original SDD document.
+
+Content to be added:
+- System Design Overview
+- Database Design & ERD
+- API/Controller Design
+- UI/UX Flow Diagrams
+- Authentication & Security Design
+- Session & Chat System Architecture
+- Third-party Integration Points
+
+---
+
+When Content is Ready:
+1. Paste the Chapter 5 excerpts from the SDD here
+2. Reference this file in code change decisions
+3. Update docs/DEV_LOG.md when major design changes occur
+
+Location of source document: 
+"AutoRecovery save of SE_BSc_SDD_Mid_2023_2024_2_MS_cafe357d4467dc97591cd3c331b4cbb8_1.asd"
+(in project directory root)
