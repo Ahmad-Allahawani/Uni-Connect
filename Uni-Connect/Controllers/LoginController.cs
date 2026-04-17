@@ -179,6 +179,8 @@ namespace Uni_Connect.Controllers
             }
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -237,11 +239,11 @@ namespace Uni_Connect.Controllers
             if (string.IsNullOrEmpty(token))
             {
                 ModelState.AddModelError("", "Invalid or expired reset link");
-                return RedirectToAction("ForgotPassword");
+                return RedirectToAction("ForgotPass_Page");
             }
 
             var model = new ResetPasswordViewModel { ResetToken = token };
-            return View("ResetPassword", model);
+            return View("ResetPass_Page", model);
         }
 
         [HttpPost]
@@ -250,7 +252,7 @@ namespace Uni_Connect.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("ResetPassword", model);
+                return View("ResetPass_Page", model);
 
             }
 
@@ -262,13 +264,13 @@ namespace Uni_Connect.Controllers
                 if (user == null)
                 {
                     ModelState.AddModelError("", "Invalid reset code. Please try again.");
-                    return View("ResetPassword", model);
+                    return View("ResetPass_Page", model);
                 }
 
                 if (user.PasswordResetTokenExpiry.HasValue && user.PasswordResetTokenExpiry < DateTime.Now)
                 {
                     ModelState.AddModelError("", "Reset code has expired. Please request a new one.");
-                    return View("ResetPassword", model);
+                    return View("ResetPass_Page", model);
                 }
 
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
@@ -287,12 +289,12 @@ namespace Uni_Connect.Controllers
             catch (DbUpdateException)
             {
                 ModelState.AddModelError("", "Database error: Please try again later.");
-                return View("ResetPassword", model);
+                return View("ResetPass_Page", model);
             }
             catch (Exception)
             {
                 ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
-                return View("ResetPassword", model);
+                return View("ResetPass_Page", model);
             }
         }
     }
