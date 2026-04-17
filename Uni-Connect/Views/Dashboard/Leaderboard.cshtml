@@ -127,16 +127,22 @@
             <p class="leaderboard-subtitle">Top contributors powering the community</p>
         </div>
         <div class="leaderboard-filters">
-            <select class="form-input">
-                <option>All Faculties</option>
-                <option>IT Faculty</option>
-                <option>Engineering</option>
-            </select>
-            <select class="form-input">
-                <option>This Month</option>
-                <option>This Week</option>
-                <option>All Time</option>
-            </select>
+            <form asp-action="Leaderboard" method="get" class="leaderboard-filters" style="display:flex;gap:12px;align-items:center;">
+                <select name="faculty" class="form-input">
+                    <option value="">All Faculties</option>
+                    @foreach(var f in ViewBag.Faculties as List<string> ?? new List<string>())
+                    {
+                        <option value="@f" @(ViewBag.SelectedFaculty == f ? "selected" : "")>@f</option>
+                    }
+                </select>
+                <select name="period" class="form-input">
+                    <option value="All Time" @(ViewBag.SelectedPeriod == "All Time" ? "selected" : "")>All Time</option>
+                    <option value="This Month" @(ViewBag.SelectedPeriod == "This Month" ? "selected" : "")>This Month</option>
+                    <option value="This Week" @(ViewBag.SelectedPeriod == "This Week" ? "selected" : "")>This Week</option>
+                </select>
+                <input type="number" name="top" min="1" max="500" value="@(ViewBag.Top ?? 100)" class="form-input" style="width:110px; padding:6px;" />
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
         </div>
     </div>
 
@@ -196,65 +202,33 @@
         <div class="ranking-header"># | Student | Points</div>
         
         <!-- Highlighted: Your Rank -->
-        <div class="rank-row highlight-row">
-            <div class="rank-num">#6</div>
-            <div class="rank-info">
-                <img src="https://ui-avatars.com/api/?name=@Model.Name&background=3D52A0&color=fff&size=36" class="rank-avatar" />
-                <div>
-                    <div class="rank-name">@Model.Name (YOU)</div>
-                    <div class="rank-faculty">@Model.Faculty</div>
+        @{
+            var leaderboard = ViewBag.Leaderboard as List<Uni_Connect.Models.User> ?? new List<Uni_Connect.Models.User>();
+            int rank = 1;
+            foreach (var u in leaderboard)
+            {
+                var isCurrent = (u.UserID == Model.UserID);
+        }
+        }
+        @{
+            var leaderboard2 = ViewBag.Leaderboard as List<Uni_Connect.Models.User> ?? new List<Uni_Connect.Models.User>();
+            int r = 1;
+            foreach (var u in leaderboard2)
+            {
+                var isCurrent = (u.UserID == Model.UserID);
+                <div class="rank-row @(isCurrent ? "highlight-row" : "")">
+                    <div class="rank-num">#@r</div>
+                    <div class="rank-info">
+                        <img src="https://ui-avatars.com/api/?name=@u.Name&background=3D52A0&color=fff&size=36" class="rank-avatar" />
+                        <div>
+                            <div class="rank-name">@u.Name @(isCurrent ? "(YOU)" : "")</div>
+                            <div class="rank-faculty">@u.Faculty</div>
+                        </div>
+                    </div>
+                    <div class="rank-points">@u.Points pts</div>
                 </div>
-            </div>
-            <div class="rank-points">@Model.Points pts</div>
-        </div>
-
-        <!-- Other Rankings -->
-        <div class="rank-row">
-            <div class="rank-num">#4</div>
-            <div class="rank-info">
-                <img src="https://i.pravatar.cc/36?img=33" class="rank-avatar" />
-                <div>
-                    <div class="rank-name">Khalid M.</div>
-                    <div class="rank-faculty">Business</div>
-                </div>
-            </div>
-            <div class="rank-points">912 pts</div>
-        </div>
-
-        <div class="rank-row">
-            <div class="rank-num">#5</div>
-            <div class="rank-info">
-                <img src="https://i.pravatar.cc/36?img=48" class="rank-avatar" />
-                <div>
-                    <div class="rank-name">Lina H.</div>
-                    <div class="rank-faculty">Engineering</div>
-                </div>
-            </div>
-            <div class="rank-points">892 pts</div>
-        </div>
-
-        <div class="rank-row">
-            <div class="rank-num">#7</div>
-            <div class="rank-info">
-                <img src="https://i.pravatar.cc/36?img=12" class="rank-avatar" />
-                <div>
-                    <div class="rank-name">Omar F.</div>
-                    <div class="rank-faculty">IT Faculty</div>
-                </div>
-            </div>
-            <div class="rank-points">845 pts</div>
-        </div>
-
-        <div class="rank-row">
-            <div class="rank-num">#8</div>
-            <div class="rank-info">
-                <img src="https://i.pravatar.cc/36?img=25" class="rank-avatar" />
-                <div>
-                    <div class="rank-name">Amira S.</div>
-                    <div class="rank-faculty">Law</div>
-                </div>
-            </div>
-            <div class="rank-points">810 pts</div>
-        </div>
+                r++;
+            }
+        }
     </div>
 </div>

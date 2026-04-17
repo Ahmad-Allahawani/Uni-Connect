@@ -82,14 +82,51 @@ namespace Uni_Connect.Controllers
             var user = await GetCurrentUser();
             if (user == null) return RedirectToAction("Login_Page", "Login");
             
-            // Fetch all users ranked by points
-            var leaderboardUsers = await _context.Users
-                .Where(u => !u.IsDeleted)
+            // Default parameters (can be supplied via querystring)
+            string faculty = Request.Query["faculty"].ToString();
+            string period = Request.Query["period"].ToString();
+            int top = 100;
+            int.TryParse(Request.Query["top"].ToString(), out top);
+            if (top <= 0) top = 100;
+
+            var query = _context.Users.Where(u => !u.IsDeleted);
+
+            if (!string.IsNullOrEmpty(faculty))
+            {
+                query = query.Where(u => u.Faculty == faculty);
+            }
+
+            if (!string.IsNullOrEmpty(period))
+            {
+                if (period == "This Month")
+                {
+                    var since = DateTime.UtcNow.AddMonths(-1);
+                    query = query.Where(u => u.CreatedAt >= since);
+                }
+                else if (period == "This Week")
+                {
+                    var since = DateTime.UtcNow.AddDays(-7);
+                    query = query.Where(u => u.CreatedAt >= since);
+                }
+            }
+
+            var leaderboardUsers = await query
                 .OrderByDescending(u => u.Points)
-                .Take(100)
+                .Take(top)
+                .ToListAsync();
+
+            var faculties = await _context.Users
+                .Where(u => !u.IsDeleted && !string.IsNullOrEmpty(u.Faculty))
+                .Select(u => u.Faculty)
+                .Distinct()
                 .ToListAsync();
 
             ViewBag.Leaderboard = leaderboardUsers;
+            ViewBag.Faculties = faculties;
+            ViewBag.SelectedFaculty = faculty;
+            ViewBag.SelectedPeriod = string.IsNullOrEmpty(period) ? "All Time" : period;
+            ViewBag.Top = top;
+
             return View(user);
         }
 
