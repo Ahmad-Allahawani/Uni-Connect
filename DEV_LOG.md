@@ -344,3 +344,21 @@ dotnet run
 
 **Last Updated**: April 16, 2026  
 **Next Review**: After user testing of CreatePost improvements
+
+---
+
+## Phase 6: Points & SinglePost Tests
+**Date**: April 17, 2026
+
+**Summary**:
+- Logged in using seeded account `test@uni.ac.uk` (password `Test@1234`).
+- Verified `GET /Dashboard/Points` loads (HTTP 200) and displays user points/level UI.
+- Created an answer on Post ID 1 using `POST /Dashboard/PostAnswer` (server responded 200).
+- Upvoted the created answer using `POST /Dashboard/UpvoteAnswer` (server responded 200, returned JSON {"success":true,"upvotes":1}).
+
+**Outcome**: Server-side handlers for answering and upvoting are working and award points as expected (+5 for answering; +10 to answer author on upvote). Manual UI verification and end-to-end QA pending.
+
+**Next Actions**:
+- Add a small automated integration test for `Points()` and `PostAnswer` flows.
+- Update front-end to reflect live point changes without full page reloads (AJAX + optimistic UI).
+
