@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Uni_Connect.Models
@@ -18,9 +18,24 @@ namespace Uni_Connect.Models
         public DbSet<Message> Messages { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<PointsTransaction> PointsTransactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Unique Constraints
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.UniversityID)
+                .IsUnique();
+            modelBuilder.Entity<Category>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
+
             // Composite Key for PostTag
             modelBuilder.Entity<PostTag>()
                 .HasKey(pt => new { pt.PostID, pt.TagID });
@@ -88,6 +103,14 @@ namespace Uni_Connect.Models
                 .WithMany(u => u.Notifications)
                 .HasForeignKey(n => n.UserID)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<PointsTransaction>()
+                .HasOne(pt => pt.User)
+                .WithMany()
+                .HasForeignKey(pt => pt.UserID)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<PointsTransaction>().HasQueryFilter(e => !e.IsDeleted);
 
         }
     }

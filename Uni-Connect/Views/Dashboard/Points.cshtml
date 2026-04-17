@@ -7,252 +7,363 @@
 
 @section Styles {
 <style>
-    .points-hero {
-        background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-        color: white;
-        padding: 40px 20px;
-        border-radius: 12px;
-        margin-bottom: 30px;
-        text-align: center;
-    }
-
-    .points-number {
-        font-size: 72px;
-        font-weight: 800;
-        margin: 20px 0;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-
-    .points-title {
-        font-size: 18px;
-        opacity: 0.9;
-        margin-bottom: 30px;
-    }
-
-    .level-section {
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        margin-bottom: 30px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .level-header {
+    /* Tabs styling */
+    .tabs {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
+        gap: 2px;
+        border-bottom: 2px solid var(--border);
+        margin-bottom: 24px;
+        overflow-x: auto;
     }
-
-    .level-badge {
-        background: linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%);
-        color: white;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-weight: 600;
+    .tabs::-webkit-scrollbar { height: 0; }
+    .tab {
+        padding: 12px 20px;
         font-size: 14px;
-    }
-
-    .progress-container {
-        width: 100%;
-        background: #E0E7FF;
-        border-radius: 8px;
-        height: 12px;
-        overflow: hidden;
-        margin-bottom: 10px;
-    }
-
-    .progress-bar {
-        background: linear-gradient(90deg, #6366F1 0%, #8B5CF6 100%);
-        height: 100%;
-        border-radius: 8px;
-        transition: width 0.3s ease;
-    }
-
-    .progress-text {
-        font-size: 13px;
-        color: #666;
-        margin-top: 8px;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 15px;
-        margin-bottom: 30px;
-    }
-
-    .stat-card {
-        background: #F8F9FB;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        border: 1px solid #E2E8F0;
-    }
-
-    .stat-number {
-        font-size: 32px;
-        font-weight: 700;
-        color: #6366F1;
-        margin-bottom: 5px;
-    }
-
-    .stat-label {
-        font-size: 13px;
-        color: #999;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .achievements-title {
-        font-size: 20px;
-        font-weight: 700;
-        margin-bottom: 20px;
-        color: #333;
-    }
-
-    .achievements-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 15px;
-    }
-
-    .achievement-card {
-        background: white;
-        border: 2px solid #E2E8F0;
-        border-radius: 10px;
-        padding: 20px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .achievement-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .achievement-card.unlocked {
-        background: linear-gradient(135deg, #FEF08A 0%, #FCD34D 100%);
-        border-color: #FCD34D;
-    }
-
-    .achievement-card.locked {
-        opacity: 0.5;
-        background: #F8F9FB;
-    }
-
-    .achievement-icon {
-        font-size: 40px;
-        margin-bottom: 10px;
-    }
-
-    .achievement-name {
-        font-size: 13px;
         font-weight: 600;
-        color: #333;
-        margin-bottom: 3px;
-    }
-
-    .achievement-desc {
-        font-size: 11px;
-        color: #999;
-    }
-
-    .user-header {
+        color: var(--text-2);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        border-radius: 8px 8px 0 0;
+        transition: all 0.2s;
+        white-space: nowrap;
         display: flex;
         align-items: center;
-        gap: 15px;
-        margin-bottom: 25px;
+        gap: 8px;
+    }
+    .tab:hover { color: var(--indigo); background: var(--indigo-light); }
+    .tab.active { color: var(--indigo); border-bottom-color: var(--indigo); }
+
+    /* Hero Card */
+    .points-hero {
+        background: linear-gradient(135deg, var(--indigo), #5B73C7 50%, var(--violet));
+        border-radius: 20px;
+        padding: 32px;
+        color: #fff;
+        margin-bottom: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    .points-hero-icon {
+        position: absolute;
+        right: -20px;
+        bottom: -20px;
+        font-size: 110px;
+        opacity: .08;
+        pointer-events: none;
     }
 
-    .user-avatar {
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-        border-radius: 8px;
+    /* Venues Grid */
+    .venues-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+    .venue-card {
+        background: var(--surface);
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        transition: all .25s;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+    }
+    .venue-card:hover:not(.locked) {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-3px);
+        border-color: var(--indigo);
+    }
+    .venue-card.locked { opacity: .55; cursor: not-allowed; }
+    .venue-img {
+        height: 120px;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-size: 24px;
-        font-weight: 700;
+        font-size: 52px;
+        position: relative;
     }
+    .venue-off {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: var(--rose);
+        color: #fff;
+        border-radius: 99px;
+        padding: 4px 12px;
+        font-size: 11px;
+        font-weight: 800;
+    }
+    .venue-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
+    .venue-name { font-weight: 800; font-size: 16px; margin-bottom: 6px; }
+    .venue-desc { font-size: 13px; color: var(--text-2); margin-bottom: 16px; line-height: 1.5; flex: 1; }
+    .venue-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+    .venue-pts { font-size: 14px; font-weight: 800; color: var(--amber); }
 
-    .user-info h2 {
-        margin: 0;
-        font-size: 18px;
-        color: #333;
+    /* Modal Styling */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, .55);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        backdrop-filter: blur(6px);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.25s;
     }
+    .modal-overlay.open { opacity: 1; visibility: visible; }
+    .modal-box {
+        background: #fff;
+        border-radius: 20px;
+        padding: 30px;
+        width: 100%;
+        max-width: 460px;
+        box-shadow: 0 24px 64px rgba(61, 82, 160, .22);
+        transform: scale(0.9);
+        transition: transform 0.25s;
+    }
+    .modal-overlay.open .modal-box { transform: scale(1); }
 
-    .user-info p {
-        margin: 3px 0;
-        font-size: 13px;
-        color: #999;
-    }
+    /* Hidden utilities */
+    .hidden { display: none !important; }
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 }
 
 <div class="points-hero">
-    <div class="user-header">
-        <div class="user-avatar">@Model.Name[0]</div>
-        <div class="user-info">
-            <h2>@Model.Name</h2>
-            <p>@Model.YearOfStudy - @Model.Faculty</p>
+    <div class="points-hero-icon"><i data-lucide="coins"></i></div>
+    <div style="z-index: 1;">
+        <div style="font-size:13px; opacity:.75; margin-bottom:6px; font-weight:600">Your Current Balance</div>
+        <div style="font-size:52px; font-weight:900; line-height:1; letter-spacing:-1px; display:flex; align-items:center; gap:12px;">@Model.CurrentPoints <i data-lucide="coins" style="width:32px; height:32px;"></i></div>
+        <div style="margin-top:12px; font-size:13px; opacity:.85">
+            <strong>Level @Model.CurrentLevel</strong> — @Model.NextLevelPoints pts to Level @(Model.CurrentLevel + 1)
+        </div>
+        <div style="background:rgba(255,255,255,.25); border-radius:99px; height:7px; width:240px; margin-top:8px; overflow:hidden">
+            <div style="width:@Model.ProgressPercentage%; height:100%; background:#fff; border-radius:99px"></div>
         </div>
     </div>
-
-    <div class="points-title">YOUR TOTAL POINTS</div>
-    <div class="points-number">@Model.CurrentPoints</div>
-</div>
-
-<div class="level-section">
-    <div class="level-header">
-        <div>
-            <strong style="color: #333;">Level @Model.CurrentLevel / 10</strong>
+    <div style="display:flex; gap:14px; flex-wrap:wrap; z-index: 1;">
+        <div style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); border-radius:14px; padding:14px 20px; text-align:center; min-width:100px;">
+            <div style="font-size:24px; font-weight:900">@Model.QuestionsAsked</div>
+            <div style="font-size:11px; opacity:.8; margin-top:2px">Questions</div>
         </div>
-        <div class="level-badge">🎯 @Model.ProgressPercentage% Complete</div>
-    </div>
-
-    <div class="progress-container">
-        <div class="progress-bar" style="width: @Model.ProgressPercentage%"></div>
-    </div>
-
-    <div class="progress-text">
-        @Model.NextLevelPoints points needed to reach Level @(Model.CurrentLevel + 1)
+        <div style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); border-radius:14px; padding:14px 20px; text-align:center; min-width:100px;">
+            <div style="font-size:24px; font-weight:900">@Model.AnswersGiven</div>
+            <div style="font-size:11px; opacity:.8; margin-top:2px">Answers</div>
+        </div>
     </div>
 </div>
 
-<div class="stats-grid">
-    <div class="stat-card">
-        <div class="stat-number">@Model.QuestionsAsked</div>
-        <div class="stat-label">Questions</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-number">@Model.AnswersGiven</div>
-        <div class="stat-label">Answers</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-number">@(Model.Achievements.Count(a => a.Unlocked))</div>
-        <div class="stat-label">Achievements</div>
-    </div>
+<!-- TABS -->
+<div class="tabs">
+    <div class="tab active" onclick="showTab('tab-venues', this)"><i data-lucide="shopping-bag"></i> Redeem at Venues</div>
+    <div class="tab" onclick="showTab('tab-earn', this)"><i data-lucide="trending-up"></i> How to Earn</div>
+    <div class="tab" onclick="showTab('tab-history', this)"><i data-lucide="history"></i> Transactions</div>
+    <div class="tab" onclick="showTab('tab-achievements', this)"><i data-lucide="award"></i> Achievements</div>
 </div>
 
-<div>
-    <div class="achievements-title">🏆 Achievements</div>
-    <div class="achievements-grid">
-        @foreach (var achievement in Model.Achievements)
-        {
-            <div class="achievement-card @(achievement.Unlocked ? "unlocked" : "locked")" 
-                 title="@achievement.Description">
-                <div class="achievement-icon">@achievement.Icon</div>
-                <div class="achievement-name">@achievement.Title</div>
-                <div class="achievement-desc">@achievement.Description</div>
-                @if (achievement.Unlocked)
-                {
-                    <div style="font-size: 10px; color: #666; margin-top: 5px;">✓ Unlocked</div>
-                }
+<div id="tab-container">
+    <!-- ── VENUES TAB ── -->
+    <div id="tab-venues" class="tab-content fade-in">
+        <div style="margin-bottom:20px;">
+            <h2 style="font-size:18px; font-weight:800">Redeem at Campus Venues</h2>
+            <p style="font-size:13px; color:var(--text-2); margin-top:4px">Choose a discount — a QR code will be sent to your university email instantly</p>
+        </div>
+
+        <div class="venues-grid">
+            <!-- Cafeteria -->
+            <div class="venue-card" onclick="openRedeemModal('University Cafeteria', '☕', '10% OFF discount on any meal', 200, 'Main Building, Ground Floor')">
+                <div class="venue-img" style="background:linear-gradient(135deg,#FEF9C3,#FDE68A)">☕<div class="venue-off">10% OFF</div></div>
+                <div class="venue-body">
+                    <div class="venue-name">University Cafeteria</div>
+                    <div class="venue-desc">Valid for all drinks, snacks, and full meals. Single-use voucher.</div>
+                    <div class="venue-footer">
+                        <div class="venue-pts">🪙 200 pts</div>
+                        <button class="btn btn-amber btn-sm">Redeem</button>
+                    </div>
+                </div>
             </div>
-        }
+
+            <!-- Library -->
+            <div class="venue-card" onclick="openRedeemModal('University Library', '📚', '5 JD Printing Credit', 400, 'Library Building, Level 2')">
+                <div class="venue-img" style="background:linear-gradient(135deg,#EEF2FF,#C7D7FF)">📚<div class="venue-off">5 JD OFF</div></div>
+                <div class="venue-body">
+                    <div class="venue-name">University Library</div>
+                    <div class="venue-desc">Use for printing, scanning, or study room bookings. Valid for 30 days.</div>
+                    <div class="venue-footer">
+                        <div class="venue-pts">🪙 400 pts</div>
+                        <button class="btn btn-primary btn-sm">Redeem</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookshop -->
+            <div class="venue-card" onclick="openRedeemModal('Campus Bookshop', '📖', '15% OFF Stationery', 350, 'Student Centre, Level 1')">
+                <div class="venue-img" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0)">📖<div class="venue-off">15% OFF</div></div>
+                <div class="venue-body">
+                    <div class="venue-name">Campus Bookshop</div>
+                    <div class="venue-desc">15% discount on all stationery and university merchandise.</div>
+                    <div class="venue-footer">
+                        <div class="venue-pts">🪙 350 pts</div>
+                        <button class="btn btn-emerald btn-sm">Redeem</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── EARN TAB ── -->
+    <div id="tab-earn" class="tab-content hidden fade-in">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+                <h3 style="font-size:16px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i data-lucide="trending-up" class="text-emerald"></i> Ways to Earn Points</h3>
+                <div class="card" style="padding:0; overflow:hidden;">
+                    <div style="padding:14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border)">
+                        <div><strong>Answer a Question</strong><br/><small style="color:var(--text-2)">Help a fellow student</small></div>
+                        <span class="chip chip-emerald">+5 pts</span>
+                    </div>
+                    <div style="padding:14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border)">
+                        <div><strong>Get an Upvote</strong><br/><small style="color:var(--text-2)">Per upvote on your answer</small></div>
+                        <span class="chip chip-emerald">+10 pts</span>
+                    </div>
+                    <div style="padding:14px; display:flex; justify-content:space-between; align-items:center;">
+                        <div><strong>Best Answer Selected</strong><br/><small style="color:var(--text-2)">Earn bonus for high quality</small></div>
+                        <span class="chip chip-emerald">+15 pts</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h3 style="font-size:16px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i data-lucide="trending-down" class="text-rose"></i> Points Decisions</h3>
+                <div class="card" style="padding:0; overflow:hidden;">
+                    <div style="padding:14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border)">
+                        <div><strong>Post a Question</strong><br/><small style="color:var(--text-2)">Encourages searching first</small></div>
+                        <span class="chip chip-rose">−10 pts</span>
+                    </div>
+                    <div style="padding:14px; display:flex; justify-content:space-between; align-items:center;">
+                        <div><strong>Request Tutoring Session</strong><br/><small style="color:var(--text-2)">Per private request</small></div>
+                        <span class="chip chip-rose">−5 pts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── HISTORY TAB ── -->
+    <div id="tab-history" class="tab-content hidden fade-in">
+        <div class="card" style="padding:0; overflow:hidden;">
+            @if (Model.Transactions == null || !Model.Transactions.Any())
+            {
+                <div style="padding:40px; text-align:center; color:var(--text-2)">No transaction history yet.</div>
+            }
+            else
+            {
+                @foreach (var tx in Model.Transactions)
+                {
+                    <div style="padding:16px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border)">
+                        <div style="display:flex; align-items:center; gap:16px;">
+                            <span style="font-size:20px;">@tx.Icon</span>
+                            <div>
+                                <div style="font-weight:700; font-size:14px;">@tx.Title</div>
+                                <div style="font-size:12px; color:var(--text-2);">@tx.Time · @tx.Detail</div>
+                            </div>
+                        </div>
+                        <span style="font-weight:800; color:@(tx.Amount >= 0 ? "var(--emerald)" : "var(--rose)")">
+                            @(tx.Amount >= 0 ? "+" : "")@tx.Amount
+                        </span>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <!-- ── ACHIEVEMENTS TAB ── -->
+    <div id="tab-achievements" class="tab-content hidden fade-in">
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px;">
+            @foreach (var achievement in Model.Achievements)
+            {
+                <div class="card @(achievement.Unlocked ? "" : "locked")" style="text-align:center; @(achievement.Unlocked ? "background:var(--amber-light); border-color:var(--amber);" : "")">
+                    <div style="font-size:32px; margin-bottom:10px; display:flex; justify-content:center;"><i data-lucide="medal" style="width:40px; height:40px;"></i></div>
+                    <div style="font-weight:700; font-size:13px; margin-bottom:4px;">@achievement.Title</div>
+                    <div style="font-size:11px; color:var(--text-2);">@achievement.Description</div>
+                    @if (achievement.Unlocked)
+                    {
+                        <div style="font-size:10px; color:var(--amber-dark); margin-top:8px; font-weight:700;">✓ UNLOCKED</div>
+                    }
+                </div>
+            }
+        </div>
     </div>
 </div>
+
+<!-- REDEEM MODAL -->
+<div class="modal-overlay" id="redeemModal">
+    <div class="modal-box">
+        <div style="text-align:center; margin-bottom:24px;">
+            <div id="modalIcon" style="font-size:64px; margin-bottom:12px;">☕</div>
+            <h3 id="modalTitle" style="font-size:20px; font-weight:900;">Venue Name</h3>
+            <p id="modalDesc" style="font-size:14px; color:var(--text-2);">Discount description goes here.</p>
+            <div id="modalLoc" style="font-size:12px; color:var(--text-3); margin-top:8px;">📍 Location Info</div>
+        </div>
+        <div style="background:var(--indigo-light); border:1.5px solid #C7D7FF; border-radius:14px; padding:20px; text-align:center; margin-bottom:24px;">
+            <div style="font-size:13px; color:var(--text-2); margin-bottom:4px;">This will cost</div>
+            <div id="modalCost" style="font-size:32px; font-weight:900; color:var(--indigo);">200 pts</div>
+            <div style="font-size:12px; color:var(--text-2); margin-top:6px;">Your current balance: <strong>@Model.CurrentPoints pts</strong></div>
+        </div>
+        <div style="display:flex; gap:12px;">
+            <button class="btn btn-ghost btn-full" onclick="closeRedeemModal()">Cancel</button>
+            <button class="btn btn-primary btn-full" onclick="confirmRedeem()">Confirm Redeem</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function showTab(id, el) {
+        // Update tabs
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+
+        // Update content
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function openRedeemModal(name, icon, desc, cost, loc) {
+        document.getElementById('modalTitle').textContent = name;
+        document.getElementById('modalIcon').textContent = icon;
+        document.getElementById('modalDesc').textContent = desc;
+        document.getElementById('modalCost').textContent = cost + " pts";
+        document.getElementById('modalLoc').textContent = "📍 " + loc;
+        
+        const modal = document.getElementById('redeemModal');
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeRedeemModal() {
+        const modal = document.getElementById('redeemModal');
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function confirmRedeem() {
+        showToast("🎉 QR Code sent to your university email!");
+        closeRedeemModal();
+    }
+
+    // Close modal on escape
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeRedeemModal();
+    });
+</script>
+}

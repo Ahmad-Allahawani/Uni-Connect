@@ -89,9 +89,9 @@
 
     <!-- Tabs (Not implemented yet, placeholder) -->
     <div class="tab-container">
-        <button class="tab-btn active">🏠 All Questions</button>
-        <button class="tab-btn">👤 My Faculty</button>
-        <button class="tab-btn">🔥 Trending</button>
+        <button class="tab-btn active"><i data-lucide="layout-list"></i> All Questions</button>
+        <button class="tab-btn"><i data-lucide="user-plus"></i> My Faculty</button>
+        <button class="tab-btn"><i data-lucide="flame"></i> Trending</button>
     </div>
 
     <!-- Questions Feed -->
@@ -102,39 +102,50 @@
             {
                 foreach (var post in posts)
                 {
-                    <a asp-action="SinglePost" asp-route-id="@post.PostID" class="q-card-enhanced">
+                    <div class="q-card-enhanced" onclick="window.location.href='@Url.Action("SinglePost", new { id = post.PostID })'">
                         <!-- Header with author info -->
                         <div class="q-header">
-                            <img src="https://ui-avatars.com/api/?name=@(post.User?.Name ?? "User")&background=3D52A0&color=fff" 
-                                 alt="Avatar" class="q-avatar" />
+                               <img src='https://ui-avatars.com/api/?name=@(post.User?.Name ?? "User")&amp;background=3D52A0&amp;color=fff' 
+                                   alt="Avatar" class="q-avatar" />
                             <div>
                                 <div class="q-meta">
+                                    @{ var authorName = post.User?.Name?.Split(' ').First() ?? "User"; }
                                     @if (!string.IsNullOrEmpty(post.User?.Username))
                                     {
-                                        <a asp-action="ViewProfile" asp-route-username="@post.User.Username" class="q-author">@(post.User?.Name?.Split(' ').First() ?? "User")</a>
+                                        @Html.ActionLink(authorName, "ViewProfile", new { username = post.User.Username }, new { @class = "q-author", onclick = "event.stopPropagation();" })
                                     }
                                     else
                                     {
-                                        <span class="q-author">@(post.User?.Name?.Split(' ').First() ?? "User")</span>
+                                        <span class="q-author">@authorName</span>
                                     }
                                     <span class="q-date">@post.CreatedAt.ToString("MMM dd, yyyy")</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Title -->
-                        <h3 class="q-title">@post.Title</h3>
+                        <div style="display:flex; gap:20px; align-items:flex-start;">
+                            <div style="flex:1;">
+                                <!-- Title -->
+                                <h3 class="q-title" style="margin-top:0;">@post.Title</h3>
 
-                        <!-- Preview -->
-                        @if (!string.IsNullOrEmpty(post.Content))
-                        {
-                            <p class="q-content">
-                                @{
-                                    var preview = post.Content.Length > 150 ? post.Content.Substring(0, 150) + "..." : post.Content;
+                                <!-- Preview -->
+                                @if (!string.IsNullOrEmpty(post.Content))
+                                {
+                                    <p class="q-content">
+                                        @{
+                                            var preview = post.Content.Length > 150 ? post.Content.Substring(0, 150) + "..." : post.Content;
+                                        }
+                                        @preview
+                                    </p>
                                 }
-                                @preview
-                            </p>
-                        }
+                            </div>
+                            @if (!string.IsNullOrEmpty(post.ImageUrl))
+                            {
+                                <div style="width:120px; height:80px; border-radius:8px; overflow:hidden; flex-shrink:0; border:1px solid var(--border);">
+                                    <img src="@post.ImageUrl" style="width:100%; height:100%; object-fit:cover;" />
+                                </div>
+                            }
+                        </div>
 
                         <!-- Tags/Category -->
                         <div class="q-tags">
@@ -144,26 +155,26 @@
                             }
                             @if (post.Answers?.Any(a => a.IsAccepted && !a.IsDeleted) == true)
                             {
-                                <span class="chip chip-emerald">✓ Solved</span>
+                                <span class="chip chip-emerald" style="display:inline-flex; align-items:center; gap:4px;"><i data-lucide="check-circle-2" style="width:12px; height:12px;"></i> Solved</span>
                             }
                         </div>
 
                         <!-- Stats -->
                         <div class="q-stats">
-                            <span>👍 @post.Upvotes upvotes</span>
-                            <span>💬 @(post.Answers?.Count(a => !a.IsDeleted) ?? 0) answers</span>
-                            <span>👁️ 0 views</span>
+                            <span style="display:inline-flex; align-items:center; gap:4px;"><i data-lucide="thumbs-up" style="width:14px; height:14px;"></i> @post.Upvotes</span>
+                            <span style="display:inline-flex; align-items:center; gap:4px;"><i data-lucide="message-square" style="width:14px; height:14px;"></i> @(post.Answers?.Count(a => !a.IsDeleted) ?? 0)</span>
+                            <span style="display:inline-flex; align-items:center; gap:4px;"><i data-lucide="eye" style="width:14px; height:14px;"></i> 0</span>
                         </div>
-                    </a>
+                    </div>
                 }
             }
             else
             {
                 <div class="empty-state">
-                    <div class="empty-icon">📝</div>
+                    <div class="empty-icon"><i data-lucide="clipboard-list" style="width:48px; height:48px;"></i></div>
                     <h3 class="empty-title">No questions yet</h3>
                     <p class="empty-text">Be the first to ask a question in your community!</p>
-                    <a asp-action="CreatePost" class="btn btn-primary">✏️ Ask a Question</a>
+                    <a asp-action="CreatePost" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px;"><i data-lucide="pen-tool" style="width:18px; height:18px;"></i> Ask a Question</a>
                 </div>
             }
         }

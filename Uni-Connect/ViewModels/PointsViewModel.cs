@@ -21,6 +21,18 @@ namespace Uni_Connect.ViewModels
 
         // Achievements
         public List<Achievement> Achievements { get; set; } = new List<Achievement>();
+
+        // Transaction History
+        public List<PointTransaction> Transactions { get; set; } = new List<PointTransaction>();
+    }
+
+    public class PointTransaction
+    {
+        public string Title { get; set; }
+        public string Icon { get; set; }
+        public string Time { get; set; }
+        public int Amount { get; set; } // Positive or negative
+        public string Detail { get; set; }
     }
 
     public class Achievement

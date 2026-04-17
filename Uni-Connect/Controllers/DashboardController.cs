@@ -4,6 +4,7 @@ using Uni_Connect.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Uni_Connect.Services;
 
 namespace Uni_Connect.Controllers
 {
@@ -12,9 +13,16 @@ namespace Uni_Connect.Controllers
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public DashboardController(ApplicationDbContext context)
+        private readonly IWebHostEnvironment _environment;
+        private readonly IPointService _pointService;
+        private readonly IPostService _postService;
+
+        public DashboardController(ApplicationDbContext context, IWebHostEnvironment environment, IPointService pointService, IPostService postService)
         {
             _context = context;
+            _environment = environment;
+            _pointService = pointService;
+            _postService = postService;
         }
         public async Task<IActionResult> Dashboard()
         {
@@ -95,21 +103,57 @@ namespace Uni_Connect.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Settings(Uni_Connect.ViewModels.SettingsViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
-
             var user = await GetCurrentUser();
             if (user == null) return RedirectToAction("Login_Page", "Login");
 
+            // Profile Update
             user.Name = model.Name?.Trim() ?? user.Name;
-            // Email is not editable here
             user.Faculty = model.Faculty;
             user.YearOfStudy = model.YearOfStudy;
             user.ProfileImageUrl = model.ProfileImageUrl;
 
+            // Password Change Logic
+            if (!string.IsNullOrWhiteSpace(model.NewPassword))
+            {
+                if (string.IsNullOrWhiteSpace(model.CurrentPassword))
+                {
+                    TempData["ErrorMessage"] = "Current password is required to change password.";
+                    return View(model);
+                }
+
+                if (model.NewPassword != model.ConfirmPassword)
+                {
+                    TempData["ErrorMessage"] = "New password and confirmation do not match.";
+                    return View(model);
+                }
+
+                if (model.NewPassword.Length < 6)
+                {
+                    TempData["ErrorMessage"] = "New password must be at least 6 characters.";
+                    return View(model);
+                }
+
+                // Verify current password (using BCrypt)
+                bool isValid = BCrypt.Net.BCrypt.Verify(model.CurrentPassword, user.PasswordHash);
+                if (!isValid)
+                {
+                    TempData["ErrorMessage"] = "Current password is incorrect.";
+                    return View(model);
+                }
+
+                // Update password
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
+                TempData["SuccessMessage"] = "Password updated successfully.";
+            }
+
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Settings updated successfully.";
+            if (TempData["SuccessMessage"] == null)
+            {
+                TempData["SuccessMessage"] = "Profile settings updated successfully.";
+            }
+
             return RedirectToAction("Settings");
         }
         public async Task<IActionResult> Notifications()
@@ -176,7 +220,7 @@ namespace Uni_Connect.Controllers
             var user = await GetCurrentUser();
             if (user == null) return RedirectToAction("Login_Page", "Login");
 
-            // Calculate level (every 500 points = 1 level, max 10)
+            // Calculate level
             int level = Math.Min(user.Points / 500 + 1, 10);
             int pointsForCurrentLevel = (level - 1) * 500;
             int pointsForNextLevel = level * 500;
@@ -184,59 +228,30 @@ namespace Uni_Connect.Controllers
             int pointsNeededForNext = Math.Max(0, pointsForNextLevel - user.Points);
             int progressPercentage = (int)((progressToNextLevel / (float)(pointsForNextLevel - pointsForCurrentLevel)) * 100);
 
-            // Get user's posts and answers count
-            var userPosts = await _context.Posts
-                .Where(p => p.UserID == user.UserID && !p.IsDeleted)
-                .CountAsync();
+            var userPosts = await _context.Posts.CountAsync(p => p.UserID == user.UserID && !p.IsDeleted);
+            var userAnswers = await _context.Answers.CountAsync(a => a.UserID == user.UserID && !a.IsDeleted);
 
-            var userAnswers = await _context.Answers
-                .Where(a => a.UserID == user.UserID && !a.IsDeleted)
-                .CountAsync();
-
-            // Build achievements list
             var achievements = new List<ViewModels.Achievement>
             {
-                new ViewModels.Achievement
-                {
-                    Title = "First Steps",
-                    Description = "Score 100 points",
-                    Icon = "🎯",
-                    Unlocked = user.Points >= 100,
-                    UnlockedDate = user.Points >= 100 ? DateTime.Now : null
-                },
-                new ViewModels.Achievement
-                {
-                    Title = "Helper",
-                    Description = "Give 5 answers",
-                    Icon = "🤝",
-                    Unlocked = userAnswers >= 5,
-                    UnlockedDate = userAnswers >= 5 ? DateTime.Now : null
-                },
-                new ViewModels.Achievement
-                {
-                    Title = "Questioner",
-                    Description = "Ask 3 questions",
-                    Icon = "❓",
-                    Unlocked = userPosts >= 3,
-                    UnlockedDate = userPosts >= 3 ? DateTime.Now : null
-                },
-                new ViewModels.Achievement
-                {
-                    Title = "Rising Star",
-                    Description = "Reach level 5",
-                    Icon = "⭐",
-                    Unlocked = level >= 5,
-                    UnlockedDate = level >= 5 ? DateTime.Now : null
-                },
-                new ViewModels.Achievement
-                {
-                    Title = "Expert",
-                    Description = "Reach level 10",
-                    Icon = "🏆",
-                    Unlocked = level >= 10,
-                    UnlockedDate = level >= 10 ? DateTime.Now : null
-                }
+                new ViewModels.Achievement { Title = "First Steps", Description = "Score 100 points", Icon = "🎯", Unlocked = user.Points >= 100 },
+                new ViewModels.Achievement { Title = "Helper", Description = "Give 5 answers", Icon = "🤝", Unlocked = userAnswers >= 5 },
+                new ViewModels.Achievement { Title = "Questioner", Description = "Ask 3 questions", Icon = "❓", Unlocked = userPosts >= 3 }
             };
+
+            // Get real transactions
+            var transactions = await _context.PointsTransactions
+                .Where(pt => pt.UserID == user.UserID && !pt.IsDeleted)
+                .OrderByDescending(pt => pt.CreatedAt)
+                .Take(20)
+                .Select(pt => new ViewModels.PointTransaction
+                {
+                    Title = pt.Title,
+                    Icon = pt.Icon,
+                    Time = pt.CreatedAt.ToString("MMM dd, HH:mm"),
+                    Amount = pt.Amount,
+                    Detail = pt.Detail
+                })
+                .ToListAsync();
 
             var model = new ViewModels.PointsViewModel
             {
@@ -250,8 +265,8 @@ namespace Uni_Connect.Controllers
                 ProgressPercentage = progressPercentage,
                 QuestionsAsked = userPosts,
                 AnswersGiven = userAnswers,
-                HelpfulAnswers = 0, // TODO: Count from Answer model if it has "IsHelpful" field
-                Achievements = achievements
+                Achievements = achievements,
+                Transactions = transactions
             };
 
             return View(model);
@@ -268,101 +283,50 @@ namespace Uni_Connect.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePost(ViewModels.CreatePostViewModel model)
         {
+            bool isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+
             // Validate model
             if (!ModelState.IsValid)
             {
-                foreach (var modelState in ModelState.Values)
+                if (isAjax) 
                 {
-                    foreach (var error in modelState.Errors)
-                    {
-                        Console.WriteLine($"Validation Error: {error.ErrorMessage}");
-                    }
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+                    return Json(new { success = false, message = "Validation failed: " + string.Join(", ", errors) });
                 }
                 return View(model);
             }
 
             // Get current user
             var user = await GetCurrentUser();
-            if (user == null) return RedirectToAction("Login_Page", "Login");
+            if (user == null) 
+            {
+                if (isAjax) return Unauthorized();
+                return RedirectToAction("Login_Page", "Login");
+            }
 
-            // Check if user has enough points (posting costs 10 points)
+            // Check if user has enough points
             if (user.Points < 10)
             {
-                ModelState.AddModelError("", "You need at least 10 points to post a question. Earn more points by answering questions or requesting help.");
+                if (isAjax) return Json(new { success = false, message = "Insufficient points (10 required)." });
+                ModelState.AddModelError("", "You need at least 10 points to post a question.");
                 return View(model);
             }
 
-            // Map faculty string to category
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(c => c.Faculty == model.Faculty);
-            
-            if (category == null)
+            // Create Post via PostService
+            var post = await _postService.CreatePost(model, user.UserID);
+            if (post == null)
             {
-                // If category doesn't exist, create it
-                category = new Category { Faculty = model.Faculty, Name = model.Faculty };
-                _context.Categories.Add(category);
-                await _context.SaveChangesAsync();
+                if (isAjax) return Json(new { success = false, message = "Failed to create post." });
+                return View(model);
             }
 
-            // Create new Post
-            var post = new Post
-            {
-                Title = model.Title,
-                Content = model.Content,
-                UserID = user.UserID,
-                CategoryID = category.CategoryID,
-                CreatedAt = DateTime.UtcNow,
-                ViewsCount = 0,
-                Upvotes = 0,
-                IsDeleted = false
-            };
+            // Deduct points via PointService
+            await _pointService.DeductPoints(user.UserID, 10, "Posted a Question", post.Title, "❓");
 
-            // Add post to database first to get PostID
-            _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
-
-            // Process tags if provided
-            if (!string.IsNullOrWhiteSpace(model.Tags))
-            {
-                // Split tags by comma or space
-                var tagNames = model.Tags
-                    .Split(new[] { ',', ' ' }, System.StringSplitOptions.RemoveEmptyEntries)
-                    .Select(t => t.Trim())
-                    .Where(t => !string.IsNullOrWhiteSpace(t))
-                    .Distinct()
-                    .Take(5); // Max 5 tags
-
-                foreach (var tagName in tagNames)
-                {
-                    // Find or create tag
-                    var tag = await _context.Tags
-                        .FirstOrDefaultAsync(t => t.Name.ToLower() == tagName.ToLower());
-                    
-                    if (tag == null)
-                    {
-                        tag = new Tag { Name = tagName };
-                        _context.Tags.Add(tag);
-                        await _context.SaveChangesAsync();
-                    }
-
-                    // Create PostTag relationship
-                    var postTag = new PostTag
-                    {
-                        PostID = post.PostID,
-                        TagID = tag.TagID
-                    };
-                    _context.PostTags.Add(postTag);
-                }
-            }
-
-            // Deduct 10 points from user
-            user.Points -= 10;
-            _context.Users.Update(user);
-
-            // Save all changes
-            await _context.SaveChangesAsync();
-
-            // Redirect to Dashboard after successful post
+            if (isAjax) return Json(new { success = true, postId = post.PostID, pointsBalance = user.Points });
             return RedirectToAction("Dashboard");
         }
 
@@ -419,7 +383,7 @@ namespace Uni_Connect.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PostAnswer(int postId, string content)
+        public async Task<IActionResult> PostAnswer(int postId, string content, IFormFile? ImageFile)
         {
             if (string.IsNullOrWhiteSpace(content))
             {
@@ -430,27 +394,9 @@ namespace Uni_Connect.Controllers
             var user = await GetCurrentUser();
             if (user == null) return RedirectToAction("Login_Page", "Login");
 
-            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostID == postId);
-            if (post == null) return RedirectToAction("Dashboard");
-
-            var answer = new Answer
-            {
-                PostID = postId,
-                UserID = user.UserID,
-                Content = content.Trim(),
-                CreatedAt = DateTime.UtcNow,
-                Upvotes = 0,
-                IsDeleted = false,
-                IsAccepted = false
-            };
-
-            _context.Answers.Add(answer);
-
-            // Award +5 points to answering user
-            user.Points += 5;
-            _context.Users.Update(user);
-
-            await _context.SaveChangesAsync();
+            // Post Answer via PostService
+            var answer = await _postService.PostAnswer(postId, content, user.UserID, ImageFile);
+            if (answer == null) return RedirectToAction("Dashboard");
 
             return RedirectToAction("SinglePost", new { id = postId });
         }
@@ -462,25 +408,11 @@ namespace Uni_Connect.Controllers
             var user = await GetCurrentUser();
             if (user == null) return Unauthorized();
 
-            var answer = await _context.Answers
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(a => a.AnswerID == answerId && !a.IsDeleted);
+            var success = await _postService.UpvoteAnswer(answerId, user.UserID);
+            if (!success) return NotFound();
 
-            if (answer == null) return NotFound();
-
-            answer.Upvotes += 1;
-            _context.Answers.Update(answer);
-
-            // Award +10 points to the answer author
-            if (answer.User != null)
-            {
-                answer.User.Points += 10;
-                _context.Users.Update(answer.User);
-            }
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new { success = true, upvotes = answer.Upvotes });
+            var answer = await _context.Answers.FindAsync(answerId);
+            return Ok(new { success = true, upvotes = answer?.Upvotes ?? 0 });
         }
 
         private async Task<User> GetCurrentUser()
@@ -510,6 +442,23 @@ namespace Uni_Connect.Controllers
             return Ok(messages);
 
 
+        }
+        private async Task<string?> SaveImage(IFormFile? file, string folder)
+        {
+            if (file == null || file.Length == 0) return null;
+
+            var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", folder);
+            if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+            var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            return $"/uploads/{folder}/{uniqueFileName}";
         }
     }
 }

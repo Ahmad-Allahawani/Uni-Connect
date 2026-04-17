@@ -123,7 +123,7 @@
     <!-- Header -->
     <div class="leaderboard-header">
         <div>
-            <h1 class="leaderboard-title">🏆 Leaderboard</h1>
+            <h1 class="leaderboard-title">Leaderboard</h1>
             <p class="leaderboard-subtitle">Top contributors powering the community</p>
         </div>
         <div class="leaderboard-filters">
@@ -132,23 +132,39 @@
                     <option value="">All Faculties</option>
                     @foreach(var f in ViewBag.Faculties as List<string> ?? new List<string>())
                     {
-                        <option value="@f" @(ViewBag.SelectedFaculty == f ? "selected" : "")>@f</option>
+                        if ((ViewBag.SelectedFaculty as string) == f) {
+                            <option value="@f" selected>@f</option>
+                        } else {
+                            <option value="@f">@f</option>
+                        }
                     }
                 </select>
                 <select name="period" class="form-input">
-                    <option value="All Time" @(ViewBag.SelectedPeriod == "All Time" ? "selected" : "")>All Time</option>
-                    <option value="This Month" @(ViewBag.SelectedPeriod == "This Month" ? "selected" : "")>This Month</option>
-                    <option value="This Week" @(ViewBag.SelectedPeriod == "This Week" ? "selected" : "")>This Week</option>
+                    @if ((ViewBag.SelectedPeriod as string) == "All Time") {
+                        <option value="All Time" selected>All Time</option>
+                    } else {
+                        <option value="All Time">All Time</option>
+                    }
+                    @if ((ViewBag.SelectedPeriod as string) == "This Month") {
+                        <option value="This Month" selected>This Month</option>
+                    } else {
+                        <option value="This Month">This Month</option>
+                    }
+                    @if ((ViewBag.SelectedPeriod as string) == "This Week") {
+                        <option value="This Week" selected>This Week</option>
+                    } else {
+                        <option value="This Week">This Week</option>
+                    }
                 </select>
                 <input type="number" name="top" min="1" max="500" value="@(ViewBag.Top ?? 100)" class="form-input" style="width:110px; padding:6px;" />
-                <button type="submit" class="btn btn-primary">Filter</button>
+                <button type="submit" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px;"><i data-lucide="filter" style="width:16px; height:16px;"></i> Filter</button>
             </form>
         </div>
     </div>
 
     <!-- Your Rank Banner -->
     <div class="rank-banner">
-        <div class="rank-banner-icon">🏅</div>
+        <div class="rank-banner-icon"><i data-lucide="award" style="width:40px; height:40px; color:var(--indigo);"></i></div>
         <div class="rank-banner-content">
             <div class="rank-banner-title">You are ranked #6 overall!</div>
             <div class="rank-banner-text">Keep helping classmates to climb higher on the leaderboard.</div>
@@ -162,62 +178,68 @@
     <!-- Podium Section -->
     <div class="podium-section">
         <div class="podium-wrap">
-            <!-- 2nd Place -->
-            <div class="podium-card podium-2nd">
-                <div class="podium-medal">🥈</div>
-                <div class="av av-lg" style="margin: 0 auto 14px; border: 3px solid #C0C0C0;">
-                    <img src="https://i.pravatar.cc/60?img=20" alt="Mona" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
-                </div>
-                <div style="font-weight: 800; font-size: 15px;">Mona A.</div>
-                <div style="font-size: 12px; color: var(--text-2); font-weight: 600; margin-bottom: 10px;">Business</div>
-                <div style="font-size: 18px; font-weight: 900; color: var(--text);">1,080 pts</div>
-            </div>
+            @{
+                var leaderboard = ViewBag.Leaderboard as List<Uni_Connect.Models.User> ?? new List<Uni_Connect.Models.User>();
+                var top3 = leaderboard.Take(3).ToList();
+                
+                // 2nd Place
+                if (top3.Count >= 2)
+                {
+                    var u2 = top3[1];
+                    <div class="podium-card podium-2nd">
+                        <div class="podium-medal">🥈</div>
+                        <div class="av av-lg" style="margin: 0 auto 14px; border: 3px solid #C0C0C0;">
+                            <img src="https://ui-avatars.com/api/?name=@u2.Name&background=3D52A0&color=fff&size=60" alt="@u2.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                        </div>
+                        <div style="font-weight: 800; font-size: 15px;">@u2.Name</div>
+                        <div style="font-size: 12px; color: var(--text-2); font-weight: 600; margin-bottom: 10px;">@u2.Faculty</div>
+                        <div style="font-size: 18px; font-weight: 900; color: var(--text);">@u2.Points pts</div>
+                    </div>
+                }
 
-            <!-- 1st Place (Highlighted) -->
-            <div class="podium-card podium-1st">
-                <div class="podium-medal">🥇</div>
-                <div class="av av-xl" style="margin: 0 auto 14px; border: 4px solid var(--amber);">
-                    <img src="https://i.pravatar.cc/80?img=65" alt="Sami" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
-                </div>
-                <div style="font-weight: 900; font-size: 16px;">Sami T. ✓</div>
-                <span class="chip chip-emerald" style="display: inline-block; margin-bottom: 10px;">Verified Tutor</span>
-                <div style="font-size: 24px; font-weight: 900; color: var(--amber);">1,240 pts</div>
-            </div>
+                // 1st Place
+                if (top3.Count >= 1)
+                {
+                    var u1 = top3[0];
+                    <div class="podium-card podium-1st">
+                        <div class="podium-medal">🥇</div>
+                        <div class="av av-xl" style="margin: 0 auto 14px; border: 4px solid var(--amber);">
+                            <img src="https://ui-avatars.com/api/?name=@u1.Name&background=3D52A0&color=fff&size=80" alt="@u1.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                        </div>
+                        <div style="font-weight: 900; font-size: 16px;">@u1.Name</div>
+                        <span class="chip chip-emerald" style="display: inline-block; margin-bottom: 10px;">Top Contributor</span>
+                        <div style="font-size: 24px; font-weight: 900; color: var(--amber);">@u1.Points pts</div>
+                    </div>
+                }
 
-            <!-- 3rd Place -->
-            <div class="podium-card podium-3rd">
-                <div class="podium-medal">🥉</div>
-                <div class="av av-lg" style="margin: 0 auto 14px; border: 3px solid #CD7F32;">
-                    <img src="https://i.pravatar.cc/60?img=47" alt="Rania" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
-                </div>
-                <div style="font-weight: 800; font-size: 15px;">Rania K.</div>
-                <div style="font-size: 12px; color: var(--text-2); font-weight: 600; margin-bottom: 10px;">IT Faculty</div>
-                <div style="font-size: 18px; font-weight: 900; color: var(--text);">960 pts</div>
-            </div>
+                // 3rd Place
+                if (top3.Count >= 3)
+                {
+                    var u3 = top3[2];
+                    <div class="podium-card podium-3rd">
+                        <div class="podium-medal">🥉</div>
+                        <div class="av av-lg" style="margin: 0 auto 14px; border: 3px solid #CD7F32;">
+                            <img src="https://ui-avatars.com/api/?name=@u3.Name&background=3D52A0&color=fff&size=60" alt="@u3.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                        </div>
+                        <div style="font-weight: 800; font-size: 15px;">@u3.Name</div>
+                        <div style="font-size: 12px; color: var(--text-2); font-weight: 600; margin-bottom: 10px;">@u3.Faculty</div>
+                        <div style="font-size: 18px; font-weight: 900; color: var(--text);">@u3.Points pts</div>
+                    </div>
+                }
+            }
         </div>
     </div>
 
     <!-- Full Rankings Table -->
     <div class="podium-ranking-table">
-        <div class="ranking-header"># | Student | Points</div>
-        
-        <!-- Highlighted: Your Rank -->
+        <div class="ranking-header"><i data-lucide="list" style="width:14px; height:14px;"></i> # | Student | Points</div>
         @{
-            var leaderboard = ViewBag.Leaderboard as List<Uni_Connect.Models.User> ?? new List<Uni_Connect.Models.User>();
-            int rank = 1;
+            int rankNum = 1;
             foreach (var u in leaderboard)
             {
                 var isCurrent = (u.UserID == Model.UserID);
-        }
-        }
-        @{
-            var leaderboard2 = ViewBag.Leaderboard as List<Uni_Connect.Models.User> ?? new List<Uni_Connect.Models.User>();
-            int r = 1;
-            foreach (var u in leaderboard2)
-            {
-                var isCurrent = (u.UserID == Model.UserID);
-                <div class="rank-row @(isCurrent ? "highlight-row" : "")">
-                    <div class="rank-num">#@r</div>
+                <div class="rank-row @(isCurrent ? "highlight-row" : "")" onclick="window.location.href='@Url.Action("ViewProfile", "Dashboard", new { username = u.Username })'">
+                    <div class="rank-num">#@rankNum</div>
                     <div class="rank-info">
                         <img src="https://ui-avatars.com/api/?name=@u.Name&background=3D52A0&color=fff&size=36" class="rank-avatar" />
                         <div>
@@ -227,7 +249,7 @@
                     </div>
                     <div class="rank-points">@u.Points pts</div>
                 </div>
-                r++;
+                rankNum++;
             }
         }
     </div>

@@ -1,0 +1,81 @@
+@model IEnumerable<Uni_Connect.Models.Report>
+@{
+    ViewData["Title"] = "Manage Reports";
+    Layout = "_DashboardLayout";
+}
+
+<div class="dashboard-header">
+    <div>
+        <h1 class="h2">Manage Reports</h1>
+        <p class="text-2">Review flags and community moderation requests.</p>
+    </div>
+    <a asp-action="AdminDashboard" class="btn btn-secondary"><i data-lucide="arrow-left"></i> Back to Dashboard</a>
+</div>
+
+<div class="card">
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Reporter</th>
+                    <th>Reason</th>
+                    <th>Target Type</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding: 40px; color: var(--text-3);">
+                            <i data-lucide="check-circle" style="width:48px; height:48px; margin-bottom:16px; opacity:0.5;"></i>
+                            <div>No active reports. Community is clean!</div>
+                        </td>
+                    </tr>
+                }
+                @foreach (var report in Model)
+                {
+                    <tr>
+                        <td class="text-2">@report.CreatedAt.ToString("MMM dd, HH:mm")</td>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <div class="av av-xs"><img src="https://ui-avatars.com/api/?name=@report.Reporter.Name&background=E2E8F0&color=475569&size=24" alt="User"/></div>
+                                <span>@report.Reporter.Name</span>
+                            </div>
+                        </td>
+                        <td><strong>@report.Reason</strong></td>
+                        <td><span class="badge badge-secondary">@report.TargetType</span></td>
+                        <td>
+                            @if (report.IsResolved)
+                            {
+                                <span class="badge" style="background:#ECFDF5; color:#059669;">Resolved</span>
+                            }
+                            else
+                            {
+                                <span class="badge" style="background:#FEF3C7; color:#B45309;">Pending</span>
+                            }
+                        </td>
+                        <td>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-sm btn-secondary" title="View Detail"><i data-lucide="eye"></i></button>
+                                @if (!report.IsResolved)
+                                {
+                                    <button class="btn btn-sm btn-primary" title="Mark Resolved"><i data-lucide="check"></i></button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th { text-align: left; padding: 16px; background: #F8FAFC; font-weight: 600; font-size: 14px; border-bottom: 1px solid #E2E8F0; }
+    .data-table td { padding: 16px; border-bottom: 1px solid #F1F5F9; font-size: 14px; }
+    .av-xs { width: 24px; height: 24px; border-radius: 50%; overflow: hidden; }
+</style>

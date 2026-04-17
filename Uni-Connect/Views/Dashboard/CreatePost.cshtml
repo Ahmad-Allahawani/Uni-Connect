@@ -9,14 +9,14 @@
 
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-        <a asp-action="Dashboard" asp-controller="Dashboard"><i class="fas fa-house"></i> Home</a>
+        <a asp-action="Dashboard" asp-controller="Dashboard"><i data-lucide="home"></i> Home</a>
         <span class="breadcrumb-sep">›</span>
         <span>Ask a Question</span>
     </div>
 
     <!-- Page header (hidden on success step) -->
     <div class="page-header" id="page-header">
-        <h1 class="page-title"><i class="fas fa-pen"></i> Ask a Question</h1>
+        <h1 class="page-title"><i data-lucide="pen-tool"></i> Ask a Question</h1>
         <p class="page-subtitle">
             Posting costs <strong class="cost-deducted">−10 pts</strong>.
             A great answer earns you <strong class="cost-earned">+5 to +15 pts</strong> back!
@@ -48,7 +48,7 @@
     <div class="fade-in" id="wz1">
         <div class="card search-card">
             <div class="search-card-header">
-                <div class="search-icon-box"><i class="fas fa-magnifying-glass"></i></div>
+                <div class="search-icon-box"><i data-lucide="search"></i></div>
                 <div>
                     <div class="search-prompt-title">Check if your question already exists</div>
                     <div class="search-prompt-desc">
@@ -64,18 +64,18 @@
                        placeholder="e.g. AVL tree rotation, trial balance, eigenvalues..." />
                 <button type="button" class="btn btn-ghost btn-sm"
                         onclick="step1Search(document.getElementById('s1-search').value)">
-                    <i class="fas fa-magnifying-glass"></i> Search
+                    <i data-lucide="search"></i> Search
                 </button>
             </div>
         </div>
 
         <div class="hidden" id="s1-results">
             <div class="search-results-label">
-                <span><i class="fas fa-clipboard"></i> Similar questions found — check these first:</span>
+                <span><i data-lucide="copy"></i> Similar questions found — check these first:</span>
             </div>
             <div id="s1-results-list"></div>
             <div class="search-answer-tip">
-                <span class="search-tip-icon"><i class="fas fa-lightbulb"></i></span>
+                <span class="search-tip-icon"><i data-lucide="lightbulb"></i></span>
                 <p class="amber-tip-text">
                     Is your question answered above?
                     <a class="amber-tip-link" href="#">Click to view the full answer</a>
@@ -85,7 +85,7 @@
         </div>
 
         <div class="hidden search-no-results" id="s1-no-results">
-            <span class="search-no-results-icon"><i class="fas fa-check-circle"></i></span>
+            <span class="search-no-results-icon"><i data-lucide="check-circle"></i></span>
             <p class="search-no-results-text">No similar questions found — yours is unique! Go ahead and post it.</p>
         </div>
 
@@ -120,13 +120,13 @@
                         <label class="form-label">Faculty <span class="form-label-req">*</span></label>
                         <select class="form-input form-select" id="s2-faculty" asp-for="Faculty" onchange="updatePreview()">
                             <option value="">Select your faculty...</option>
-                            <option value="IT Faculty"><i class="fas fa-laptop"></i> Information Technology</option>
-                            <option value="Engineering"><i class="fas fa-cog"></i> Engineering &amp; Technology</option>
-                            <option value="Business"><i class="fas fa-briefcase"></i> Business &amp; Finance</option>
-                            <option value="Law"><i class="fas fa-scale-balanced"></i> Faculty of Law</option>
-                            <option value="Arts"><i class="fas fa-palette"></i> Arts &amp; Educational Sciences</option>
-                            <option value="Pharmacy"><i class="fas fa-prescription-bottle"></i> Faculty of Pharmacy</option>
-                            <option value="Administrative"><i class="fas fa-chart-bar"></i> Administrative Sciences</option>
+                            <option value="IT Faculty">💻 Information Technology</option>
+                            <option value="Engineering">⚙️ Engineering &amp; Technology</option>
+                            <option value="Business">💼 Business &amp; Finance</option>
+                            <option value="Law">⚖️ Faculty of Law</option>
+                            <option value="Arts">🎨 Arts &amp; Educational Sciences</option>
+                            <option value="Pharmacy">💊 Faculty of Pharmacy</option>
+                            <option value="Administrative">📊 Administrative Sciences</option>
                         </select>
                         <div class="form-error" id="err-faculty">⚠ Please select your faculty</div>
                     </div>
@@ -166,6 +166,29 @@
                     <div class="form-hint">Press Enter or comma to add a tag. Examples: AVL, binary-tree, data-structures</div>
                 </div>
 
+                <!-- Image Upload -->
+                <div class="form-group" style="margin-top:24px;">
+                    <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>Add an image <span class="form-label-note">(optional)</span></span>
+                        <span style="font-size:11px; color:var(--text-3);">Max 5MB • JPG, PNG</span>
+                    </label>
+                    
+                    <div id="image-upload-zone" onclick="document.getElementById('image-input').click()" 
+                         style="border:2px dashed var(--border); border-radius:12px; padding:24px; text-align:center; cursor:pointer; background:rgba(248,250,252,0.5); transition:all .2s ease; display:flex; flex-direction:column; align-items:center; gap:8px;">
+                        <i data-lucide="image-plus" style="width:32px; height:32px; color:var(--text-3);"></i>
+                        <span id="upload-status-text" style="font-size:13px; color:var(--text-2); font-weight:600;">Click to upload a diagram or screenshot</span>
+                        <input type="file" id="image-input" name="ImageFile" accept="image/*" style="display:none;" onchange="previewSelectedImage(this)">
+                    </div>
+
+                    <div id="image-preview-container" class="hidden" style="margin-top:12px; position:relative; display:inline-block;">
+                        <img id="image-preview-img" src="" style="max-width:100%; max-height:200px; border-radius:8px; border:1.5px solid var(--border); box-shadow:var(--shadow-sm);">
+                        <button type="button" onclick="removeSelectedImage()" 
+                                style="position:absolute; top:-10px; right:-10px; background:var(--rose); color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-sm);">
+                            <i data-lucide="x" style="width:14px; height:14px;"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Hidden input for tags to submit with form -->
                 <input type="hidden" id="tags-hidden" name="Tags" />
             </div>
@@ -180,7 +203,7 @@
     <!-- STEP 3 — PREVIEW & POST -->
     <div class="hidden" id="wz3">
         <div class="posting-cost-banner">
-            <span class="posting-cost-icon"><i class="fas fa-coins"></i></span>
+            <span class="posting-cost-icon"><i data-lucide="coins"></i></span>
             <div>
                 <div class="posting-cost-title">This will cost 10 points</div>
                 <div class="amber-tip-text">
@@ -189,7 +212,7 @@
             </div>
         </div>
 
-        <div class="preview-section-label"><i class="fas fa-eye"></i> Preview — this is how your question will look:</div>
+        <div class="preview-section-label"><i data-lucide="eye"></i> Preview — this is how your question will look:</div>
 
         <div class="card preview-post-card">
             <div class="preview-post-meta">
@@ -201,17 +224,22 @@
             </div>
             <div class="preview-post-title" id="prev-title">Your question title will appear here...</div>
             <div class="preview-post-body" id="prev-body">Your question description will appear here...</div>
+            
+            <div id="prev-image-wrap" class="hidden" style="margin-top:16px;">
+                <img id="prev-image-display" src="" style="max-width:100%; border-radius:12px; border:1px solid var(--border);">
+            </div>
+
             <div class="preview-post-tags" id="prev-tags"></div>
             <div class="preview-post-stats">
-                <span><i class="fas fa-thumbs-up"></i> 0</span>
-                <span><i class="fas fa-comments"></i> 0 answers</span>
-                <span><i class="fas fa-eye"></i> 0 views</span>
+                <span><i data-lucide="thumbs-up"></i> 0</span>
+                <span><i data-lucide="message-square"></i> 0 answers</span>
+                <span><i data-lucide="eye"></i> 0 views</span>
                 <span class="chip chip-gray preview-status-chip">Open</span>
             </div>
         </div>
 
         <div class="card checklist-card">
-            <div class="checklist-heading"><i class="fas fa-check-circle"></i> Before you post — quick checklist:</div>
+            <div class="checklist-heading"><i data-lucide="check-circle-2"></i> Before you post — quick checklist:</div>
             <div class="checklist-items">
                 <label class="checklist-item">
                     <input class="checklist-checkbox" id="chk1" type="checkbox" />
@@ -235,7 +263,7 @@
         <div class="wizard-step-actions">
             <button type="button" class="btn btn-ghost" onclick="goToStep2()">← Edit Question</button>
             <button type="button" class="btn btn-primary btn-lg" id="btn-post" onclick="postQuestion()">
-                <i class="fas fa-rocket"></i> Post Question <span class="btn-cost-label">(−10 pts)</span>
+                <i data-lucide="rocket"></i> Post Question <span class="btn-cost-label">(−10 pts)</span>
             </button>
         </div>
     </div>
@@ -243,7 +271,7 @@
     <!-- STEP 4 — SUCCESS -->
     <div class="hidden fade-in" id="wz4">
         <div class="card success-card-body">
-            <div class="success-icon-circle"><i class="fas fa-party-popper" style="font-size:48px"></i></div>
+            <div class="success-icon-circle"><i data-lucide="party-popper" style="width:48px; height:48px;"></i></div>
             <h2 class="success-heading">Question posted!</h2>
             <p class="success-description">Your question is now live. The community will start answering soon.</p>
             <p class="success-points-summary">
@@ -251,7 +279,7 @@
             </p>
 
             <div class="earn-back-panel">
-                <div class="earn-back-heading"><i class="fas fa-coins" style="margin-right:8px"></i>How to earn your points back:</div>
+                <div class="earn-back-heading"><i data-lucide="coins" style="margin-right:8px"></i>How to earn your points back:</div>
                 <div class="earn-ways-list">
                     <span><i class="fas fa-thumbs-up" style="margin-right:8px"></i>Every upvote on any of your answers = <strong>+10 pts</strong></span>
                     <span><i class="fas fa-check-circle" style="margin-right:8px"></i>If your answer is marked Best Answer = <strong>+15 pts</strong></span>
@@ -458,11 +486,13 @@
         tags.push(val);
         renderTags();
         updateTagPreview();
+        document.getElementById('tags-hidden').value = tags.join(',');
     }
     function removeTag(i) {
         tags.splice(i, 1);
         renderTags();
         updateTagPreview();
+        document.getElementById('tags-hidden').value = tags.join(',');
     }
     function renderTags() {
         const wrap = document.getElementById('tags-wrap');
@@ -489,20 +519,116 @@
         });
     }
 
+    // --- Image Handling ---
+    function previewSelectedImage(input) {
+        const file = input.files[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                showToast("❌ File is too large (max 5MB)", "error");
+                input.value = "";
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('image-preview-img').src = e.target.result;
+                document.getElementById('image-preview-container').classList.remove('hidden');
+                document.getElementById('image-upload-zone').classList.add('hidden');
+                
+                // Also update preview step
+                document.getElementById('prev-image-display').src = e.target.result;
+                document.getElementById('prev-image-wrap').classList.remove('hidden');
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeSelectedImage() {
+        document.getElementById('image-input').value = "";
+        document.getElementById('image-preview-img').src = "";
+        document.getElementById('image-preview-container').classList.add('hidden');
+        document.getElementById('image-upload-zone').classList.remove('hidden');
+        
+        document.getElementById('prev-image-display').src = "";
+        document.getElementById('prev-image-wrap').classList.add('hidden');
+    }
+
     // Step 3: Post
-    function postQuestion() {
+    async function postQuestion() {
         const unchecked = ['chk1', 'chk2', 'chk3', 'chk4'].filter(id => !document.getElementById(id).checked);
         if (unchecked.length) {
             showToast('⚠️ Please check all boxes before posting', 'warn');
             return;
         }
-        // Populate hidden tags input with comma-separated tags
-        const tagsHidden = document.getElementById('tags-hidden');
-        if (tagsHidden) {
-            tagsHidden.value = tags.join(',');
+
+        const btn = document.getElementById('btn-post');
+        if (btn.disabled) return;
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Posting...';
+
+        try {
+            const formData = new FormData();
+            
+            // Add basic fields
+            formData.append("Title", document.getElementById('s2-title').value);
+            formData.append("Content", document.getElementById('s2-body').value);
+            formData.append("Faculty", document.getElementById('s2-faculty').value);
+            formData.append("CourseCode", document.getElementById('s2-course').value);
+            formData.append("Tags", document.getElementById('tags-hidden').value);
+            
+            // Add file
+            const imgInput = document.getElementById('image-input');
+            if (imgInput.files.length > 0) {
+                formData.append("ImageFile", imgInput.files[0]);
+            }
+
+            const response = await fetch('@Url.Action("CreatePost","Dashboard")', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                },
+                body: formData
+            });
+
+            if (response.status === 401) {
+                window.location.href = '@Url.Action("Login_Page", "Login")';
+                return;
+            }
+
+            const result = await response.json();
+            if (result.success) {
+                // Update global points if possible (sidebar)
+                const sidebarPts = document.querySelector('.pts-badge .pts-num');
+                if (sidebarPts && result.pointsBalance !== undefined) {
+                    sidebarPts.textContent = result.pointsBalance;
+                }
+                
+                // Show success step
+                switchToStep(4);
+                
+                // Add link to the real post
+                const successActions = document.querySelector('.success-action-buttons');
+                if (successActions && result.postId) {
+                    const viewBtn = document.createElement('a');
+                    viewBtn.href = `/Dashboard/SinglePost/${result.postId}`;
+                    viewBtn.innerHTML = '<button type="button" class="btn btn-emerald btn-lg" style="margin-bottom:10px; display:inline-flex; align-items:center; gap:8px;"><i data-lucide="eye" style="width:20px; height:20px;"></i> View Your Question</button>';
+                    successActions.insertBefore(viewBtn, successActions.firstChild);
+                    lucide.createIcons();
+                }
+            } else {
+                showToast('❌ ' + (result.message || 'Error occurred'), 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="rocket"></i> Post Question <span class="btn-cost-label">(−10 pts)</span>';
+                lucide.createIcons();
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('❌ Failed to post. Please check your connection.', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i data-lucide="rocket"></i> Post Question <span class="btn-cost-label">(−10 pts)</span>';
+            lucide.createIcons();
         }
-        const form = document.getElementById('create-post-form');
-        if (form) form.submit();
     }
 
     // Toast

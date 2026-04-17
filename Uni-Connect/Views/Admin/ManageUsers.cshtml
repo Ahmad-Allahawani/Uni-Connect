@@ -1,0 +1,93 @@
+@model IEnumerable<Uni_Connect.Models.User>
+@{
+    ViewData["Title"] = "Manage Users";
+    Layout = "_DashboardLayout";
+}
+
+<div class="dashboard-header">
+    <div>
+        <h1 class="h2">Manage Users</h1>
+        <p class="text-2">Total registered students and staff.</p>
+    </div>
+    <a asp-action="AdminDashboard" class="btn btn-secondary"><i data-lucide="arrow-left"></i> Back to Dashboard</a>
+</div>
+
+<div class="card">
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>University ID</th>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Faculty</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td class="text-mono">@user.UniversityID</td>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div class="av av-sm"><img src="https://ui-avatars.com/api/?name=@user.Name&background=3D52A0&color=fff&size=40" alt="User"/></div>
+                                <div>
+                                    <div style="font-weight:600;">@user.Name</div>
+                                    <div class="text-3">@@@user.Username</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>@user.Email</td>
+                        <td><span class="badge badge-primary">@user.Role</span></td>
+                        <td class="text-2">@user.Faculty</td>
+                        <td>
+                            @if (user.IsDeleted)
+                            {
+                                <span class="badge" style="background:#FFF1F2; color:#E11D48;">Deleted</span>
+                            }
+                            else
+                            {
+                                <span class="badge" style="background:#ECFDF5; color:#059669;">Active</span>
+                            }
+                        </td>
+                        <td>
+                            <form asp-action="ToggleUserDelete" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@user.UserID" />
+                                <button type="submit" class="btn btn-sm @(user.IsDeleted ? "btn-secondary" : "btn-danger")" onclick="return confirm('Are you sure you want to @(user.IsDeleted ? "restore" : "delete") this user?')">
+                                    <i data-lucide="@(user.IsDeleted ? "refresh-cw" : "user-x")"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .data-table th {
+        text-align: left;
+        padding: 16px;
+        background: #F8FAFC;
+        font-weight: 600;
+        color: var(--text-1);
+        font-size: 14px;
+        border-bottom: 1px solid #E2E8F0;
+    }
+    .data-table td {
+        padding: 16px;
+        border-bottom: 1px solid #F1F5F9;
+        font-size: 14px;
+    }
+    .text-mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .btn-danger { background: #E11D48; color: white; border: none; }
+    .btn-danger:hover { background: #BE123C; }
+</style>

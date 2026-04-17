@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
     <link href="~/css/design-system.css" rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@latest"></script>
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -26,12 +27,12 @@
             </a>
             <div class="nav-search">
                 <input type="text" class="form-input" placeholder="Search questions..." />
-                <i class="fas fa-magnifying-glass" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text-2); pointer-events:none;"></i>
+                <i data-lucide="search" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text-2); pointer-events:none; width:18px; height:18px;"></i>
             </div>
         </div>
         <div class="nav-actions">
             <div class="nav-bell" id="notifBell">
-                <i class="fas fa-bell"></i>
+                <i data-lucide="bell" style="width:20px; height:20px;"></i>
                 <span class="nav-bell-badge" id="notifBadge">3</span>
             </div>
             <div style="position: relative;">
@@ -39,11 +40,11 @@
                     <div class="av av-sm"><img src="https://ui-avatars.com/api/?name=@(User.FindFirst(ClaimTypes.Name)?.Value ?? "Student")&background=3D52A0&color=fff&size=44" alt="User"/></div>
                 </button>
                 <div class="nav-user-dropdown" id="navUserDropdown">
-                    <a asp-controller="Dashboard" asp-action="Profile" class="nav-dropdown-item" style="text-decoration:none;"><i class="fas fa-user"></i> My Profile</a>
-                    <a href="#" title="Coming soon" onclick="return false" class="nav-dropdown-item" style="text-decoration:none;"><i class="fas fa-cog"></i> Settings</a>
+                    <a asp-controller="Dashboard" asp-action="Profile" class="nav-dropdown-item" style="text-decoration:none;"><i data-lucide="user"></i> My Profile</a>
+                    <a asp-controller="Dashboard" asp-action="Settings" class="nav-dropdown-item" style="text-decoration:none;"><i data-lucide="settings"></i> Settings</a>
                     <hr style="margin:0; border:none; border-top:1px solid #E2E8F0;">
                     <form method="post" asp-controller="Login" asp-action="Logout" style="display:inline;">
-                        <button type="submit" class="nav-dropdown-item logout" style="text-decoration:none; background:none; border:none; cursor:pointer; padding:12px 16px; width:100%; text-align:left;"><i class="fas fa-door-open"></i> Sign Out</button>
+                        <button type="submit" class="nav-dropdown-item logout" style="text-decoration:none; background:none; border:none; cursor:pointer; padding:12px 16px; width:100%; text-align:left;"><i data-lucide="log-out"></i> Sign Out</button>
                     </form>
                 </div>
             </div>
@@ -61,19 +62,19 @@
                 <div class="av av-md"><img src="https://ui-avatars.com/api/?name=@(User.FindFirst(ClaimTypes.Name)?.Value ?? "Student")&background=3D52A0&color=fff&size=60" alt="User"/></div>
                 <div>
                     <div class="sidebar-user-name">@(User.FindFirst(ClaimTypes.Name)?.Value ?? "Student")</div>
-                    <div class="sidebar-user-pts"><i class="fas fa-coins"></i> <span id="sidebarPoints">-</span> points</div>
+                    <div class="sidebar-user-pts"><i data-lucide="coins" style="width:14px; height:14px; vertical-align: middle; margin-right: 4px;"></i> <span id="sidebarPoints">-</span> points</div>
                 </div>
             </a>
 
             <nav class="sidebar-nav">
-                <a asp-controller="Dashboard" asp-action="Dashboard" class="nav-item" id="navDashboard"><i class="fas fa-house"></i> Home Feed</a>
-                <a asp-controller="Dashboard" asp-action="CreatePost" class="nav-item" id="navCreatePost"><i class="fas fa-pen"></i> Ask Question</a>
-                <a asp-controller="Dashboard" asp-action="Sessions" class="nav-item" id="navChat"><i class="fas fa-comments"></i> Private Sessions <span class="nav-badge">2</span></a>
-                <a asp-controller="Dashboard" asp-action="Leaderboard" class="nav-item" id="navLeaderboard"><i class="fas fa-trophy"></i> Leaderboard</a>
-                <a asp-controller="Dashboard" asp-action="Notifications" class="nav-item" id="navNotifications"><i class="fas fa-bell"></i> Notifications <span class="nav-badge">3</span></a>
-                <a asp-controller="Dashboard" asp-action="Profile" class="nav-item" id="navProfile"><i class="fas fa-user"></i> My Profile</a>
-                <a asp-controller="Dashboard" asp-action="Points" class="nav-item" id="navPoints"><i class="fas fa-coins"></i> Points & Rewards</a>
-                <a href="#" title="Coming soon" onclick="return false" class="nav-item"><i class="fas fa-cog"></i> Settings</a>
+                <a asp-controller="Dashboard" asp-action="Dashboard" class="nav-item" id="navDashboard"><i data-lucide="layout-dashboard"></i> Home Feed</a>
+                <a asp-controller="Dashboard" asp-action="CreatePost" class="nav-item" id="navCreatePost"><i data-lucide="plus-circle"></i> Ask Question</a>
+                <a asp-controller="Dashboard" asp-action="Sessions" class="nav-item" id="navChat"><i data-lucide="messages-square"></i> Private Sessions <span class="nav-badge">2</span></a>
+                <a asp-controller="Dashboard" asp-action="Leaderboard" class="nav-item" id="navLeaderboard"><i data-lucide="trophy"></i> Leaderboard</a>
+                <a asp-controller="Dashboard" asp-action="Notifications" class="nav-item" id="navNotifications"><i data-lucide="bell"></i> Notifications <span class="nav-badge">3</span></a>
+                <a asp-controller="Dashboard" asp-action="Profile" class="nav-item" id="navProfile"><i data-lucide="user"></i> My Profile</a>
+                <a asp-controller="Dashboard" asp-action="Points" class="nav-item" id="navPoints"><i data-lucide="coins"></i> Points & Rewards</a>
+                <a asp-controller="Dashboard" asp-action="Settings" class="nav-item" id="navSettings"><i data-lucide="settings"></i> Settings</a>
             </nav>
 
             <div class="pts-widget">
@@ -86,7 +87,7 @@
             </div>
 
             <form method="post" asp-controller="Login" asp-action="Logout" style="display: contents;">
-                <button type="submit" class="sidebar-logout" style="border: none; background: none; cursor: pointer; padding: 12px 16px; width: 100%; text-align: left; font-size: 14px; color: #64748B; transition: all 0.2s;">🚪 Sign Out</button>
+                <button type="submit" class="sidebar-logout" style="border: none; background: none; cursor: pointer; padding: 12px 16px; width: 100%; text-align: left; font-size: 14px; color: #64748B; transition: all 0.2s; display: flex; align-items: center; gap: 8px;"><i data-lucide="log-out" style="width:18px; height:18px;"></i> Sign Out</button>
             </form>
         </aside>
 
@@ -169,6 +170,10 @@
             document.body.appendChild(t);
             setTimeout(() => t.remove(), 3000);
         }
+    </script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

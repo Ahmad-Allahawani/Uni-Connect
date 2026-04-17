@@ -7,7 +7,7 @@
 <div style="max-width: 900px; margin: 0 auto; padding: 20px;">
     <!-- Back Button -->
     <a asp-action="Dashboard" style="display: inline-flex; align-items: center; gap: 8px; color: #3D52A0; text-decoration: none; margin-bottom: 24px; font-weight: 600;">
-        <span style="font-size: 20px;">←</span> Back to Dashboard
+        <i data-lucide="arrow-left" style="width:18px; height:18px;"></i> Back to Dashboard
     </a>
 
     @if (Model != null)
@@ -37,13 +37,20 @@
             <!-- Content -->
             <div style="font-size: 15px; color: #1E293B; line-height: 1.7; margin-bottom: 24px; white-space: pre-wrap;">@Model.Content</div>
 
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <div style="margin-bottom: 24px; border-radius:12px; overflow:hidden; border:1px solid #E2E8F0;">
+                    <img src="@Model.ImageUrl" alt="Question Image" style="max-width:100%; display:block; cursor:pointer;" onclick="window.open(this.src)" />
+                </div>
+            }
+
             <!-- Stats -->
             <div style="display: flex; gap: 24px; font-size: 14px; color: #64748B; font-weight: 600; border-top: 1px solid #E2E8F0; padding-top: 16px;">
-                <span>👍 @Model.Upvotes upvotes</span>
-                <span>💬 @(Model.Answers?.Count(a => !a.IsDeleted) ?? 0) answers</span>
+                <span style="display:inline-flex; align-items:center; gap:6px;"><i data-lucide="thumbs-up" style="width:16px; height:16px;"></i> @Model.Upvotes upvotes</span>
+                <span style="display:inline-flex; align-items:center; gap:6px;"><i data-lucide="message-square" style="width:16px; height:16px;"></i> @(Model.Answers?.Count(a => !a.IsDeleted) ?? 0) answers</span>
                 @if (Model.Answers?.Any(a => a.IsAccepted && !a.IsDeleted) == true)
                 {
-                    <span style="color: #065F46;">✓ Solved</span>
+                    <span style="color: #065F46; display:inline-flex; align-items:center; gap:6px;"><i data-lucide="check-circle-2" style="width:16px; height:16px;"></i> Solved</span>
                 }
             </div>
         </div>
@@ -67,14 +74,21 @@
                                 <span style="font-size: 12px; color: #64748B; margin-left: 8px;">@answer.CreatedAt.ToString("MMM dd, yyyy")</span>
                                 @if (answer.IsAccepted)
                                 {
-                                    <span style="background: #065F46; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-left: 8px;">✓ Accepted Answer</span>
+                                    <span style="background: #065F46; color: white; padding: 2px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; margin-left: 8px; display:inline-flex; align-items:center; gap:4px;"><i data-lucide="check-circle-2" style="width:12px; height:12px;"></i> Accepted Answer</span>
                                 }
                             </div>
-                            <button class="upvote-btn" data-answer-id="@answer.AnswerID" style="background:none; border:none; cursor:pointer; font-size:13px; color:#64748B; font-weight:600;">
-                                <span class="upvote-count" data-upvote-count="@answer.AnswerID">👍 @answer.Upvotes</span>
+                            <button class="upvote-btn" data-answer-id="@answer.AnswerID" style="background:none; border:none; cursor:pointer; font-size:13px; color:#64748B; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+                                <span class="upvote-count" data-upvote-count="@answer.AnswerID"><i data-lucide="thumbs-up" style="width:14px; height:14px; vertical-align:middle;"></i> @answer.Upvotes</span>
                             </button>
                         </div>
                         <p style="font-size: 14px; color: #1E293B; line-height: 1.6; margin: 0; white-space: pre-wrap;">@answer.Content</p>
+                        
+                        @if (!string.IsNullOrEmpty(answer.ImageUrl))
+                        {
+                            <div style="margin-top: 12px; border-radius:8px; overflow:hidden; border:1px solid #E2E8F0; max-width:400px;">
+                                <img src="@answer.ImageUrl" alt="Answer Image" style="max-width:100%; display:block; cursor:pointer;" onclick="window.open(this.src)" />
+                            </div>
+                        }
                     </div>
                 }
             </div>
@@ -96,12 +110,20 @@
         {
             <div style="margin-top:20px; background:white; border-radius:12px; padding:20px; border:1.5px solid #E2E8F0; margin-top:16px;">
                 <h3 style="margin-top:0;">Your Answer</h3>
-                <form asp-action="PostAnswer" method="post" style="margin-top:8px;">
+                <form asp-action="PostAnswer" method="post" enctype="multipart/form-data" style="margin-top:8px;">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="postId" value="@Model.PostID" />
-                    <textarea name="content" rows="5" style="width:100%; padding:12px; border-radius:8px; border:1px solid #E6EEF8;" placeholder="Write your answer here..." required></textarea>
-                    <div style="text-align:right; margin-top:8px;">
-                        <button type="submit" class="btn btn-primary" style="background:#3D52A0; color:#fff; padding:8px 14px; border-radius:8px; border:none;">Post Answer</button>
+                    <textarea name="content" rows="5" style="width:100%; padding:12px; border-radius:8px; border:1px solid #E6EEF8; margin-bottom:12px;" placeholder="Write your answer here..." required></textarea>
+                    
+                    <div style="margin-bottom:16px;">
+                        <label style="display:block; font-size:13px; font-weight:700; color:#0F172A; margin-bottom:8px;">Attach an image (optional)</label>
+                        <input type="file" name="ImageFile" accept="image/*" style="font-size:13px; color:#64748B;" />
+                    </div>
+
+                    <div style="text-align:right;">
+                        <button type="submit" class="btn btn-primary" style="background:#3D52A0; color:#fff; padding:10px 20px; border-radius:8px; border:none; font-weight:600; display:inline-flex; align-items:center; gap:8px;">
+                            <i data-lucide="send" style="width:18px; height:18px;"></i> Post Answer
+                        </button>
                     </div>
                 </form>
             </div>
@@ -141,8 +163,12 @@
                             });
                             if (!resp.ok) throw new Error('Network response was not ok');
                             var data = await resp.json();
-                            var display = this.querySelector('.upvote-count') || document.querySelector('[data-upvote-count="' + id + '"]');
-                            if (display) display.textContent = '👍 ' + data.upvotes;
+                            if (display) {
+                                // Find icon inside or just update text
+                                const iconHtml = '<i data-lucide="thumbs-up" style="width:14px; height:14px; vertical-align:middle;"></i> ';
+                                display.innerHTML = iconHtml + data.upvotes;
+                                lucide.createIcons();
+                            }
                         } catch (err) {
                             console.error(err);
                             alert('Failed to upvote. Please try again.');

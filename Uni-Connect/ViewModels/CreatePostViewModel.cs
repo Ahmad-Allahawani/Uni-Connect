@@ -50,6 +50,10 @@ namespace Uni_Connect.ViewModels
         [Display(Name = "Category")]
         public int? CategoryId { get; set; }
 
+        // --- Image Upload ---
+        [Display(Name = "Attachment")]
+        public IFormFile? ImageFile { get; set; }
+
         // --- Timestamp (set server-side) ---
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

@@ -1,16 +1,35 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Uni_Connect.Models
 {
     public class User
     {
         public int UserID { get; set; }
+
+        [Required, StringLength(20)]
         public string UniversityID { get; set; }
+
+        [Required, StringLength(100)]
         public string Name { get; set; }
+
+        [Required, StringLength(50)]
         public string Username { get; set; }
+
+        [Required, EmailAddress, StringLength(100)]
         public string Email { get; set; }
+
+        [Required]
         public string PasswordHash { get; set; }
+
+        [Required, StringLength(20)]
         public string Role { get; set; } 
+
         public int Points { get; set; }
+
+        [Required, StringLength(100)]
         public string Faculty { get; set; }
+
+        [Required, StringLength(20)]
         public string YearOfStudy { get; set; }
         public bool IsDeleted { get; set; } = false;
 

@@ -629,3 +629,14 @@ input, select, textarea { font-family: inherit; }
   .sidebar.open { transform: translateX(0); }
   .main { padding: 16px 14px; }
 }
+/* Lucide Icon Colors & Hover Effects */
+.nav-item i { transition: all .2s; width: 18px; height: 18px; }
+.nav-item:hover i { transform: scale(1.1); }
+.sidebar-nav [data-lucide="layout-dashboard"] { color: var(--indigo); }
+.sidebar-nav [data-lucide="plus-circle"] { color: var(--violet); }
+.sidebar-nav [data-lucide="messages-square"] { color: #8B5CF6; }
+.sidebar-nav [data-lucide="trophy"] { color: var(--amber); }
+.sidebar-nav [data-lucide="bell"] { color: var(--indigo); }
+.sidebar-nav [data-lucide="user"] { color: #6366F1; }
+.sidebar-nav [data-lucide="coins"] { color: var(--emerald); }
+.sidebar-nav [data-lucide="settings"] { color: var(--text-2); }

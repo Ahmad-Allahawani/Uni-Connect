@@ -1,0 +1,45 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_DashboardLayout";
+}
+
+<div class="dashboard-header">
+    <div>
+        <h1 class="h2">Administrator Dashboard</h1>
+        <p class="text-2">Platform overview and moderation control.</p>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon" style="background:var(--primary-sub); color:var(--primary);"><i data-lucide="users"></i></div>
+        <div class="stat-value">@ViewBag.UserCount</div>
+        <div class="stat-label">Total Users</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background:#ECFDF5; color:#059669;"><i data-lucide="file-text"></i></div>
+        <div class="stat-value">@ViewBag.PostCount</div>
+        <div class="stat-label">Total Posts</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background:#FFF1F2; color:#E11D48;"><i data-lucide="alert-triangle"></i></div>
+        <div class="stat-value">@ViewBag.ReportCount</div>
+        <div class="stat-label">Unresolved Reports</div>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 24px;">
+    <div class="card-header">
+        <h3 class="h4">Moderation Quick Links</h3>
+    </div>
+    <div class="card-body">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+            <a asp-action="ManageUsers" class="btn btn-primary" style="text-align: center; display: block; text-decoration: none;">
+                <i data-lucide="user-cog" style="margin-right:8px; vertical-align:middle;"></i> Manage Users
+            </a>
+            <a asp-action="ManageReports" class="btn btn-secondary" style="text-align: center; display: block; text-decoration: none;">
+                <i data-lucide="flag" style="margin-right:8px; vertical-align:middle;"></i> Review Reports
+            </a>
+        </div>
+    </div>
+</div>
