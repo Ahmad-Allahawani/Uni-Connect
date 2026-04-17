@@ -56,6 +56,21 @@ namespace Uni_Connect.Controllers
             
             return View(user);
         }
+
+        // View another user's public profile by username
+        public async Task<IActionResult> ViewProfile(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username)) return RedirectToAction("Dashboard");
+
+            var userProfile = await _context.Users
+                .Include(u => u.Posts)
+                .Include(u => u.Answers)
+                .FirstOrDefaultAsync(u => u.Username.ToLower() == username.ToLower() && !u.IsDeleted);
+
+            if (userProfile == null) return RedirectToAction("Dashboard");
+
+            return View("Profile", userProfile);
+        }
         public async Task<IActionResult> Notifications()
         {
             var user = await GetCurrentUser();
@@ -299,16 +314,95 @@ namespace Uni_Connect.Controllers
         {
             var user = await GetCurrentUser();
             if (user == null) return RedirectToAction("Login_Page", "Login");
-            
+
             var post = await _context.Posts
                 .Include(p => p.User)
                 .Include(p => p.Category)
                 .Include(p => p.Answers)
+                    .ThenInclude(a => a.User)
                 .FirstOrDefaultAsync(p => p.PostID == id);
-            
+
             if (post == null) return RedirectToAction("Dashboard");
-            
+
+            // Increment view count (persist asynchronously)
+            try
+            {
+                post.ViewsCount += 1;
+                _context.Posts.Update(post);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                // Non-fatal if saving views fails
+            }
+
             return View(post);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PostAnswer(int postId, string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                TempData["Error"] = "Answer content cannot be empty.";
+                return RedirectToAction("SinglePost", new { id = postId });
+            }
+
+            var user = await GetCurrentUser();
+            if (user == null) return RedirectToAction("Login_Page", "Login");
+
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.PostID == postId);
+            if (post == null) return RedirectToAction("Dashboard");
+
+            var answer = new Answer
+            {
+                PostID = postId,
+                UserID = user.UserID,
+                Content = content.Trim(),
+                CreatedAt = DateTime.UtcNow,
+                Upvotes = 0,
+                IsDeleted = false,
+                IsAccepted = false
+            };
+
+            _context.Answers.Add(answer);
+
+            // Award +5 points to answering user
+            user.Points += 5;
+            _context.Users.Update(user);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("SinglePost", new { id = postId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpvoteAnswer(int answerId)
+        {
+            var user = await GetCurrentUser();
+            if (user == null) return Unauthorized();
+
+            var answer = await _context.Answers
+                .Include(a => a.User)
+                .FirstOrDefaultAsync(a => a.AnswerID == answerId && !a.IsDeleted);
+
+            if (answer == null) return NotFound();
+
+            answer.Upvotes += 1;
+            _context.Answers.Update(answer);
+
+            // Award +10 points to the answer author
+            if (answer.User != null)
+            {
+                answer.User.Points += 10;
+                _context.Users.Update(answer.User);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, upvotes = answer.Upvotes });
         }
 
         private async Task<User> GetCurrentUser()

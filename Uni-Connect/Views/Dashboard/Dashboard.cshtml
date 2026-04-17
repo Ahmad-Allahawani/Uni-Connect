@@ -109,7 +109,14 @@
                                  alt="Avatar" class="q-avatar" />
                             <div>
                                 <div class="q-meta">
-                                    <span class="q-author">@(post.User?.Name?.Split(' ').First() ?? "User")</span>
+                                    @if (!string.IsNullOrEmpty(post.User?.Username))
+                                    {
+                                        <a asp-action="ViewProfile" asp-route-username="@post.User.Username" class="q-author">@(post.User?.Name?.Split(' ').First() ?? "User")</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="q-author">@(post.User?.Name?.Split(' ').First() ?? "User")</span>
+                                    }
                                     <span class="q-date">@post.CreatedAt.ToString("MMM dd, yyyy")</span>
                                 </div>
                             </div>
