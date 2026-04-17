@@ -71,6 +71,47 @@ namespace Uni_Connect.Controllers
 
             return View("Profile", userProfile);
         }
+
+        // Settings page (GET)
+        public async Task<IActionResult> Settings()
+        {
+            var user = await GetCurrentUser();
+            if (user == null) return RedirectToAction("Login_Page", "Login");
+
+            var model = new Uni_Connect.ViewModels.SettingsViewModel
+            {
+                UserID = user.UserID,
+                Name = user.Name,
+                Email = user.Email,
+                Faculty = user.Faculty,
+                YearOfStudy = user.YearOfStudy,
+                ProfileImageUrl = user.ProfileImageUrl
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Settings(Uni_Connect.ViewModels.SettingsViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var user = await GetCurrentUser();
+            if (user == null) return RedirectToAction("Login_Page", "Login");
+
+            user.Name = model.Name?.Trim() ?? user.Name;
+            // Email is not editable here
+            user.Faculty = model.Faculty;
+            user.YearOfStudy = model.YearOfStudy;
+            user.ProfileImageUrl = model.ProfileImageUrl;
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Settings updated successfully.";
+            return RedirectToAction("Settings");
+        }
         public async Task<IActionResult> Notifications()
         {
             var user = await GetCurrentUser();

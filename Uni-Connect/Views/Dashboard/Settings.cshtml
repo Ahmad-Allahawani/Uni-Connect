@@ -1,0 +1,47 @@
+@model Uni_Connect.ViewModels.SettingsViewModel
+@{
+    ViewData["Title"] = "Settings";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<div style="max-width:880px; margin:0 auto; padding:20px;">
+    <h1 style="font-size:22px; font-weight:800; margin-bottom:12px;">Settings</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="success-message-box">✅ @TempData["SuccessMessage"]</div>
+    }
+
+    <form asp-action="Settings" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="form-group" style="margin-bottom:12px;">
+            <label style="font-weight:700;">Full name</label>
+            <input asp-for="Name" class="form-input" />
+        </div>
+
+        <div class="form-group" style="margin-bottom:12px;">
+            <label style="font-weight:700;">Email (read-only)</label>
+            <input asp-for="Email" class="form-input" readonly />
+        </div>
+
+        <div class="form-group" style="margin-bottom:12px;">
+            <label style="font-weight:700;">Faculty</label>
+            <input asp-for="Faculty" class="form-input" />
+        </div>
+
+        <div class="form-group" style="margin-bottom:12px;">
+            <label style="font-weight:700;">Year of Study</label>
+            <input asp-for="YearOfStudy" class="form-input" />
+        </div>
+
+        <div class="form-group" style="margin-bottom:18px;">
+            <label style="font-weight:700;">Profile Image URL (optional)</label>
+            <input asp-for="ProfileImageUrl" class="form-input" />
+        </div>
+
+        <div style="text-align:right;">
+            <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+    </form>
+</div>
