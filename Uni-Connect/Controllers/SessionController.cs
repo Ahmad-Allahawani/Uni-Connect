@@ -16,7 +16,20 @@ namespace Uni_Connect.Controllers
             _context = context;
         }
 
-        // ── Page ────────────────────────────────────────────────
+        public async Task<IActionResult> Sessions()
+        {
+            var user = await GetCurrentUser();
+            if (user == null) return RedirectToAction("Login_Page", "Login");
+
+            var sessions = await _context.PrivateSessions
+                .Where(s => s.StudentID == user.UserID || s.HelperID == user.UserID)
+                .Include(s => s.Student)
+                .Include(s => s.Helper)
+                .Include(s => s.Messages)
+                .ToListAsync();
+
+            return View(sessions);
+        }
         public async Task<IActionResult> ChatPage()
         {
             var me = GetCurrentUserId();
@@ -49,7 +62,7 @@ namespace Uni_Connect.Controllers
             return View("~/Views/Session/ChatPage.cshtml");
         }
 
-        // ── Send Request ────────────────────────────────────────
+       
         [HttpPost]
         public async Task<IActionResult> SendRequest(int recipientId, int postId, string description)
         {
@@ -82,7 +95,7 @@ namespace Uni_Connect.Controllers
             return Ok(new { message = "Request sent!" });
         }
 
-        // ── Accept Request ──────────────────────────────────────
+        
         [HttpPost]
         public async Task<IActionResult> AcceptRequest(int requestId)
         {
@@ -96,7 +109,7 @@ namespace Uni_Connect.Controllers
 
             if (request == null) return NotFound();
 
-            // check no session already exists for this request
+            
             var sessionExists = await _context.PrivateSessions
                 .AnyAsync(s => s.RequestID == requestId);
 
@@ -119,7 +132,7 @@ namespace Uni_Connect.Controllers
             return Ok(new { sessionId = session.PrivateSessionID });
         }
 
-        // ── Decline Request ─────────────────────────────────────
+        
         [HttpPost]
         public async Task<IActionResult> DeclineRequest(int requestId)
         {
@@ -139,7 +152,7 @@ namespace Uni_Connect.Controllers
             return Ok();
         }
 
-        // ── Close Session ───────────────────────────────────────
+       
         [HttpPost]
         public async Task<IActionResult> CloseSession(int sessionId)
         {
@@ -157,7 +170,16 @@ namespace Uni_Connect.Controllers
             return Ok();
         }
 
-        // ── Helper ──────────────────────────────────────────────
+        private async Task<User?> GetCurrentUser()
+        {
+            var userIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdStr)) return null;
+            int userId = int.Parse(userIdStr);
+            return await _context.Users
+            .Include(u => u.Notifications)
+            .FirstOrDefaultAsync(u => u.UserID == userId);
+        }
+
         private int GetCurrentUserId() =>
             int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
     }

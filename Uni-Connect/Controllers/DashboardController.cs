@@ -330,20 +330,7 @@ namespace Uni_Connect.Controllers
             return RedirectToAction("Dashboard");
         }
 
-        public async Task<IActionResult> Sessions()
-        {
-            var user = await GetCurrentUser();
-            if (user == null) return RedirectToAction("Login_Page", "Login");
-            
-            var sessions = await _context.PrivateSessions
-                .Where(s => s.StudentID == user.UserID || s.HelperID == user.UserID)
-                .Include(s => s.Student)
-                .Include(s => s.Helper)
-                .Include(s => s.Messages)
-                .ToListAsync();
-            
-            return View(sessions);
-        }
+        
 
         public async Task<IActionResult> ChatPage()
         {
