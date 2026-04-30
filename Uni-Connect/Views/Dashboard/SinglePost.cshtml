@@ -1,4 +1,4 @@
-@model Uni_Connect.Models.Post
+﻿@model Uni_Connect.Models.Post
 @{
     ViewData["Title"] = Model?.Title ?? "Post";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
@@ -15,7 +15,7 @@
         <!-- Post Header -->
         <div style="background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; border: 1.5px solid #E2E8F0;">
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
-                <img src="https://ui-avatars.com/api/?name=@(Model.User?.Name ?? "User")&background=3D52A0&color=fff&size=40" 
+                <img src="https://ui-avatars.com/api/?name=@(Model.User?.Name ?? "User")&background=3D52A0&color=fff&size=40"
                      alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%;" />
                 <div>
                     <strong style="font-size: 14px; color: #0F172A; display: block;">@(Model.User?.Name?.Split(' ').First() ?? "User")</strong>
@@ -27,6 +27,37 @@
                         @Model.Category.Name
                     </span>
                 }
+
+                <!-- Request Session Button - only shown to other authenticated users -->
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+                    if (Model.UserID != currentUserId)
+                    {
+                        <button onclick="openSessionModal(@Model.UserID, @Model.PostID)"
+                                style="background:#3D52A0; color:white; padding:8px 18px; border-radius:8px; border:none; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:13px;">
+                            <i data-lucide="message-circle" style="width:15px; height:15px;"></i> Request Session
+                        </button>
+                    }
+                }
+            </div>
+
+            <!-- Session Request Modal (hidden by default) -->
+            <div id="sessionModal" style="display:none; background:#F8FAFC; border:1.5px solid #E2E8F0; border-radius:10px; padding:16px; margin-bottom:16px;">
+                <p style="font-size:13px; font-weight:700; color:#0F172A; margin:0 0 10px 0;">Describe what you need help with:</p>
+                <textarea id="sessionDescription" rows="3"
+                      style="width:100%; padding:10px; border-radius:8px; border:1px solid #E2E8F0; font-size:13px; resize:vertical; box-sizing:border-box;"
+                      placeholder="e.g. I need help understanding your approach to this problem..."></textarea>
+                <div style="display:flex; gap:8px; margin-top:10px;">
+                    <button onclick="submitSessionRequest()"
+                            style="background:#3D52A0; color:white; padding:8px 18px; border-radius:8px; border:none; font-weight:600; cursor:pointer; font-size:13px;">
+                        Send Request
+                    </button>
+                    <button onclick="document.getElementById('sessionModal').style.display='none'"
+                            style="background:#F1F5F9; color:#64748B; padding:8px 18px; border-radius:8px; border:none; font-weight:600; cursor:pointer; font-size:13px;">
+                        Cancel
+                    </button>
+                </div>
             </div>
 
             <!-- Title -->
@@ -67,7 +98,7 @@
                 {
                     <div style="border-left: 4px solid @(answer.IsAccepted ? "#065F46" : "#E2E8F0"); padding: 16px; margin-bottom: 16px; background: @(answer.IsAccepted ? "#ECFDF5" : "#F8FAFC");">
                         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                            <img src="https://ui-avatars.com/api/?name=@(answer.User?.Name ?? "User")&background=7091E6&color=fff&size=32" 
+                            <img src="https://ui-avatars.com/api/?name=@(answer.User?.Name ?? "User")&background=7091E6&color=fff&size=32"
                                  alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%;" />
                             <div style="flex: 1;">
                                 <strong style="font-size: 13px; color: #0F172A;">@(answer.User?.Name?.Split(' ').First() ?? "User")</strong>
@@ -82,7 +113,7 @@
                             </button>
                         </div>
                         <p style="font-size: 14px; color: #1E293B; line-height: 1.6; margin: 0; white-space: pre-wrap;">@answer.Content</p>
-                        
+
                         @if (!string.IsNullOrEmpty(answer.ImageUrl))
                         {
                             <div style="margin-top: 12px; border-radius:8px; overflow:hidden; border:1px solid #E2E8F0; max-width:400px;">
@@ -114,7 +145,7 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="postId" value="@Model.PostID" />
                     <textarea name="content" rows="5" style="width:100%; padding:12px; border-radius:8px; border:1px solid #E6EEF8; margin-bottom:12px;" placeholder="Write your answer here..." required></textarea>
-                    
+
                     <div style="margin-bottom:16px;">
                         <label style="display:block; font-size:13px; font-weight:700; color:#0F172A; margin-bottom:8px;">Attach an image (optional)</label>
                         <input type="file" name="ImageFile" accept="image/*" style="font-size:13px; color:#64748B;" />
@@ -141,19 +172,56 @@
         </form>
 
         <script>
-            (function() {
+            // ── Session Request ──────────────────────────────────────
+            let _recipientId, _postId;
+
+            function openSessionModal(recipientId, postId) {
+                _recipientId = recipientId;
+                _postId = postId;
+                document.getElementById('sessionModal').style.display = 'block';
+            }
+
+            async function submitSessionRequest() {
+                const description = document.getElementById('sessionDescription').value.trim();
+                if (!description) {
+                    alert('Please describe what you need help with.');
+                    return;
+                }
+                await sendSessionRequest(_recipientId, _postId, description);
+            }
+
+            async function sendSessionRequest(recipientId, postId, description) {
+                try {
+                    const res = await fetch('/Session/SendRequest', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `recipientId=${recipientId}&postId=${postId}&description=${encodeURIComponent(description)}`
+                    });
+                    const data = await res.json();
+                    alert(data.message);
+                    document.getElementById('sessionModal').style.display = 'none';
+                    document.getElementById('sessionDescription').value = '';
+                } catch (err) {
+                    console.error(err);
+                    alert('Failed to send session request. Please try again.');
+                }
+            }
+
+            // ── Upvotes ──────────────────────────────────────────────
+            (function () {
                 function getToken() {
                     var el = document.querySelector('#antiforgeryForm input[name="__RequestVerificationToken"]');
                     return el ? el.value : '';
                 }
 
-                document.querySelectorAll('.upvote-btn').forEach(function(btn) {
+                document.querySelectorAll('.upvote-btn').forEach(function (btn) {
                     btn.addEventListener('click', async function (e) {
                         e.preventDefault();
                         var id = this.dataset.answerId;
                         var token = getToken();
+                        var display = document.querySelector(`[data-upvote-count="${id}"]`);
                         try {
-                            var resp = await fetch('@Url.Action("UpvoteAnswer","Dashboard")', {
+                            var resp = await fetch('@Url.Action("UpvoteAnswer", "Dashboard")', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -164,7 +232,6 @@
                             if (!resp.ok) throw new Error('Network response was not ok');
                             var data = await resp.json();
                             if (display) {
-                                // Find icon inside or just update text
                                 const iconHtml = '<i data-lucide="thumbs-up" style="width:14px; height:14px; vertical-align:middle;"></i> ';
                                 display.innerHTML = iconHtml + data.upvotes;
                                 lucide.createIcons();

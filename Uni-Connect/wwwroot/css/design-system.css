@@ -109,6 +109,7 @@ input, select, textarea { font-family: inherit; }
   display: block; opacity: 1;
 }
 
+
 /* Cards */
 .card {
   background: var(--surface); border: 1px solid var(--border);
@@ -640,3 +641,8 @@ input, select, textarea { font-family: inherit; }
 .sidebar-nav [data-lucide="user"] { color: #6366F1; }
 .sidebar-nav [data-lucide="coins"] { color: var(--emerald); }
 .sidebar-nav [data-lucide="settings"] { color: var(--text-2); }
+
+
+
+
+
