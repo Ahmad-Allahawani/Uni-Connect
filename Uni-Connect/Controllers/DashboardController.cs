@@ -425,23 +425,7 @@ namespace Uni_Connect.Controllers
         .FirstOrDefaultAsync(u => u.UserID == userId);
        }
 
-        [HttpGet("/api/messages/{roomId}")]
-        public async Task<IActionResult> GetMessages(int roomId)
-        {
-            var messages = await _context.Messages
-                .Where(m => m.SessionID == roomId)
-                .OrderBy(m => m.SentAt)
-                .Select(m => new
-                {
-                    m.SenderID,
-                    m.MessageText,
-                    Time = m.SentAt.ToString("HH:mm")
-                })
-                 .ToListAsync();
-            return Ok(messages);
-
-
-        }
+       
         private async Task<string?> SaveImage(IFormFile? file, string folder)
         {
             if (file == null || file.Length == 0) return null;
