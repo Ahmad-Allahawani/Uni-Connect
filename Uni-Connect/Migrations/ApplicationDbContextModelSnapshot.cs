@@ -314,7 +314,13 @@ namespace Uni_Connect.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReportID"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsResolved")
                         .HasColumnType("bit");
 
                     b.Property<int>("PostID")
@@ -322,14 +328,19 @@ namespace Uni_Connect.Migrations
 
                     b.Property<string>("Reason")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int>("ReporterID")
                         .HasColumnType("int");
 
-                    b.Property<string>("Status")
+                    b.Property<int?>("TargetID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TargetType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("ReportID");
 
@@ -364,6 +375,9 @@ namespace Uni_Connect.Migrations
                     b.Property<int>("PostID")
                         .HasColumnType("int");
 
+                    b.Property<int>("RecipientID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -373,6 +387,8 @@ namespace Uni_Connect.Migrations
                     b.HasIndex("OwnerID");
 
                     b.HasIndex("PostID");
+
+                    b.HasIndex("RecipientID");
 
                     b.ToTable("Requests");
                 });
@@ -642,9 +658,17 @@ namespace Uni_Connect.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Uni_Connect.Models.User", "Recipient")
+                        .WithMany("ReceivedRequests")
+                        .HasForeignKey("RecipientID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("Owner");
 
                     b.Navigation("Post");
+
+                    b.Navigation("Recipient");
                 });
 
             modelBuilder.Entity("Uni_Connect.Models.Category", b =>
@@ -686,6 +710,8 @@ namespace Uni_Connect.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Posts");
+
+                    b.Navigation("ReceivedRequests");
 
                     b.Navigation("Reports");
 

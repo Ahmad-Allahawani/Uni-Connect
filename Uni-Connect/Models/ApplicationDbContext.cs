@@ -92,6 +92,12 @@ namespace Uni_Connect.Models
                 .HasForeignKey(r => r.OwnerID)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<Request>()
+                .HasOne(r => r.Recipient)
+                .WithMany(u => u.ReceivedRequests)
+                .HasForeignKey(r => r.RecipientID)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Report>()
                 .HasOne(r => r.Reporter)
                 .WithMany(u => u.Reports)

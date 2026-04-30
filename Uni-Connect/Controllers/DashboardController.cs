@@ -415,16 +415,15 @@ namespace Uni_Connect.Controllers
             return Ok(new { success = true, upvotes = answer?.Upvotes ?? 0 });
         }
 
-        private async Task<User> GetCurrentUser()
-        {
-            var userIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdStr)) return null;
-
-            int userId = int.Parse(userIdStr);
-            return await _context.Users
-                .Include(u => u.Notifications)
-                .FirstOrDefaultAsync(u => u.UserID == userId);
-        }
+       private async Task<User?> GetCurrentUser()
+       {
+        var userIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdStr)) return null;
+        int userId = int.Parse(userIdStr);
+        return await _context.Users
+        .Include(u => u.Notifications)
+        .FirstOrDefaultAsync(u => u.UserID == userId);
+       }
 
         [HttpGet("/api/messages/{roomId}")]
         public async Task<IActionResult> GetMessages(int roomId)

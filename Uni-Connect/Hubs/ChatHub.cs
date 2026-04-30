@@ -9,29 +9,41 @@ namespace Uni_Connect.Hubs
     public class ChatHub : Hub
     {
         private readonly ApplicationDbContext _context;
+
         public ChatHub(ApplicationDbContext context)
         {
             _context = context;
         }
+
         public async Task JoinRoom(string roomId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
         }
 
-        public async Task SendMessage(string  roomId, string message)
+        public async Task SendMessage(string roomId, string message)
         {
             var senderId = int.Parse(Context.User!.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var sessionId = int.Parse(roomId);
+
+            // verify sender belongs to this session
+            var session = await _context.PrivateSessions.FindAsync(sessionId);
+            if (session == null || (!session.IsActive) ||
+                (session.StudentID != senderId && session.HelperID != senderId))
+            {
+                throw new HubException("Not authorized to send in this session.");
+            }
+
             var newMessage = new Message
             {
-                SessionID = int.Parse(roomId),
+                SessionID = sessionId,
                 SenderID = senderId,
                 MessageText = message,
-                SentAt = DateTime.UtcNow
+                SentAt = DateTime.UtcNow,
+                IsRead = false
             };
+
             _context.Messages.Add(newMessage);
             await _context.SaveChangesAsync();
-
-
 
             await Clients.Group(roomId).SendAsync(
                 "ReceiveMessage",
@@ -41,7 +53,9 @@ namespace Uni_Connect.Hubs
                 newMessage.SentAt.ToString("HH:mm")
             );
         }
-
+        public async Task LeaveRoom(string roomId)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
+        }
     }
-        
 }

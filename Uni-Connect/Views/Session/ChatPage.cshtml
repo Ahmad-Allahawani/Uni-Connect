@@ -1,0 +1,376 @@
+@using System.Security.Claims
+@{
+    ViewData["Title"] = "Private Sessions";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+
+    var me = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    var meName = User.FindFirst(ClaimTypes.Name)?.Value ?? "Me";
+
+    var activeSessions = ViewBag.ActiveSessions as List<Uni_Connect.Models.PrivateSession> ?? new();
+    var incomingRequests = ViewBag.IncomingRequests as List<Uni_Connect.Models.Request> ?? new();
+    var history = ViewBag.History as List<Uni_Connect.Models.PrivateSession> ?? new();
+}
+
+<main class="main">
+    <div style="margin-bottom:32px;">
+        <h1 style="font-size:28px;font-weight:800;margin-bottom:4px;">Private Sessions</h1>
+        <p style="font-size:14px;color:var(--text-2);">One-on-one help · 100% voluntary</p>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" style="display:none;position:fixed;bottom:24px;right:24px;background:var(--indigo);color:#fff;padding:12px 20px;border-radius:var(--radius);font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.15);"></div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('tab-active',this)">
+            Active Sessions
+            @if (activeSessions.Count > 0)
+            {
+                <span class="nav-badge" style="background:var(--indigo);color:#fff;padding:2px 6px;border-radius:6px;font-size:11px;margin-left:6px;">@activeSessions.Count</span>
+            }
+        </div>
+        <div class="tab" onclick="showTab('tab-requests',this)">
+            Incoming Requests
+            @if (incomingRequests.Count > 0)
+            {
+                <span class="nav-badge" style="background:var(--indigo);color:#fff;padding:2px 6px;border-radius:6px;font-size:11px;margin-left:6px;">@incomingRequests.Count</span>
+            }
+        </div>
+        <div class="tab" onclick="showTab('tab-history',this)">History</div>
+    </div>
+
+    <div data-tabs-container>
+
+        <!-- ══ TAB: ACTIVE SESSIONS ══════════════════════════════ -->
+        <div id="tab-active" data-tab>
+            @if (!activeSessions.Any())
+            {
+                <div class="card" style="text-align:center;padding:48px;color:var(--text-2);">
+                    <div style="font-size:40px;margin-bottom:12px;">💬</div>
+                    <div style="font-weight:600;">No active sessions yet</div>
+                    <div style="font-size:13px;margin-top:4px;">Accept a request or wait for someone to accept yours.</div>
+                </div>
+            }
+            else
+            {
+                <div class="chat-wrap" style="display:grid;grid-template-columns:280px 1fr;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);height:600px;overflow:hidden;">
+                    <!-- Sidebar -->
+                    <div style="border-right:1px solid var(--border);display:flex;flex-direction:column;">
+                        <div style="padding:16px;font-weight:700;border-bottom:1px solid var(--border);">💬 Active (@activeSessions.Count)</div>
+                        <div id="chat-list" style="flex:1;overflow-y:auto;padding:12px;">
+                            @foreach (var s in activeSessions)
+                            {
+                                var other = s.StudentID == me ? s.Helper : s.Student;
+                                var otherName = other?.Name ?? "Unknown";
+                                var initials = Uri.EscapeDataString(otherName);
+                                <div class="chat-item" data-session-id="@s.PrivateSessionID"
+                                     onclick="openChat(@s.PrivateSessionID, '@otherName', @(s.StudentID == me ? s.HelperID : s.StudentID))"
+                                     style="display:flex;gap:12px;padding:12px;border-radius:var(--radius);cursor:pointer;margin-bottom:8px;border:1px solid transparent;">
+                                    <div class="av av-sm">
+                                        <img src="https://ui-avatars.com/api/?name=@initials&background=3D52A0&color=fff" alt="@otherName" />
+                                    </div>
+                                    <div style="flex:1;min-width:0;">
+                                        <div style="font-weight:700;font-size:13px;">@otherName</div>
+                                        <div style="font-size:12px;color:var(--text-2);">Click to open chat</div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Chat Main -->
+                    <div style="display:flex;flex-direction:column;">
+                        <!-- Empty state -->
+                        <div id="chat-empty" style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-2);flex-direction:column;gap:8px;">
+                            <div style="font-size:32px;">👈</div>
+                            <div style="font-weight:600;">Select a session to start chatting</div>
+                        </div>
+
+                        <!-- Chat panel (hidden until session selected) -->
+                        <div id="chat-panel" style="display:none;flex-direction:column;height:100%;">
+                            <div style="padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;">
+                                <div class="av av-sm">
+                                    <img id="chat-avatar" src="" alt="" />
+                                </div>
+                                <div style="flex:1;">
+                                    <div id="chat-name" style="font-weight:700;font-size:14px;"></div>
+                                    <div style="font-size:11px;color:var(--indigo);">● Online</div>
+                                </div>
+                                <button class="btn btn-ghost btn-sm" style="color:var(--danger,#e53e3e);" onclick="closeSession()">End Session</button>
+                            </div>
+
+                            <div id="chat-messages" style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;background:#fbfbfc;"></div>
+
+                            <div style="padding:16px;border-top:1px solid var(--border);display:flex;gap:12px;">
+                                <input id="chat-input" type="text" onkeydown="if(event.key==='Enter')sendMsg()" placeholder="Type your message..." class="form-input" style="flex:1;" />
+                                <button class="btn btn-primary" onclick="sendMsg()">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- ══ TAB: INCOMING REQUESTS ═════════════════════════════ -->
+        <div id="tab-requests" data-tab class="hidden">
+            @if (!incomingRequests.Any())
+            {
+                <div class="card" style="text-align:center;padding:48px;color:var(--text-2);">
+                    <div style="font-size:40px;margin-bottom:12px;">📭</div>
+                    <div style="font-weight:600;">No incoming requests</div>
+                </div>
+            }
+            else
+            {
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                    @foreach (var r in incomingRequests)
+                    {
+                        var ownerName = r.Owner?.Name ?? "Unknown";
+                        var initials = Uri.EscapeDataString(ownerName);
+                        <div class="card" id="req-@r.RequestID" style="display:flex;gap:16px;align-items:flex-start;">
+                            <div class="av av-lg">
+                                <img src="https://ui-avatars.com/api/?name=@initials&background=3D52A0&color=fff" alt="@ownerName" />
+                            </div>
+                            <div style="flex:1;">
+                                <div style="margin-bottom:4px;">
+                                    <span style="font-weight:700;">@ownerName</span>
+                                    <span class="chip chip-violet" style="margin-left:8px;">@(r.Owner?.Faculty) · @(r.Owner?.YearOfStudy)</span>
+                                </div>
+                                <p style="font-size:14px;color:var(--text-2);line-height:1.6;">
+                                    @r.Description
+                                </p>
+                                <div style="font-size:12px;color:var(--text-2);margin-top:4px;">
+                                    Requested @r.CreatedAt.ToString("MMM dd, yyyy · HH:mm")
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:8px;">
+                                <button class="btn btn-primary btn-sm" onclick="acceptRequest(@r.RequestID)">Accept</button>
+                                <button class="btn btn-ghost btn-sm" style="color:var(--text-2);" onclick="declineRequest(@r.RequestID)">Decline</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- ══ TAB: HISTORY ══════════════════════════════════════ -->
+        <div id="tab-history" data-tab class="hidden">
+            @if (!history.Any())
+            {
+                <div class="card" style="text-align:center;padding:48px;color:var(--text-2);">
+                    <div style="font-size:40px;margin-bottom:12px;">🗂️</div>
+                    <div style="font-weight:600;">No past sessions</div>
+                </div>
+            }
+            else
+            {
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                    @foreach (var s in history)
+                    {
+                        var other = s.StudentID == me ? s.Helper : s.Student;
+                        var otherName = other?.Name ?? "Unknown";
+                        <div class="card" style="display:flex;gap:16px;align-items:center;">
+                            <div class="av av-sm">
+                                <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(otherName)&background=3D52A0&color=fff" alt="@otherName" />
+                            </div>
+                            <div style="flex:1;">
+                                <div style="font-weight:700;">@otherName</div>
+                                <div style="font-size:12px;color:var(--text-2);">@s.CreatedAt.ToString("MMM dd, yyyy")</div>
+                            </div>
+                            <span class="chip" style="background:#f1f5f9;color:var(--text-2);">Closed</span>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+    </div>
+</main>
+
+<!-- ══ DATA FOR JS ══════════════════════════════════════════════ -->
+<script>
+    const ME_ID   = @me;
+    const ME_NAME = "@meName";
+</script>
+
+<!-- SignalR -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+<script>
+    // ═══════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════
+    let connection      = null;
+    let currentRoomId   = null;
+    let currentSessionId = null;
+
+    // ═══════════════════════════════════════════════
+    // TAB SWITCHER
+    // ═══════════════════════════════════════════════
+    function showTab(id, el) {
+        document.querySelectorAll('[data-tab]').forEach(t => t.classList.add('hidden'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(id).classList.remove('hidden');
+        el.classList.add('active');
+    }
+
+    // ═══════════════════════════════════════════════
+    // SIGNALR
+    // ═══════════════════════════════════════════════
+    function buildConnection() {
+        connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("ReceiveMessage", (connectionId, senderId, message, time) => {
+            const side = senderId === ME_ID ? "me" : "them";
+            appendMessage(side, message, time);
+        });
+
+        return connection.start();
+    }
+
+    // ═══════════════════════════════════════════════
+    // OPEN CHAT
+    // ═══════════════════════════════════════════════
+    async function openChat(sessionId, otherName, otherId) {
+        // highlight sidebar item
+        document.querySelectorAll('.chat-item').forEach(i => {
+            i.style.background = '';
+            i.style.borderColor = 'transparent';
+        });
+        const item = document.querySelector(`[data-session-id="${sessionId}"]`);
+        if (item) {
+            item.style.background = 'var(--indigo-light)';
+            item.style.borderColor = 'var(--indigo)';
+        }
+
+        // update header
+        document.getElementById('chat-name').textContent   = otherName;
+        document.getElementById('chat-avatar').src         =
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(otherName)}&background=3D52A0&color=fff`;
+        document.getElementById('chat-avatar').alt         = otherName;
+        document.getElementById('chat-messages').innerHTML = '';
+        document.getElementById('chat-empty').style.display  = 'none';
+        document.getElementById('chat-panel').style.display  = 'flex';
+
+        // leave old room
+        if (currentRoomId && connection) {
+            await connection.invoke("LeaveRoom", currentRoomId).catch(() => {});
+        }
+
+        currentSessionId = sessionId;
+        currentRoomId    = String(sessionId);
+
+        // start SignalR if not started
+        if (!connection || connection.state === signalR.HubConnectionState.Disconnected) {
+            await buildConnection();
+        }
+
+        await connection.invoke("JoinRoom", currentRoomId);
+        await loadHistory(sessionId);
+    }
+
+    // ═══════════════════════════════════════════════
+    // LOAD HISTORY
+    // ═══════════════════════════════════════════════
+    async function loadHistory(sessionId) {
+        const res = await fetch(`/api/messages/${sessionId}`);
+        if (!res.ok) return;
+        const messages = await res.json();
+        messages.forEach(m => appendMessage(
+            m.senderID === ME_ID ? "me" : "them",
+            m.messageText,
+            m.time
+        ));
+    }
+
+    // ═══════════════════════════════════════════════
+    // SEND MESSAGE
+    // ═══════════════════════════════════════════════
+    function sendMsg() {
+        const inp = document.getElementById('chat-input');
+        const msg = inp.value.trim();
+        if (!msg || !connection || !currentRoomId) return;
+        connection.invoke("SendMessage", currentRoomId, msg)
+            .catch(err => showToast('❌ ' + err.message));
+        inp.value = "";
+    }
+
+    // ═══════════════════════════════════════════════
+    // APPEND MESSAGE
+    // ═══════════════════════════════════════════════
+    function appendMessage(side, content, time) {
+        const msgs = document.getElementById('chat-messages');
+        const wrap = document.createElement('div');
+
+        if (side === "me") {
+            wrap.style.cssText = "display:flex;flex-direction:column;align-items:flex-end;";
+            wrap.innerHTML = `
+                <div class="msg msg-me">${escapeHtml(content)}</div>
+                <div class="msg-time" style="text-align:right;">${time}</div>`;
+        } else {
+            wrap.style.cssText = "display:flex;flex-direction:column;align-items:flex-start;";
+            wrap.innerHTML = `
+                <div class="msg msg-them">${escapeHtml(content)}</div>
+                <div class="msg-time">${time}</div>`;
+        }
+
+        msgs.appendChild(wrap);
+        msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    // ═══════════════════════════════════════════════
+    // ACCEPT / DECLINE REQUEST
+    // ═══════════════════════════════════════════════
+    async function acceptRequest(requestId) {
+        const res = await fetch(`/Session/AcceptRequest?requestId=${requestId}`, { method: 'POST' });
+        if (res.ok) {
+            document.getElementById(`req-${requestId}`)?.remove();
+            showToast('✅ Session accepted! Go to Active Sessions.');
+        } else {
+            showToast('❌ Could not accept request.');
+        }
+    }
+
+    async function declineRequest(requestId) {
+        const res = await fetch(`/Session/DeclineRequest?requestId=${requestId}`, { method: 'POST' });
+        if (res.ok) {
+            document.getElementById(`req-${requestId}`)?.remove();
+            showToast('Request declined.');
+        } else {
+            showToast('❌ Could not decline request.');
+        }
+    }
+
+    // ═══════════════════════════════════════════════
+    // CLOSE SESSION
+    // ═══════════════════════════════════════════════
+    async function closeSession() {
+        if (!currentSessionId) return;
+        const res = await fetch(`/Session/CloseSession?sessionId=${currentSessionId}`, { method: 'POST' });
+        if (res.ok) {
+            showToast('Session closed.');
+            setTimeout(() => location.reload(), 1000);
+        }
+    }
+
+    // ═══════════════════════════════════════════════
+    // UTILS
+    // ═══════════════════════════════════════════════
+    function escapeHtml(str) {
+        return str
+            .replace(/&/g,'&amp;')
+            .replace(/</g,'&lt;')
+            .replace(/>/g,'&gt;')
+            .replace(/"/g,'&quot;');
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 3000);
+    }
+</script>

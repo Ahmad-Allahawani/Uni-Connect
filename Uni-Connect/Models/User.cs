@@ -48,6 +48,7 @@ namespace Uni_Connect.Models
         public ICollection<Post> Posts { get; set; }
         public ICollection<Answer> Answers { get; set; }
         public ICollection<Request> Requests { get; set; }
+        public ICollection<Request> ReceivedRequests { get; set; }
         public ICollection<Message> Messages { get; set; }
         public ICollection<Report> Reports { get; set; }
         public ICollection<Notification> Notifications { get; set; }
