@@ -31,13 +31,15 @@
             </div>
         </div>
         <div class="nav-actions">
-            <div class="nav-bell" id="notifBell">
-                <i data-lucide="bell" style="width:20px; height:20px;"></i>
-                <span class="nav-bell-badge" id="notifBadge">3</span>
-            </div>
+            <a asp-controller="Dashboard" asp-action="Notifications" style="text-decoration:none; color:inherit;">
+                <div class="nav-bell" id="notifBell">
+                    <i data-lucide="bell" style="width:20px; height:20px;"></i>
+                    <span class="nav-bell-badge" id="notifBadge" style="display:none">0</span>
+                </div>
+            </a>
             <div style="position: relative;">
                 <button class="nav-user" id="navUserBtn" style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; border: none; background: none; cursor: pointer; border-radius: 8px; transition: background .2s;" onmouseover="this.style.background='#EEF2FF'" onmouseout="this.style.background='none'">
-                    <div class="av av-sm"><img src="https://ui-avatars.com/api/?name=@(User.FindFirst(ClaimTypes.Name)?.Value ?? "Student")&background=3D52A0&color=fff&size=44" alt="User"/></div>
+                    <div class="av av-sm"><img src="https://ui-avatars.com/api/?name=@(User.FindFirst(ClaimTypes.Name)?.Value ?? "Student")&background=3D52A0&color=fff&size=44" alt="User" /></div>
                 </button>
                 <div class="nav-user-dropdown" id="navUserDropdown">
                     <a asp-controller="Dashboard" asp-action="Profile" class="nav-dropdown-item" style="text-decoration:none;"><i data-lucide="user"></i> My Profile</a>
@@ -59,7 +61,7 @@
         <!-- SIDEBAR -->
         <aside class="sidebar" id="sidebar">
             <a asp-controller="Dashboard" asp-action="Profile" class="sidebar-user" style="text-decoration:none;">
-                <div class="av av-md"><img src="https://ui-avatars.com/api/?name=@(User.FindFirst(ClaimTypes.Name)?.Value ?? "Student")&background=3D52A0&color=fff&size=60" alt="User"/></div>
+                <div class="av av-md"><img src="https://ui-avatars.com/api/?name=@(User.FindFirst(ClaimTypes.Name)?.Value ?? "Student")&background=3D52A0&color=fff&size=60" alt="User" /></div>
                 <div>
                     <div class="sidebar-user-name">@(User.FindFirst(ClaimTypes.Name)?.Value ?? "Student")</div>
                     <div class="sidebar-user-pts"><i data-lucide="coins" style="width:14px; height:14px; vertical-align: middle; margin-right: 4px;"></i> <span id="sidebarPoints">-</span> points</div>
@@ -69,9 +71,15 @@
             <nav class="sidebar-nav">
                 <a asp-controller="Dashboard" asp-action="Dashboard" class="nav-item" id="navDashboard"><i data-lucide="layout-dashboard"></i> Home Feed</a>
                 <a asp-controller="Dashboard" asp-action="CreatePost" class="nav-item" id="navCreatePost"><i data-lucide="plus-circle"></i> Ask Question</a>
-                <a asp-controller="Session" asp-action="Sessions" class="nav-item" id="navChat"><i data-lucide="messages-square"></i> Private Sessions <span class="nav-badge">2</span></a>
+                <a asp-controller="Session" asp-action="ChatPage" class="nav-item" id="navChat">
+                    <i data-lucide="messages-square"></i> Private Sessions
+                    <span class="nav-badge" id="msgBadge" style="display:none">0</span>
+                </a>
                 <a asp-controller="Dashboard" asp-action="Leaderboard" class="nav-item" id="navLeaderboard"><i data-lucide="trophy"></i> Leaderboard</a>
-                <a asp-controller="Dashboard" asp-action="Notifications" class="nav-item" id="navNotifications"><i data-lucide="bell"></i> Notifications <span class="nav-badge">3</span></a>
+                <a asp-controller="Dashboard" asp-action="Notifications" class="nav-item" id="navNotifications">
+                    <i data-lucide="bell"></i> Notifications
+                    <span class="nav-badge" id="sidebarNotifBadge" style="display:none">0</span>
+                </a>
                 <a asp-controller="Dashboard" asp-action="Profile" class="nav-item" id="navProfile"><i data-lucide="user"></i> My Profile</a>
                 <a asp-controller="Dashboard" asp-action="Points" class="nav-item" id="navPoints"><i data-lucide="coins"></i> Points & Rewards</a>
                 <a asp-controller="Dashboard" asp-action="Settings" class="nav-item" id="navSettings"><i data-lucide="settings"></i> Settings</a>
@@ -174,6 +182,51 @@
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
+    </script>
+    <script>
+               async function loadNotificationCount() {
+            try {
+                const res = await fetch('/api/notifications');
+                if (!res.ok) return;
+                const data = await res.json();
+
+                // Navbar bell badge — total unread
+                const badge = document.getElementById('notifBadge');
+                if (badge) {
+                    badge.textContent = data.length;
+                    badge.style.display = data.length > 0 ? 'inline-block' : 'none';
+                }
+
+                // Sidebar Notifications badge — exclude messages
+                const notifCount = data.filter(n => n.type !== 'NewMessage').length;
+                const sidebarNotifBadge = document.getElementById('sidebarNotifBadge');
+                if (sidebarNotifBadge) {
+                    sidebarNotifBadge.textContent = notifCount;
+                    sidebarNotifBadge.style.display = notifCount > 0 ? 'inline-block' : 'none';
+                }
+
+                // Sidebar Private Sessions badge — only messages
+                const msgCount = data.filter(n => n.type === 'NewMessage').length;
+                const msgBadge = document.getElementById('msgBadge');
+                if (msgBadge) {
+                    msgBadge.textContent = msgCount;
+                    msgBadge.style.display = msgCount > 0 ? 'inline-block' : 'none';
+                }
+            } catch (e) {
+                console.error('Failed to load notifications', e);
+            }
+        }
+
+        // Load on page ready, then refresh every 30 seconds
+        document.addEventListener('DOMContentLoaded', () => {
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                    <text>
+                    loadNotificationCount();
+                    setInterval(loadNotificationCount, 30000);
+                    </text>
+            }
+        });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

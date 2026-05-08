@@ -1,4 +1,4 @@
-@model Uni_Connect.Models.User
+@model List<Uni_Connect.Models.Notification>
 @{
     ViewData["Title"] = "Notifications — UniConnect";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
@@ -42,17 +42,25 @@
 } 
 
 <div class="notif-wrapper">
-    <!-- Page Header -->
-    <div class="notif-header">
-        <h1 class="notif-title">🔔 Notifications</h1>
-        <p class="notif-subtitle">Stay updated with your activity and discussions</p>
+
+    <div class="notif-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px;">
+        <div>
+            <h1 class="notif-title">🔔 Notifications</h1>
+            <p class="notif-subtitle">Stay updated with your activity and discussions</p>
+        </div>
+        @if (Model?.Any() == true)
+        {
+            <button id="clearAllBtn" style="font-size:13px; color:var(--text-2); background:none; border:1px solid var(--border); border-radius:8px; padding:8px 14px; cursor:pointer;">
+                🗑️ Clear all
+            </button>
+        }
     </div>
 
-    <!-- Notifications List -->
-    @if (Model?.Notifications?.Any() == true)
+    
+    @if (Model?.Any() == true)
     {
         <div class="notif-container">
-            @foreach (var notif in Model.Notifications.OrderByDescending(n => n.CreatedAt))
+            @foreach (var notif in Model.OrderByDescending(n => n.CreatedAt))
             {
                 var (icon, color) = notif.Type switch
                 {
@@ -94,4 +102,20 @@
             </div>
         </div>
     }
+
+
+    <script>
+        document.getElementById('clearAllBtn')?.addEventListener('click', async () => {
+            if (!confirm('Delete all notifications?')) return;
+            const res = await fetch('/api/notifications/delete-all', {
+                method: 'POST',
+                headers: { 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '' }
+            });
+            if (res.ok) {
+                window.location.reload();
+            } else {
+                alert('Failed to delete notifications.');
+            }
+        });
+    </script>
 </div>

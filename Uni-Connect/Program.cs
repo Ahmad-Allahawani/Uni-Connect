@@ -24,6 +24,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IPointService, PointService>();
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<EmailService>();
 
 var app = builder.Build();
 

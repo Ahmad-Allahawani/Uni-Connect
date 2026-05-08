@@ -12,7 +12,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
     
     <!-- CSS -->
-    <link href="~/css/site.css" rel="stylesheet" />
+    
     <link href="~/css/Home.css" rel="stylesheet" />
     
     <style>
@@ -27,8 +27,13 @@
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
-        
-        .footer { background: #0F172A; color: #94A3B8; padding: 64px 5% 48px; }
+
+        .footer {
+            background: #0F172A;
+            color: #64748B;
+            padding: 48px;
+            text-align: center
+        }
         .ftr-lnk { color: #64748B; text-decoration: none; font-size: 14px; font-weight: 600; transition: color .2s; }
         .ftr-lnk:hover { color: #fff; }
         
@@ -68,23 +73,22 @@
     </main>
 
     <footer class="footer">
-        <div style="max-width:1100px; margin:0 auto">
-            <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:24px">
-                <div class="nav-logo-icon">🎓</div>
-                <span style="font-weight:900; font-size:20px; color:#fff">UniConnect</span>
+        <div style="max-width:900px;margin:0 auto">
+            <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px">
+                <div style="width:36px;height:36px;background:linear-gradient(135deg,#3D52A0,#7091E6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px">🎓</div>
+                <span style="font-weight:900;font-size:18px;color:#CBD5E1">UniConnect</span>
             </div>
-            <p style="font-size:15px; margin-bottom:28px; color:#64748B">The exclusive peer-learning platform for Philadelphia University students.</p>
-            <div style="display:flex; gap:32px; justify-content:center; flex-wrap:wrap; margin-bottom:32px">
-                <a asp-controller="Home" asp-action="Index" class="ftr-lnk">Home Page</a>
+            <p style="font-size:14px;margin-bottom:18px">Philadelphia University Peer Learning Platform</p>
+            <div style="display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin-bottom:24px">
                 <a asp-controller="Login" asp-action="Login_Page" class="ftr-lnk">Sign In</a>
-                <a asp-controller="Login" asp-action="Register_Page" class="ftr-lnk">Create Account</a>
-                <a href="/#how" class="ftr-lnk">How it Works</a>
-                <a href="/#features" class="ftr-lnk">Platform Features</a>
+                <a asp-controller="Login" asp-action="Register_Page" class="ftr-lnk">Register</a>
+                <a href="dashboard.html" class="ftr-lnk">Dashboard</a>
+                <a href="leaderboard.html" class="ftr-lnk">Leaderboard</a>
+                <a href="points.html" class="ftr-lnk">Rewards</a>
             </div>
-            <div style="border-top:1px solid #1E293B; padding-top:32px; font-size:14px; line-height:1.8">
-                Created for Graduation Project 2026<br>
-                <strong style="color:#CBD5E1">Ahmad Al-Hawwani · Ahmad Al-Atrash · Mustafa Maqousi · Abdul-Razzaq Qara</strong><br>
-                Philadelphia University · Faculty of Information Technology
+            <div style="border-top:1px solid #1E293B;padding-top:22px;font-size:13px;line-height:1.8">
+                Built by <strong style="color:#94A3B8">Ahmad Allahwani · Ahmad Al-Atrash · Mustafa Maqousi · Abdul-Razzaq Qara</strong><br>
+                Philadelphia University · Graduation Project 2026
             </div>
         </div>
     </footer>

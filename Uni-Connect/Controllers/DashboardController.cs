@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Uni_Connect.Models;
-using Uni_Connect.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Uni_Connect.Models;
 using Uni_Connect.Services;
+using Uni_Connect.ViewModels;
 
 namespace Uni_Connect.Controllers
 {
@@ -158,9 +159,19 @@ namespace Uni_Connect.Controllers
         }
         public async Task<IActionResult> Notifications()
         {
-            var user = await GetCurrentUser();
-            if (user == null) return RedirectToAction("Login_Page", "Login");
-            return View(user);
+            var me = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var notifications = await _context.Notifications
+                .Where(n => n.UserID == me)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
+
+            
+            var unread = notifications.Where(n => !n.IsRead).ToList();
+            unread.ForEach(n => n.IsRead = true);
+            await _context.SaveChangesAsync();
+
+            return View(notifications);
         }
         public async Task<IActionResult> Leaderboard()
         {

@@ -10,26 +10,28 @@ namespace Uni_Connect.Controllers
     public class SessionController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly NotificationService _notificationService;
 
-        public SessionController(ApplicationDbContext context)
+        public SessionController(ApplicationDbContext context, NotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
-        public async Task<IActionResult> Sessions()
-        {
-            var user = await GetCurrentUser();
-            if (user == null) return RedirectToAction("Login_Page", "Login");
+        //public async Task<IActionResult> Sessions()
+        //{
+        //    var user = await GetCurrentUser();
+        //    if (user == null) return RedirectToAction("Login_Page", "Login");
 
-            var sessions = await _context.PrivateSessions
-                .Where(s => s.StudentID == user.UserID || s.HelperID == user.UserID)
-                .Include(s => s.Student)
-                .Include(s => s.Helper)
-                .Include(s => s.Messages)
-                .ToListAsync();
+        //    var sessions = await _context.PrivateSessions
+        //        .Where(s => s.StudentID == user.UserID || s.HelperID == user.UserID)
+        //        .Include(s => s.Student)
+        //        .Include(s => s.Helper)
+        //        .Include(s => s.Messages)
+        //        .ToListAsync();
 
-            return View(sessions);
-        }
+        //    return View(sessions);
+        //}
         public async Task<IActionResult> ChatPage()
         {
             var me = GetCurrentUserId();
@@ -53,6 +55,12 @@ namespace Uni_Connect.Controllers
                 .Where(s => (s.StudentID == me || s.HelperID == me) && !s.IsActive && !s.IsDeleted)
                 .OrderByDescending(s => s.CreatedAt)
                 .ToListAsync();
+
+            var sessionNotifs = await _context.Notifications
+               .Where(n => n.UserID == me && !n.IsRead && n.Type == "SessionRequest")
+               .ToListAsync();
+            sessionNotifs.ForEach(n => n.IsRead = true);
+            await _context.SaveChangesAsync();
 
             ViewBag.ActiveSessions = activeSessions;
             ViewBag.IncomingRequests = incomingRequests;
@@ -79,6 +87,13 @@ namespace Uni_Connect.Controllers
             if (existing)
                 return BadRequest("You already have a pending request with this student.");
 
+            var sessionAlreadyExists = await _context.PrivateSessions.AnyAsync(s =>
+                !s.IsDeleted && s.IsActive &&
+                ((s.StudentID == me && s.HelperID == recipientId) ||
+                 (s.StudentID == recipientId && s.HelperID == me)));
+
+            if (sessionAlreadyExists)
+                return BadRequest("You already have an active session with this user.");
             var request = new Request
             {
                 OwnerID = me,
@@ -91,6 +106,15 @@ namespace Uni_Connect.Controllers
 
             _context.Requests.Add(request);
             await _context.SaveChangesAsync();
+
+            
+            var sender = await _context.Users.FindAsync(me);
+            await _notificationService.CreateAsync(
+                recipientId,
+                $"{sender!.Name} sent you a session request.",
+                "SessionRequest",
+                request.RequestID
+            );
 
             return Ok(new { message = "Request sent!" });
         }
@@ -129,7 +153,18 @@ namespace Uni_Connect.Controllers
             _context.PrivateSessions.Add(session);
             await _context.SaveChangesAsync();
 
-            return Ok(new { sessionId = session.PrivateSessionID });
+            await _notificationService.CreateAsync(
+                request.OwnerID,
+                "Your session request was accepted!",
+                "SessionRequest",
+                session.PrivateSessionID
+            );
+
+            return Ok(new
+            {
+                sessionId = session.PrivateSessionID,
+                redirectUrl = Url.Action("ChatPage", "Session")
+            });
         }
 
         

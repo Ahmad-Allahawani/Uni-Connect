@@ -46,6 +46,12 @@
                     </div>
                 </div>
             }
+            @if (ViewBag.DebugResetUrl != null)
+            {
+                <p style="color:red;font-size:12px;">
+                    DEBUG: <a href="@ViewBag.DebugResetUrl">Click here to reset</a>
+                </p>
+            }
             else
             {
                 

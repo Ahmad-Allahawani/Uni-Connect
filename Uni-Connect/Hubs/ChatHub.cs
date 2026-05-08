@@ -9,10 +9,12 @@ namespace Uni_Connect.Hubs
     public class ChatHub : Hub
     {
         private readonly ApplicationDbContext _context;
+        private readonly NotificationService _notificationService;  
 
-        public ChatHub(ApplicationDbContext context)
+        public ChatHub(ApplicationDbContext context, NotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         public async Task JoinRoom(string roomId)
@@ -44,6 +46,18 @@ namespace Uni_Connect.Hubs
 
             _context.Messages.Add(newMessage);
             await _context.SaveChangesAsync();
+
+            int recipientId = session.StudentID == senderId
+                ? session.HelperID
+                : session.StudentID;
+            var sender = await _context.Users.FindAsync(senderId);
+            await _notificationService.CreateAsync(
+                recipientId,
+                $"New message from {sender!.Name}",
+                "NewMessage",
+                newMessage.MessageID
+            );
+
 
             await Clients.Group(roomId).SendAsync(
                 "ReceiveMessage",

@@ -11,10 +11,12 @@ namespace Uni_Connect.Controllers
     public class LoginController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly EmailService _emailService;
 
-        public LoginController(ApplicationDbContext context)
+        public LoginController(ApplicationDbContext context, EmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -213,10 +215,25 @@ namespace Uni_Connect.Controllers
                 {
                     user.PasswordResetToken = resetToken;
                     user.PasswordResetTokenExpiry = DateTime.Now.AddMinutes(30);
-
                     await _context.SaveChangesAsync();
-                }
 
+                    // Build the reset URL with the token
+                    var resetUrl = Url.Action("ResetPass_Page", "Login",
+                        new { token = resetToken }, Request.Scheme);
+
+                    string emailBody = $@"
+                        <h2>Password Reset - Uni-Connect</h2>
+                        <p>Hi {user.Name},</p>
+                        <p>Click the link below to reset your password. This link expires in 30 minutes.</p>
+                        <a href='{resetUrl}' style='background:#4CAF50;color:white;padding:10px 20px;
+                           text-decoration:none;border-radius:5px;'>Reset My Password</a>
+                        <p>If you didn't request this, ignore this email.</p>";
+
+                    await _emailService.SendEmailAsync(user.Email, "Reset Your Password", emailBody);
+                    ViewBag.DebugResetUrl = Url.Action("ResetPass_Page", "Login",
+                        new { token = resetToken }, Request.Scheme);
+                }
+                
                 ViewBag.EmailSent = true;
                 ViewBag.SentToEmail = model.Email;
                 return View(model);
@@ -226,9 +243,10 @@ namespace Uni_Connect.Controllers
                 ModelState.AddModelError("", "Database error: Please try again later.");
                 return View(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
+                // TEMPORARY: show real error for debugging
+                ModelState.AddModelError("", ex.Message + " | " + ex.InnerException?.Message);
                 return View(model);
             }
         }

@@ -499,10 +499,12 @@
     // ACCEPT / DECLINE REQUEST
     // ═══════════════════════════════════════════════
     async function acceptRequest(requestId) {
-        const res = await fetch(`/Session/AcceptRequest?requestId=${requestId}`, { method: 'POST' });
+        const res = await fetch(`/Session/AcceptRequest?requestId=${requestId}`, { method: 'POST' ,headers: { 'Content-Type': 'application/x-www-form-urlencoded' },body: `requestId=${requestId}` });
         if (res.ok) {
-            document.getElementById(`req-${requestId}`)?.remove();
-            showToast('✅ Session accepted! Go to Active Sessions.');
+            @* document.getElementById(`req-${requestId}`)?.remove();
+            showToast('✅ Session accepted! Go to Active Sessions.'); *@
+            const data = await res.json();
+            window.location.href = data.redirectUrl;
         } else {
             showToast('❌ Could not accept request.');
         }
