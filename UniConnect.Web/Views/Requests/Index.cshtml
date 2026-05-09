@@ -1,0 +1,84 @@
+@model IEnumerable<UniConnect.Web.Models.AcademicRequest>
+@{
+    ViewData["Title"] = "Academic Requests";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>@ViewData["Title"]</h1>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <a asp-action="Create" class="btn btn-success">
+            <i class="fas fa-plus"></i> New Request
+        </a>
+    }
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link @(ViewBag.Status == null ? "active" : "")" asp-action="Index">All</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewBag.Status == "Open" ? "active" : "")" asp-action="Index" asp-route-status="Open">Open</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewBag.Status == "Accepted" ? "active" : "")" asp-action="Index" asp-route-status="Accepted">In Progress</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewBag.Status == "Completed" ? "active" : "")" asp-action="Index" asp-route-status="Completed">Completed</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <div class="row">
+        @foreach (var request in Model)
+        {
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="badge bg-@GetStatusBadge(request.Status)">@request.Status</span>
+                        <span class="badge bg-warning">@request.PointsOffered points</span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@request.Title</h5>
+                        <p class="card-text">@(request.Description.Length > 100 ? request.Description.Substring(0, 100) + "..." : request.Description)</p>
+                        <small class="text-muted">
+                            By @request.User?.FirstName @request.User?.LastName |
+                            @request.CreatedAt.ToString("MMM dd, yyyy")
+                        </small>
+                    </div>
+                    <div class="card-footer">
+                        <a asp-action="Details" asp-route-id="@request.Id" class="btn btn-sm btn-primary">View Details</a>
+                        @if (request.Status == "Open" && User.Identity.IsAuthenticated && User.GetUserId() != request.UserId)
+                        {
+                            <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#proposalModal-@request.Id">
+                                Submit Proposal
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <p class="mb-0">No requests found.</p>
+    </div>
+}
+
+@helper GetStatusBadge(string status)
+{
+    switch (status)
+    {
+        case "Open": <text>success</text> break;
+        case "Accepted": <text>primary</text> break;
+        case "Completed": <text>info</text> break;
+        default: <text>secondary</text> break;
+    }
+}

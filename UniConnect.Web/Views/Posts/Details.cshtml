@@ -1,0 +1,149 @@
+@model UniConnect.Web.Models.Post
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Questions</a></li>
+                <li class="breadcrumb-item active">@Model.Title</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">@Model.Title</h3>
+                <span class="badge bg-primary">@Model.Category?.Name</span>
+            </div>
+            <div class="card-body">
+                <p class="card-text">@Model.Content</p>
+                
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" class="img-fluid mb-3" alt="Post image" />
+                }
+                
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <small class="text-muted">
+                        Asked by <a asp-controller="Account" asp-action="Profile" asp-route-id="@Model.UserId">@Model.User?.FirstName @Model.User?.LastName</a>
+                        on @Model.CreatedAt.ToString("MMMM dd, yyyy")
+                    </small>
+                    <div>
+                        <span class="me-3"><i class="fas fa-eye"></i> @Model.ViewCount views</span>
+                        <span class="me-3"><i class="fas fa-comment"></i> @Model.Comments.Count answers</span>
+                        @if (Model.IsResolved)
+                        {
+                            <span class="badge bg-success">Resolved</span>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex gap-2">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form asp-action="Vote" asp-route-id="@Model.Id" asp-route-isUpvote="true" method="post">
+                        <button type="submit" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-thumbs-up"></i> @Model.Upvotes
+                        </button>
+                    </form>
+                    <form asp-action="Vote" asp-route-id="@Model.Id" asp-route-isUpvote="false" method="post">
+                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                            <i class="fas fa-thumbs-down"></i> @Model.Downvotes
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h4>@Model.Comments.Count Answers</h4>
+        <hr />
+        
+        @foreach (var comment in Model.Comments.OrderByDescending(c => c.IsBestAnswer).ThenByDescending(c => c.Upvotes))
+        {
+            <div class="card mb-3 @(comment.IsBestAnswer ? "border-success" : "")">
+                @if (comment.IsBestAnswer)
+                {
+                    <div class="card-header bg-success text-white">
+                        <i class="fas fa-check"></i> Best Answer
+                    </div>
+                }
+                <div class="card-body">
+                    <p>@comment.Content</p>
+                    
+                    @if (!string.IsNullOrEmpty(comment.ImageUrl))
+                    {
+                        <img src="@comment.ImageUrl" class="img-fluid mb-2" alt="Comment image" style="max-width: 300px;" />
+                    }
+                    
+                    <small class="text-muted">
+                        Answered by <a asp-controller="Account" asp-action="Profile" asp-route-id="@comment.UserId">@comment.User?.FirstName @comment.User?.LastName</a>
+                        on @comment.CreatedAt.ToString("MMMM dd, yyyy")
+                    </small>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <div>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <form asp-controller="Posts" asp-action="Vote" asp-route-id="@comment.PostId" asp-route-commentId="@comment.Id" asp-route-isUpvote="true" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-success btn-sm">
+                                    <i class="fas fa-thumbs-up"></i> @comment.Upvotes
+                                </button>
+                            </form>
+                            <form asp-controller="Posts" asp-action="Vote" asp-route-id="@comment.PostId" asp-route-commentId="@comment.Id" asp-route-isUpvote="false" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-thumbs-down"></i> @comment.Downvotes
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="me-2"><i class="fas fa-thumbs-up text-success"></i> @comment.Upvotes</span>
+                            <span class="me-2"><i class="fas fa-thumbs-down text-danger"></i> @comment.Downvotes</span>
+                        }
+                    </div>
+                    
+                    @if (User.Identity.IsAuthenticated && User.GetUserId() == Model.UserId && !comment.IsBestAnswer)
+                    {
+                        <form asp-action="MarkBestAnswer" asp-route-commentId="@comment.Id" method="post">
+                            <button type="submit" class="btn btn-success btn-sm">
+                                <i class="fas fa-check"></i> Mark as Best Answer
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h4>Your Answer</h4>
+            <hr />
+            <form asp-action="AddComment" asp-route-postId="@Model.Id" method="post">
+                <div class="mb-3">
+                    <textarea name="content" class="form-control" rows="5" placeholder="Write your answer here..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Post Answer</button>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info mt-4">
+        <a asp-controller="Account" asp-action="Login">Login</a> to post an answer.
+    </div>
+}
