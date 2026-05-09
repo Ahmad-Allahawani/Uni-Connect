@@ -1,0 +1,95 @@
+@* 
+    This page receives a LoginViewModel from the controller.
+    The form sends Email and Password back to the controller when submitted.
+*@
+@model Uni_Connect.ViewModels.LoginViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+	<title>Sign In — UniConnect</title>
+    <link href="~/css/login.css" rel="stylesheet" />
+</head>
+<body class="auth-bg">
+<nav class="auth-navbar">
+  <a asp-controller="Home" asp-action="Index" class="nav-logo"><div class="nav-logo-icon">🎓</div><span>UniConnect</span></a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:14px;color:var(--text-2)">New student?</span>
+    <a asp-controller="Login" asp-action="Register"><button class="btn btn-primary btn-sm">Join Free</button></a>
+  </div>
+</nav>
+<div class="auth-body">
+  <div style="width:100%;max-width:460px">
+    <div style="text-align:center;margin-bottom:24px">
+      <div class="auth-logo-icon">🎓</div>
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-subtitle">Sign in with your university credentials</p>
+    </div>
+
+    @* 
+        ===== SUCCESS MESSAGE =====
+        TempData["SuccessMessage"] is set by the Register_Page after successful registration.
+        It shows a green message like "Account created successfully! +50 welcome points 🎉"
+        It only shows ONCE, then disappears.
+    *@
+    @if (TempData["SuccessMessage"] != null)
+    {
+      <div class="success-message-box">
+        ✅ @TempData["SuccessMessage"]
+      </div>
+    }
+
+    <form asp-action="Login" method="post">
+      @Html.AntiForgeryToken()
+      <div class="auth-card">
+
+        @* 
+            ===== GENERAL ERROR MESSAGES =====
+            This shows "Invalid email or password" when login fails.
+            We put it at the top of the card so the user sees it immediately.
+        *@
+        <div asp-validation-summary="ModelOnly" class="validation-error-box"></div>
+
+        @* --- University Email Field --- *@
+        <div class="form-group">
+          <label class="form-label" asp-for="Email">University Email</label>
+          <input class="form-input" asp-for="Email" type="email" placeholder="StudentID@philadelphia.edu.jo" />
+          <span asp-validation-for="Email" class="field-validation-error"></span>
+        </div>
+
+        @* --- Password Field --- *@
+        <div class="form-group" style="margin-bottom:8px">
+          <label class="form-label" asp-for="Password">Password</label>
+          <input class="form-input" asp-for="Password" type="password" placeholder="Enter your password" />
+          <span asp-validation-for="Password" class="field-validation-error"></span>
+        </div>
+
+        <div style="text-align:right;margin-bottom:22px">
+          <a asp-controller="Login" asp-action="ForgotPassword" style="font-size:13px;color:var(--indigo);font-weight:600">Forgot password?</a>
+        </div>
+
+        @* Submit button — sends the form to LoginController.Login_Page [HttpPost] *@
+        <button type="submit" class="btn btn-primary btn-full btn-lg">Sign In →</button>
+
+        <div class="auth-divider"><span>or</span></div>
+        <p style="text-align:center;font-size:14px;color:var(--text-2)">Don't have an account? <a asp-controller="Login" asp-action="Register" style="color:var(--indigo);font-weight:700">Join Free →</a></p>
+      </div>
+    </form>
+
+    <div class="auth-notice"><span style="font-size:18px;flex-shrink:0">🔒</span><p>UniConnect is exclusively for enrolled Philadelphia University students.</p></div>
+  </div>
+</div>
+
+@* Client-side validation scripts *@
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+</body>
+</html>
