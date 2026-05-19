@@ -9,7 +9,7 @@
     <link rel="icon" type="image/svg+xml" href="~/images/logo/icon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="~/css/design-system.css" rel="stylesheet" />
     <link href="~/css/brand.css" rel="stylesheet" />
     <script src="https://unpkg.com/@@phosphor-icons/web@@2.1.1"></script>
@@ -27,7 +27,7 @@
                     <div class="nav-logo-icon" style="padding:0;overflow:hidden;background:none;border:none;width:36px;height:36px;">
                         <img src="/images/logo/icon.svg" width="36" height="36" alt="UniConnect" style="display:block;border-radius:10px;" />
                     </div>
-                    <span>UniConnect</span>
+                    <span><span class="logo-uni">Uni</span><span class="logo-conn">Connect</span></span>
                 </div>
             </a>
             <form method="get" asp-controller="Dashboard" asp-action="Search" style="position:relative; flex:1; max-width:480px;">
@@ -312,6 +312,22 @@
                 });
             });
         });
+    </script>
+    <script>
+        // taste-skill: IntersectionObserver scroll reveals — never window scroll listener
+        (function () {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('visible');
+                        io.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+            document.querySelectorAll('.reveal, .reveal-stagger').forEach(function (el) {
+                io.observe(el);
+            });
+        })();
     </script>
 </body>
 </html>
