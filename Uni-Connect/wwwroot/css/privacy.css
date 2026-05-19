@@ -1,0 +1,13 @@
+.privacy-wrap { max-width: 780px; margin: 48px auto; padding: 0 24px 64px; }
+.privacy-hero { text-align: center; margin-bottom: 48px; }
+.privacy-hero-icon { width: 72px; height: 72px; background: var(--indigo-light); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+.privacy-hero h1 { font-size: 36px; font-weight: 900; color: var(--text); margin: 0 0 10px; }
+.privacy-hero p { font-size: 15px; color: var(--text-2); margin: 0; }
+.privacy-section { margin-bottom: 36px; }
+.privacy-section h2 { font-size: 18px; font-weight: 800; color: var(--text); margin: 0 0 12px; display: flex; align-items: center; gap: 10px; }
+.privacy-section p, .privacy-section li { font-size: 14px; color: var(--text-2); line-height: 1.8; margin: 0 0 10px; }
+.privacy-section ul { padding-left: 20px; margin: 0 0 10px; }
+.privacy-section li { margin-bottom: 6px; }
+.privacy-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--emerald-light); color: var(--emerald); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 99px; margin-bottom: 24px; }
+.privacy-divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+.privacy-contact-card { background: var(--indigo-light); border: 1.5px solid #C7D7FF; border-radius: var(--radius); padding: 24px; display: flex; align-items: flex-start; gap: 16px; }

@@ -10,11 +10,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Sign In — UniConnect</title>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
     <link href="~/css/login.css" rel="stylesheet" />
+    <script src="https://unpkg.com/@@phosphor-icons/web@@2.1.1"></script>
 </head>
 <body class="auth-bg">
     <nav class="auth-navbar">
-        <a asp-controller="Home" asp-action="Index" class="nav-logo"><div class="nav-logo-icon">🎓</div><span>UniConnect</span></a>
+        <a asp-controller="Home" asp-action="Index" class="nav-logo">
+            <div class="nav-logo-icon" style="padding:0;overflow:visible;background:none;border:none;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32" role="img" aria-label="UniConnect">
+                    <rect width="64" height="64" rx="17" fill="#ffffff"/>
+                    <path d="M32 13 C 27 13, 14 16, 11 21 L 11 50 C 14 46, 27 43, 32 43 L 32 13 Z" fill="#3D52A0"/>
+                    <path d="M32 13 C 37 13, 50 16, 53 21 L 53 50 C 50 46, 37 43, 32 43 L 32 13 Z" fill="#7091E6"/>
+                    <rect x="30.5" y="12" width="3" height="32" rx="1.5" fill="#1E2A5E" opacity="0.22"/>
+                    <path d="M 11 50 Q 32 55 53 50" stroke="#3D52A0" stroke-width="1.5" fill="none" stroke-opacity="0.1" stroke-linecap="round"/>
+                    <circle cx="19" cy="58" r="5" fill="#F59E0B"/>
+                    <circle cx="45" cy="58" r="5" fill="#7091E6"/>
+                    <line x1="19" y1="53" x2="31" y2="43.5" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-opacity="0.9"/>
+                    <line x1="45" y1="53" x2="33" y2="43.5" stroke="#7091E6" stroke-width="2" stroke-linecap="round" stroke-opacity="0.9"/>
+                </svg>
+            </div>
+            <span>UniConnect</span>
+        </a>
         <div style="display:flex;align-items:center;gap:12px">
             <span style="font-size:14px;color:var(--text-2)">New student?</span>
             <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-primary btn-sm">Join Free</button></a>
@@ -23,7 +40,7 @@
     <div class="auth-body">
         <div style="width:100%;max-width:460px">
             <div style="text-align:center;margin-bottom:24px">
-                <div class="auth-logo-icon">🎓</div>
+                <div class="auth-logo-icon"><i class="ph-duotone ph-graduation-cap" style="font-size:40px;color:var(--indigo);"></i></div>
                 <h1 class="auth-title">Welcome back</h1>
                 <p class="auth-subtitle">Sign in with your university credentials</p>
             </div>
@@ -31,7 +48,7 @@
             @if (TempData["SuccessMessage"] != null)
             {
                 <div class="success-message-box">
-                    ✅ @TempData["SuccessMessage"]
+                    <i class="ph-fill ph-check-circle" style="font-size:16px;vertical-align:middle;margin-right:4px;"></i> @TempData["SuccessMessage"]
                 </div>
             }
 
@@ -57,14 +74,14 @@
                         <a asp-controller="Login" asp-action="ForgotPass_Page" style="font-size:13px;color:var(--indigo);font-weight:600">Forgot password?</a>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-full btn-lg">Sign In →</button>
+                    <button type="submit" class="btn btn-primary btn-full btn-lg">Sign In <i class="ph-bold ph-arrow-right" style="font-size:14px;vertical-align:middle;margin-left:2px;"></i></button>
 
                     <div class="auth-divider"><span>or</span></div>
-                    <p style="text-align:center;font-size:14px;color:var(--text-2)">Don't have an account? <a asp-controller="Login" asp-action="Register_Page" style="color:var(--indigo);font-weight:700">Join Free →</a></p>
+                    <p style="text-align:center;font-size:14px;color:var(--text-2)">Don't have an account? <a asp-controller="Login" asp-action="Register_Page" style="color:var(--indigo);font-weight:700">Join Free <i class="ph-bold ph-arrow-right" style="font-size:13px;vertical-align:middle;"></i></a></p>
                 </div>
             </form>
 
-            <div class="auth-notice"><span style="font-size:18px;flex-shrink:0">🔒</span><p>UniConnect is exclusively for enrolled Philadelphia University students.</p></div>
+            <div class="auth-notice"><span style="flex-shrink:0;display:flex;"><i class="ph-fill ph-lock" style="font-size:18px;"></i></span><p>UniConnect is exclusively for enrolled Philadelphia University students.</p></div>
         </div>
     </div>
 

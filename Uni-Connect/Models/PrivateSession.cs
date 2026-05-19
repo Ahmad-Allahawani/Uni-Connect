@@ -7,8 +7,10 @@
         public int StudentID { get; set; }
         public int HelperID { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime? ClosedAt { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public int? Rating { get; set; }
         // Navigation
         public Request Request { get; set; }
         public User Student { get; set; }

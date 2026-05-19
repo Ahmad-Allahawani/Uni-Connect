@@ -1,6 +1,10 @@
 @{
     ViewData["Title"] = "Admin Dashboard";
-    Layout = "_DashboardLayout";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section Styles {
+<link href="~/css/admin.css" rel="stylesheet" />
 }
 
 <div class="dashboard-header">
@@ -12,17 +16,17 @@
 
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="stat-icon" style="background:var(--primary-sub); color:var(--primary);"><i data-lucide="users"></i></div>
+        <div class="stat-icon" style="background:var(--indigo-light); color:var(--indigo);"><i class="ph-duotone ph-users" style="font-size:22px;"></i></div>
         <div class="stat-value">@ViewBag.UserCount</div>
         <div class="stat-label">Total Users</div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon" style="background:#ECFDF5; color:#059669;"><i data-lucide="file-text"></i></div>
+        <div class="stat-icon" style="background:var(--emerald-light); color:var(--emerald);"><i class="ph-duotone ph-file-text" style="font-size:22px;"></i></div>
         <div class="stat-value">@ViewBag.PostCount</div>
         <div class="stat-label">Total Posts</div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon" style="background:#FFF1F2; color:#E11D48;"><i data-lucide="alert-triangle"></i></div>
+        <div class="stat-icon" style="background:var(--rose-light); color:var(--rose);"><i class="ph-fill ph-warning" style="font-size:22px;"></i></div>
         <div class="stat-value">@ViewBag.ReportCount</div>
         <div class="stat-label">Unresolved Reports</div>
     </div>
@@ -35,10 +39,10 @@
     <div class="card-body">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
             <a asp-action="ManageUsers" class="btn btn-primary" style="text-align: center; display: block; text-decoration: none;">
-                <i data-lucide="user-cog" style="margin-right:8px; vertical-align:middle;"></i> Manage Users
+                <i class="ph-bold ph-user-gear" style="font-size:16px;margin-right:8px; vertical-align:middle;"></i> Manage Users
             </a>
             <a asp-action="ManageReports" class="btn btn-secondary" style="text-align: center; display: block; text-decoration: none;">
-                <i data-lucide="flag" style="margin-right:8px; vertical-align:middle;"></i> Review Reports
+                <i class="ph-fill ph-flag" style="font-size:16px;margin-right:8px; vertical-align:middle;"></i> Review Reports
             </a>
         </div>
     </div>

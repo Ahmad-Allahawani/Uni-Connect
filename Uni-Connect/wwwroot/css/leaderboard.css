@@ -1,0 +1,113 @@
+/* Leaderboard page styles */
+
+.leaderboard-wrapper { max-width: 1000px; margin: 0 auto; }
+
+.leaderboard-header {
+    display: flex; justify-content: space-between;
+    align-items: flex-end; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;
+}
+.leaderboard-title { font-size: 28px; font-weight: 800; }
+.leaderboard-subtitle { font-size: 14px; color: var(--text-2); margin-top: 4px; }
+
+.leaderboard-filters { display: flex; gap: 12px; flex-wrap: wrap; }
+.leaderboard-filters select { width: 160px; font-size: 13px; }
+
+.rank-banner {
+    background: linear-gradient(90deg, var(--indigo-light), var(--violet-light));
+    border: 1.5px solid #C7D7FF; border-radius: 16px;
+    padding: 20px 24px; margin-bottom: 40px;
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.rank-banner-icon { font-size: 32px; }
+.rank-banner-content { flex: 1; min-width: 200px; }
+.rank-banner-title { font-weight: 800; font-size: 16px; color: var(--indigo); margin-bottom: 2px; }
+.rank-banner-text { font-size: 14px; color: var(--text-2); font-weight: 600; }
+.rank-banner-points { text-align: right; }
+.rank-banner-pts-num { font-weight: 900; font-size: 20px; color: var(--indigo); }
+.rank-banner-pts-label {
+    font-size: 11px; text-transform: uppercase; font-weight: 800;
+    color: var(--text-2); letter-spacing: 0.5px;
+}
+
+/* Podium */
+.podium-section { margin-bottom: 48px; }
+.podium-wrap {
+    display: flex; align-items: flex-end;
+    justify-content: center; gap: 16px;
+    flex-wrap: wrap;
+}
+.podium-card {
+    background: var(--surface); border-radius: 16px;
+    padding: 24px; text-align: center;
+    border: 1px solid var(--border); width: 180px; transition: all .2s;
+}
+.podium-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.podium-medal { font-size: 32px; margin-bottom: 12px; }
+
+.podium-1st {
+    background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+    border: 2px solid var(--amber); width: 220px;
+    order: 2; box-shadow: 0 8px 28px rgba(245,158,11,.2);
+}
+.podium-2nd { border: 2px solid #C0C0C0; order: 1; }
+.podium-3rd { border: 2px solid #CD7F32; order: 3; }
+
+/* Rankings table */
+.podium-ranking-table { margin-top: 40px; }
+.ranking-header {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    color: var(--text-2); letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; margin-bottom: 12px;
+}
+
+.rank-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 20px; background: var(--surface);
+    border: 1px solid var(--border);
+    margin-bottom: 8px; border-radius: 12px;
+    transition: all .2s; cursor: pointer;
+}
+.rank-row:hover {
+    border-color: var(--indigo);
+    box-shadow: var(--shadow-sm);
+    transform: translateX(2px);
+}
+.rank-num { font-weight: 900; font-size: 16px; width: 40px; text-align: center; }
+.rank-info { flex: 1; display: flex; align-items: center; gap: 12px; }
+.rank-avatar { width: 36px; height: 36px; border-radius: 50%; }
+.rank-name { font-weight: 800; font-size: 14px; margin-bottom: 2px; }
+.rank-faculty { font-size: 11px; color: var(--text-2); font-weight: 600; }
+.rank-points { font-weight: 900; font-size: 16px; text-align: right; min-width: 80px; }
+
+.highlight-row { background: var(--indigo-light); border-color: var(--indigo); }
+.highlight-row .rank-num { color: var(--indigo); }
+.highlight-row .rank-name { color: var(--indigo); }
+.highlight-row .rank-points { color: var(--indigo); }
+
+@media (max-width: 768px) {
+    .leaderboard-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .leaderboard-filters { flex-wrap: wrap; gap: 8px; }
+    .leaderboard-filters select { width: 140px; }
+    .rank-banner { padding: 14px 16px; gap: 12px; }
+}
+
+@media (max-width: 640px) {
+    .leaderboard-title { font-size: 22px; }
+    .podium-wrap { gap: 8px; }
+    .podium-card { width: 110px; padding: 14px 10px; }
+    .podium-1st { width: 130px; }
+    .podium-medal { font-size: 24px; margin-bottom: 8px; }
+    .rank-row { padding: 10px 12px; gap: 8px; }
+    .rank-num { width: 28px; font-size: 14px; }
+    .rank-points { font-size: 14px; min-width: 60px; }
+    .rank-faculty { display: none; }
+}
+
+@media (max-width: 480px) {
+    .leaderboard-filters form { flex-direction: column; width: 100%; }
+    .leaderboard-filters select { width: 100%; }
+    .leaderboard-filters input[type="number"] { width: 100% !important; }
+    .leaderboard-filters .btn { width: 100%; justify-content: center; }
+    .rank-banner-points { display: none; }
+}

@@ -41,6 +41,9 @@ namespace Uni_Connect.Models
         public string? PasswordResetToken { get; set; }
         public DateTime? PasswordResetTokenExpiry { get; set; }
 
+        public bool IsOnline { get; set; } = false;
+        public DateTime? LastSeenAt { get; set; }
+
         
         public int FailedLoginAttempts { get; set; } = 0;
         public DateTime? AccountLockedUntil { get; set; }

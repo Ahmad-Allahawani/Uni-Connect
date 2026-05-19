@@ -1,159 +1,289 @@
-﻿@model Uni_Connect.Models.Post
+@model Uni_Connect.Models.Post
 @{
     ViewData["Title"] = Model?.Title ?? "Post";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+
+    int? currentUserId = null;
+    bool isPostOwner = false;
+    if (Model != null && User.Identity?.IsAuthenticated == true)
+    {
+        var uidClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (uidClaim != null)
+        {
+            currentUserId = int.Parse(uidClaim.Value);
+            isPostOwner = Model.UserID == currentUserId.Value;
+        }
+    }
 }
 
-<div style="max-width: 900px; margin: 0 auto; padding: 20px;">
-    <!-- Back Button -->
-    <a asp-action="Dashboard" style="display: inline-flex; align-items: center; gap: 8px; color: #3D52A0; text-decoration: none; margin-bottom: 24px; font-weight: 600;">
-        <i data-lucide="arrow-left" style="width:18px; height:18px;"></i> Back to Dashboard
+<div style="max-width: 860px; margin: 0 auto; padding: 20px;">
+
+    <a asp-action="Dashboard" class="btn btn-ghost btn-sm" style="margin-bottom:24px; display:inline-flex; align-items:center; gap:8px;">
+        <i class="ph-bold ph-arrow-left" style="font-size:15px;"></i> Back to Feed
     </a>
 
     @if (Model != null)
     {
-        <!-- Post Header -->
-        <div style="background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; border: 1.5px solid #E2E8F0;">
-            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
-                <img src="https://ui-avatars.com/api/?name=@(Model.User?.Name ?? "User")&background=3D52A0&color=fff&size=40"
-                     alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%;" />
-                <div>
-                    <strong style="font-size: 14px; color: #0F172A; display: block;">@(Model.User?.Name?.Split(' ').First() ?? "User")</strong>
-                    <span style="font-size: 12px; color: #64748B;">@Model.CreatedAt.ToString("MMM dd, yyyy h:mm tt")</span>
+        var answerCount = Model.Answers?.Count(a => !a.IsDeleted) ?? 0;
+        var isSolved    = Model.Answers?.Any(a => a.IsAccepted && !a.IsDeleted) == true;
+
+        <!-- ── QUESTION ── -->
+        <div class="card" style="margin-bottom:28px;">
+
+            <!-- Author row -->
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px; flex-wrap:wrap;">
+                <img src="@AvatarHelper.Url(Model.User?.Name, 38)" alt=""
+                     style="width:38px;height:38px;border-radius:50%;flex-shrink:0;" />
+                <div style="flex:1;">
+                    @if (!string.IsNullOrEmpty(Model.User?.Username))
+                    {
+                        <a href="@Url.Action("ViewProfile", "Dashboard", new { username = Model.User.Username })"
+                           style="font-size:14px;font-weight:700;color:var(--text);text-decoration:none;display:block;">
+                            @(Model.User.Name ?? "User")
+                        </a>
+                    }
+                    else
+                    {
+                        <div style="font-size:14px;font-weight:700;color:var(--text);">@(Model.User?.Name ?? "User")</div>
+                    }
+                    <div style="font-size:12px;color:var(--text-2);">@Model.CreatedAt.ToString("MMM dd, yyyy · h:mm tt")</div>
                 </div>
                 @if (Model.Category != null)
                 {
-                    <span style="background: #EEF2FF; color: #3D52A0; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-left: auto;">
-                        @Model.Category.Name
+                    <span class="chip chip-indigo">@Model.Category.Name</span>
+                }
+                @if (isSolved)
+                {
+                    <span class="chip chip-emerald" style="display:inline-flex;align-items:center;gap:4px;">
+                        <i class="ph-fill ph-check-circle" style="font-size:12px;"></i> Solved
                     </span>
                 }
-
-                <!-- Request Session Button - only shown to other authenticated users -->
-                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                @if (currentUserId.HasValue && !isPostOwner)
                 {
-                    var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
-                    if (Model.UserID != currentUserId)
-                    {
-                        <button onclick="openSessionModal(@Model.UserID, @Model.PostID)"
-                                style="background:#3D52A0; color:white; padding:8px 18px; border-radius:8px; border:none; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:13px;">
-                            <i data-lucide="message-circle" style="width:15px; height:15px;"></i> Request Session
-                        </button>
-                    }
+                    <button onclick="openSessionModal(@Model.UserID, @Model.PostID)"
+                            class="btn btn-primary btn-sm" style="margin-left:auto;">
+                        <i class="ph-bold ph-calendar-plus" style="font-size:14px;"></i> Request Session
+                    </button>
                 }
             </div>
 
-            <!-- Session Request Modal (hidden by default) -->
-            <div id="sessionModal" style="display:none; background:#F8FAFC; border:1.5px solid #E2E8F0; border-radius:10px; padding:16px; margin-bottom:16px;">
-                <p style="font-size:13px; font-weight:700; color:#0F172A; margin:0 0 10px 0;">Describe what you need help with:</p>
-                <textarea id="sessionDescription" rows="3"
-                      style="width:100%; padding:10px; border-radius:8px; border:1px solid #E2E8F0; font-size:13px; resize:vertical; box-sizing:border-box;"
-                      placeholder="e.g. I need help understanding your approach to this problem..."></textarea>
+            <!-- Session modal -->
+            <div id="sessionModal" style="display:none; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:18px;">
+                <p style="font-size:13px; font-weight:700; color:var(--text); margin:0 0 10px 0;">Describe what you need help with:</p>
+                <textarea id="sessionDescription" class="form-input form-textarea" rows="3"
+                          placeholder="e.g. I need help understanding your approach to this problem..."></textarea>
                 <div style="display:flex; gap:8px; margin-top:10px;">
-                    <button onclick="submitSessionRequest()"
-                            style="background:#3D52A0; color:white; padding:8px 18px; border-radius:8px; border:none; font-weight:600; cursor:pointer; font-size:13px;">
-                        Send Request
-                    </button>
-                    <button onclick="document.getElementById('sessionModal').style.display='none'"
-                            style="background:#F1F5F9; color:#64748B; padding:8px 18px; border-radius:8px; border:none; font-weight:600; cursor:pointer; font-size:13px;">
-                        Cancel
-                    </button>
+                    <button onclick="submitSessionRequest()" class="btn btn-primary btn-sm">Send Request</button>
+                    <button onclick="document.getElementById('sessionModal').style.display='none'" class="btn btn-ghost btn-sm">Cancel</button>
                 </div>
             </div>
 
             <!-- Title -->
-            <h1 style="font-size: 28px; font-weight: 800; color: #0F172A; margin: 0 0 16px 0; line-height: 1.4;">
+            <h1 style="font-size:26px; font-weight:800; color:var(--text); margin:0 0 14px 0; line-height:1.4; overflow-wrap:break-word; word-break:break-word;">
                 @Model.Title
             </h1>
 
-            <!-- Content -->
-            <div style="font-size: 15px; color: #1E293B; line-height: 1.7; margin-bottom: 24px; white-space: pre-wrap;">@Model.Content</div>
+            <!-- Body -->
+            <div style="font-size:15px; color:var(--text); line-height:1.75; margin-bottom:20px; white-space:pre-wrap; overflow-wrap:break-word; word-break:break-word;">@Model.Content</div>
 
             @if (!string.IsNullOrEmpty(Model.ImageUrl))
             {
-                <div style="margin-bottom: 24px; border-radius:12px; overflow:hidden; border:1px solid #E2E8F0;">
-                    <img src="@Model.ImageUrl" alt="Question Image" style="max-width:100%; display:block; cursor:pointer;" onclick="window.open(this.src)" />
+                <div style="margin-bottom:20px; border-radius:12px; overflow:hidden; border:1px solid var(--border);">
+                    <img src="@Model.ImageUrl" alt="" style="max-width:100%; display:block; cursor:pointer;" onclick="window.open(this.src)" />
                 </div>
             }
 
-            <!-- Stats -->
-            <div style="display: flex; gap: 24px; font-size: 14px; color: #64748B; font-weight: 600; border-top: 1px solid #E2E8F0; padding-top: 16px;">
-                <span style="display:inline-flex; align-items:center; gap:6px;"><i data-lucide="thumbs-up" style="width:16px; height:16px;"></i> @Model.Upvotes upvotes</span>
-                <span style="display:inline-flex; align-items:center; gap:6px;"><i data-lucide="message-square" style="width:16px; height:16px;"></i> @(Model.Answers?.Count(a => !a.IsDeleted) ?? 0) answers</span>
-                @if (Model.Answers?.Any(a => a.IsAccepted && !a.IsDeleted) == true)
+            <!-- Stats bar -->
+            <div style="display:flex; gap:16px; align-items:center; border-top:1px solid var(--border); padding-top:14px; font-size:13px; color:var(--text-2); font-weight:600; flex-wrap:wrap;">
+                @if (currentUserId.HasValue && !isPostOwner)
                 {
-                    <span style="color: #065F46; display:inline-flex; align-items:center; gap:6px;"><i data-lucide="check-circle-2" style="width:16px; height:16px;"></i> Solved</span>
+                    <button id="postUpvoteBtn" onclick="upvoteThisPost(@Model.PostID)" title="Upvote this question"
+                            style="background:none;border:1.5px solid var(--border);border-radius:99px;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-2);display:inline-flex;align-items:center;gap:6px;padding:5px 12px;transition:all .2s;font-family:inherit;">
+                        <i class="ph ph-thumbs-up" id="postUpvoteIcon" style="font-size:15px;"></i>
+                        <span id="postUpvoteCount">@Model.Upvotes</span> upvotes
+                    </button>
+                }
+                else
+                {
+                    <span style="display:inline-flex;align-items:center;gap:5px;">
+                        <i class="ph-fill ph-thumbs-up" style="font-size:15px;color:var(--amber);"></i>
+                        <span id="postUpvoteCount">@Model.Upvotes</span> upvotes
+                    </span>
+                }
+                <span style="display:inline-flex; align-items:center; gap:5px;">
+                    <i class="ph ph-chat-dots" style="font-size:15px;"></i> @answerCount answer@(answerCount != 1 ? "s" : "")
+                </span>
+                <span style="display:inline-flex; align-items:center; gap:5px;">
+                    <i class="ph ph-eye" style="font-size:15px;"></i> @Model.ViewsCount views
+                </span>
+                @if (currentUserId.HasValue && !isPostOwner)
+                {
+                    <button onclick="openReportModal(@Model.PostID, 'Post')"
+                            style="margin-left:auto; background:none; border:none; cursor:pointer; font-size:12px; color:var(--text-3); display:inline-flex; align-items:center; gap:4px; font-family:inherit; padding:4px 8px; border-radius:6px; transition:color .2s;"
+                            onmouseover="this.style.color='var(--red,#EF4444)'" onmouseout="this.style.color='var(--text-3)'"
+                            title="Report this post">
+                        <i class="ph ph-flag" style="font-size:14px;"></i> Report
+                    </button>
+                }
+                @if (isPostOwner)
+                {
+                    <form method="post" asp-action="DeletePost" style="margin-left:auto; display:inline;"
+                          onsubmit="return confirm('Delete this post? This cannot be undone.')">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="postId" value="@Model.PostID" />
+                        <button type="submit" style="background:none; border:none; cursor:pointer; font-size:12px; color:var(--text-3); display:inline-flex; align-items:center; gap:4px; font-family:inherit; padding:4px 8px; border-radius:6px; transition:color .2s;"
+                                onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='var(--text-3)'"
+                                title="Delete this post">
+                            <i class="ph ph-trash" style="font-size:14px;"></i> Delete
+                        </button>
+                    </form>
                 }
             </div>
         </div>
 
-        <!-- Answers Section -->
-        @if (Model.Answers != null && Model.Answers.Any(a => !a.IsDeleted))
-        {
-            <div style="background: white; border-radius: 12px; padding: 24px; border: 1.5px solid #E2E8F0;">
-                <h2 style="font-size: 18px; font-weight: 800; color: #0F172A; margin: 0 0 20px 0;">
-                    Answers (@(Model.Answers.Count(a => !a.IsDeleted)))
-                </h2>
+        <!-- Report Modal -->
+        <div id="reportModal" style="display:none; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:18px;">
+            <p style="font-size:13px; font-weight:700; color:var(--text); margin:0 0 8px 0;"><i class="ph-bold ph-flag" style="color:#EF4444; margin-right:4px;"></i> Report Content</p>
+            <p style="font-size:12px; color:var(--text-2); margin:0 0 10px 0;">Describe why this content violates community guidelines.</p>
+            <textarea id="reportReason" class="form-input form-textarea" rows="3" maxlength="500"
+                      placeholder="e.g. Spam, inappropriate content, misinformation..."></textarea>
+            <div style="display:flex; gap:8px; margin-top:10px; align-items:center;">
+                <button onclick="submitReport()" class="btn btn-sm" style="background:#EF4444;color:white;border:none;">Submit Report</button>
+                <button onclick="closeReportModal()" class="btn btn-ghost btn-sm">Cancel</button>
+            </div>
+        </div>
 
-                @foreach (var answer in Model.Answers.Where(a => !a.IsDeleted).OrderByDescending(a => a.IsAccepted).ThenByDescending(a => a.Upvotes))
+        <!-- ── ANSWERS ── -->
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+            <h2 style="font-size:18px; font-weight:800; color:var(--text); margin:0;">
+                <i class="ph-bold ph-chat-circle" style="font-size:18px; color:var(--indigo); vertical-align:middle; margin-right:6px;"></i>
+                @answerCount Answer@(answerCount != 1 ? "s" : "")
+            </h2>
+            @if (isSolved)
+            {
+                <span style="font-size:12px; color:var(--emerald); font-weight:700; background:var(--emerald-light); padding:3px 10px; border-radius:99px;">
+                    Best answer marked
+                </span>
+            }
+        </div>
+
+        @if (answerCount > 0)
+        {
+            <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:32px;">
+                @foreach (var answer in Model.Answers!.Where(a => !a.IsDeleted).OrderByDescending(a => a.IsAccepted).ThenByDescending(a => a.Upvotes))
                 {
-                    <div style="border-left: 4px solid @(answer.IsAccepted ? "#065F46" : "#E2E8F0"); padding: 16px; margin-bottom: 16px; background: @(answer.IsAccepted ? "#ECFDF5" : "#F8FAFC");">
-                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                            <img src="https://ui-avatars.com/api/?name=@(answer.User?.Name ?? "User")&background=7091E6&color=fff&size=32"
-                                 alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%;" />
-                            <div style="flex: 1;">
-                                <strong style="font-size: 13px; color: #0F172A;">@(answer.User?.Name?.Split(' ').First() ?? "User")</strong>
-                                <span style="font-size: 12px; color: #64748B; margin-left: 8px;">@answer.CreatedAt.ToString("MMM dd, yyyy")</span>
-                                @if (answer.IsAccepted)
+                    var isAccepted = answer.IsAccepted;
+                    <div style="display:flex; gap:16px; background:@(isAccepted ? "var(--emerald-light)" : "var(--surface)"); border:1.5px solid @(isAccepted ? "var(--emerald)" : "var(--border)"); border-radius:var(--radius); padding:18px; transition:box-shadow .2s;">
+
+                        <!-- Vote column -->
+                        <div style="display:flex; flex-direction:column; align-items:center; gap:4px; min-width:44px; padding-top:2px;">
+                            <button class="upvote-btn" data-answer-id="@answer.AnswerID"
+                                    title="Upvote this answer"
+                                    style="width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--text-2);">
+                                <i class="ph ph-thumbs-up" style="font-size:18px;pointer-events:none;"></i>
+                            </button>
+                            <span class="upvote-count" data-upvote-count="@answer.AnswerID"
+                                  style="font-size:16px; font-weight:800; color:var(--text); line-height:1;">@answer.Upvotes</span>
+                        </div>
+
+                        <!-- Content column -->
+                        <div style="flex:1; min-width:0;">
+                            <!-- Answer author + accepted badge -->
+                            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+                                <img src="@AvatarHelper.Url(answer.User?.Name, 28)" alt=""
+                                     style="width:28px;height:28px;border-radius:50%;flex-shrink:0;" />
+                                <strong style="font-size:13px; color:var(--text);">@(answer.User?.Name?.Split(' ').First() ?? "User")</strong>
+                                <span style="font-size:12px; color:var(--text-2);">@answer.CreatedAt.ToString("MMM dd, yyyy")</span>
+                                @if (isAccepted)
                                 {
-                                    <span style="background: #065F46; color: white; padding: 2px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; margin-left: 8px; display:inline-flex; align-items:center; gap:4px;"><i data-lucide="check-circle-2" style="width:12px; height:12px;"></i> Accepted Answer</span>
+                                    <span class="chip chip-emerald" style="display:inline-flex;align-items:center;gap:4px;margin-left:auto;">
+                                        <i class="ph-fill ph-seal-check" style="font-size:12px;"></i> Best Answer
+                                    </span>
+                                }
+                                @if (isPostOwner && !isAccepted)
+                                {
+                                    <button class="accept-btn" data-answer-id="@answer.AnswerID"
+                                            style="margin-left:auto;background:none;border:1.5px solid var(--emerald);border-radius:8px;cursor:pointer;font-size:12px;color:var(--emerald);font-weight:700;display:inline-flex;align-items:center;gap:4px;padding:4px 12px;font-family:inherit;transition:all .2s;">
+                                        <i class="ph-fill ph-seal-check" style="font-size:13px;"></i> Mark as Best
+                                    </button>
+                                }
+                                @if (currentUserId.HasValue && answer.UserID == currentUserId.Value)
+                                {
+                                    <form method="post" asp-action="DeleteAnswer" style="margin-left:auto; display:inline;"
+                                          onsubmit="return confirm('Delete this answer?')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="answerId" value="@answer.AnswerID" />
+                                        <input type="hidden" name="postId" value="@Model.PostID" />
+                                        <button type="submit" style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-3);display:inline-flex;align-items:center;gap:3px;font-family:inherit;padding:3px 6px;border-radius:4px;transition:color .2s;"
+                                                onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='var(--text-3)'"
+                                                title="Delete this answer">
+                                            <i class="ph ph-trash" style="font-size:12px;"></i>
+                                        </button>
+                                    </form>
+                                }
+                                @if (currentUserId.HasValue && answer.UserID != currentUserId.Value)
+                                {
+                                    <button onclick="openReportModal(@answer.AnswerID, 'Answer')"
+                                            style="@(isPostOwner && !isAccepted ? "" : "margin-left:auto;") background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-3);display:inline-flex;align-items:center;gap:3px;font-family:inherit;padding:3px 6px;border-radius:4px;transition:color .2s;"
+                                            onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='var(--text-3)'"
+                                            title="Report this answer">
+                                        <i class="ph ph-flag" style="font-size:12px;"></i>
+                                    </button>
                                 }
                             </div>
-                            <button class="upvote-btn" data-answer-id="@answer.AnswerID" style="background:none; border:none; cursor:pointer; font-size:13px; color:#64748B; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-                                <span class="upvote-count" data-upvote-count="@answer.AnswerID"><i data-lucide="thumbs-up" style="width:14px; height:14px; vertical-align:middle;"></i> @answer.Upvotes</span>
-                            </button>
-                        </div>
-                        <p style="font-size: 14px; color: #1E293B; line-height: 1.6; margin: 0; white-space: pre-wrap;">@answer.Content</p>
 
-                        @if (!string.IsNullOrEmpty(answer.ImageUrl))
-                        {
-                            <div style="margin-top: 12px; border-radius:8px; overflow:hidden; border:1px solid #E2E8F0; max-width:400px;">
-                                <img src="@answer.ImageUrl" alt="Answer Image" style="max-width:100%; display:block; cursor:pointer;" onclick="window.open(this.src)" />
-                            </div>
-                        }
+                            <!-- Answer text -->
+                            <p style="font-size:14px; color:var(--text); line-height:1.75; margin:0; white-space:pre-wrap; overflow-wrap:break-word; word-break:break-word;">@answer.Content</p>
+
+                            @if (!string.IsNullOrEmpty(answer.ImageUrl))
+                            {
+                                <div style="margin-top:12px; border-radius:8px; overflow:hidden; border:1px solid var(--border); max-width:400px;">
+                                    <img src="@answer.ImageUrl" alt="" style="max-width:100%; display:block; cursor:pointer;" onclick="window.open(this.src)" />
+                                </div>
+                            }
+                        </div>
                     </div>
                 }
             </div>
         }
         else
         {
-            <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 12px; border: 1.5px solid #E2E8F0;">
-                <p style="font-size: 16px; font-weight: 700; color: #0F172A; margin: 0 0 8px 0;">
-                    No answers yet
-                </p>
-                <p style="font-size: 14px; color: #64748B; margin: 0;">
-                    Be the first to help answer this question!
-                </p>
+            <div style="text-align:center; padding:48px 20px; background:var(--surface); border-radius:var(--radius); border:1px solid var(--border); margin-bottom:32px;">
+                <i class="ph-duotone ph-chat-dots" style="font-size:44px; color:var(--text-3); display:block; margin-bottom:12px;"></i>
+                <p style="font-size:15px; font-weight:700; color:var(--text); margin:0 0 6px 0;">No answers yet</p>
+                <p style="font-size:13px; color:var(--text-2); margin:0;">Be the first to help — scroll down to write your answer!</p>
             </div>
         }
 
-        <!-- Answer submission form -->
-        @if (User.Identity.IsAuthenticated)
+        <!-- ── WRITE YOUR ANSWER ── -->
+        @if (User.Identity?.IsAuthenticated == true)
         {
-            <div style="margin-top:20px; background:white; border-radius:12px; padding:20px; border:1.5px solid #E2E8F0; margin-top:16px;">
-                <h3 style="margin-top:0;">Your Answer</h3>
-                <form asp-action="PostAnswer" method="post" enctype="multipart/form-data" style="margin-top:8px;">
+            <div style="border-top:2px solid var(--border); padding-top:28px;">
+                <h2 style="font-size:18px; font-weight:800; color:var(--text); margin:0 0 6px 0; display:flex; align-items:center; gap:8px;">
+                    <i class="ph-bold ph-pencil-simple" style="font-size:18px; color:var(--indigo);"></i> Write Your Answer
+                </h2>
+                <p style="font-size:13px; color:var(--text-2); margin:0 0 18px 0;">
+                    <i class="ph-fill ph-seal-check" style="font-size:13px; color:var(--emerald); vertical-align:middle; margin-right:4px;"></i>
+                    Earn <strong>+15 pts</strong> if the asker marks your answer as best!
+                </p>
+
+                <form asp-action="PostAnswer" method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="postId" value="@Model.PostID" />
-                    <textarea name="content" rows="5" style="width:100%; padding:12px; border-radius:8px; border:1px solid #E6EEF8; margin-bottom:12px;" placeholder="Write your answer here..." required></textarea>
 
-                    <div style="margin-bottom:16px;">
-                        <label style="display:block; font-size:13px; font-weight:700; color:#0F172A; margin-bottom:8px;">Attach an image (optional)</label>
-                        <input type="file" name="ImageFile" accept="image/*" style="font-size:13px; color:#64748B;" />
-                    </div>
+                    <textarea name="content" class="form-input form-textarea" rows="6"
+                              style="margin-bottom:14px; resize:vertical;"
+                              placeholder="Explain your answer clearly. Include steps, formulas, or examples if helpful."
+                              required></textarea>
 
-                    <div style="text-align:right;">
-                        <button type="submit" class="btn btn-primary" style="background:#3D52A0; color:#fff; padding:10px 20px; border-radius:8px; border:none; font-weight:600; display:inline-flex; align-items:center; gap:8px;">
-                            <i data-lucide="send" style="width:18px; height:18px;"></i> Post Answer
+                    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+                        <label style="display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--text-2); cursor:pointer;">
+                            <i class="ph ph-image" style="font-size:16px;"></i>
+                            <span>Attach image</span>
+                            <input type="file" name="ImageFile" accept="image/*" style="display:none;" />
+                        </label>
+                        <button type="submit" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px; padding:10px 28px; font-size:15px;">
+                            <i class="ph-bold ph-paper-plane-tilt" style="font-size:17px;"></i> Post Answer
                         </button>
                     </div>
                 </form>
@@ -161,94 +291,184 @@
         }
         else
         {
-            <div style="margin-top:20px; text-align:center;">
-                <a asp-controller="Login" asp-action="Login_Page" class="btn" style="color:#3D52A0;">Sign in to post an answer</a>
+            <div style="border-top:2px solid var(--border); padding-top:28px; text-align:center;">
+                <p style="font-size:14px; color:var(--text-2); margin:0 0 12px 0;">Sign in to post an answer</p>
+                <a asp-controller="Login" asp-action="Login_Page" class="btn btn-primary">Sign In</a>
             </div>
         }
 
-        <!-- Anti-forgery token for AJAX (upvotes) -->
-        <form id="antiforgeryForm" style="display:none;">
-            @Html.AntiForgeryToken()
-        </form>
+        <!-- Hidden antiforgery for AJAX -->
+        <form id="antiforgeryForm" style="display:none;">@Html.AntiForgeryToken()</form>
 
         <script>
+            function getToken() {
+                var el = document.querySelector('#antiforgeryForm input[name="__RequestVerificationToken"]');
+                return el ? el.value : '';
+            }
+
+            // ── Post upvote ──────────────────────────────────────────
+            async function upvoteThisPost(postId) {
+                var btn = document.getElementById('postUpvoteBtn');
+                if (btn && btn.dataset.pending === '1') return;
+                if (btn) btn.dataset.pending = '1';
+                try {
+                    var resp = await fetch('/Dashboard/UpvotePost', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
+                        body: 'postId=' + encodeURIComponent(postId)
+                    });
+                    var data = await resp.json();
+                    if (!resp.ok) { showToast(data.message || 'Could not upvote.', 'error'); return; }
+                    var count = document.getElementById('postUpvoteCount');
+                    if (count) count.textContent = data.upvotes;
+                    markPostUpvoted(data.voted);
+                } catch { showToast('Failed to upvote. Try again.', 'error'); }
+                finally { if (btn) btn.dataset.pending = '0'; }
+            }
+
+            function markPostUpvoted(voted) {
+                var btn  = document.getElementById('postUpvoteBtn');
+                var icon = document.getElementById('postUpvoteIcon');
+                if (btn) {
+                    btn.style.borderColor = voted ? 'var(--indigo)' : '';
+                    btn.style.color       = voted ? 'var(--indigo)' : '';
+                    btn.style.background  = voted ? 'var(--indigo-light)' : '';
+                }
+                if (icon) { icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph ph-thumbs-up'; }
+            }
+
+            document.addEventListener('DOMContentLoaded', async function() {
+                try {
+                    const res = await fetch('/api/user/votes');
+                    if (res.ok) {
+                        const data = await res.json();
+                        if ((data.postIds || []).includes(@Model.PostID)) markPostUpvoted(true);
+                        (data.answerIds || []).forEach(id => {
+                            var btn = document.querySelector(`.upvote-btn[data-answer-id="${id}"]`);
+                            if (btn) markVoted(btn);
+                        });
+                    }
+                } catch { /* silent */ }
+            });
+
             // ── Session Request ──────────────────────────────────────
             let _recipientId, _postId;
-
             function openSessionModal(recipientId, postId) {
-                _recipientId = recipientId;
-                _postId = postId;
+                _recipientId = recipientId; _postId = postId;
                 document.getElementById('sessionModal').style.display = 'block';
             }
-
             async function submitSessionRequest() {
                 const description = document.getElementById('sessionDescription').value.trim();
-                if (!description) {
-                    alert('Please describe what you need help with.');
-                    return;
-                }
-                await sendSessionRequest(_recipientId, _postId, description);
-            }
-
-            async function sendSessionRequest(recipientId, postId, description) {
+                if (!description) { showToast('Please describe what you need help with.', 'error'); return; }
                 try {
                     const res = await fetch('/Session/SendRequest', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: `recipientId=${recipientId}&postId=${postId}&description=${encodeURIComponent(description)}`
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
+                        body: `recipientId=${_recipientId}&postId=${_postId}&description=${encodeURIComponent(description)}`
                     });
                     const data = await res.json();
-                    alert(data.message);
+                    showToast(data.message || 'Request sent!', res.ok ? 'success' : 'error');
                     document.getElementById('sessionModal').style.display = 'none';
                     document.getElementById('sessionDescription').value = '';
-                } catch (err) {
-                    console.error(err);
-                    alert('Session already exists.');
-                }
+                } catch { showToast('Could not send request. Try again.', 'error'); }
             }
 
-            // ── Upvotes ──────────────────────────────────────────────
-            (function () {
-                function getToken() {
-                    var el = document.querySelector('#antiforgeryForm input[name="__RequestVerificationToken"]');
-                    return el ? el.value : '';
-                }
+            // ── Answer Upvotes ────────────────────────────────────────
+            document.querySelectorAll('.upvote-btn').forEach(function(btn) {
+                var id = btn.dataset.answerId;
 
-                document.querySelectorAll('.upvote-btn').forEach(function (btn) {
-                    btn.addEventListener('click', async function (e) {
-                        e.preventDefault();
-                        var id = this.dataset.answerId;
-                        var token = getToken();
-                        var display = document.querySelector(`[data-upvote-count="${id}"]`);
-                        try {
-                            var resp = await fetch('@Url.Action("UpvoteAnswer", "Dashboard")', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/x-www-form-urlencoded',
-                                    'RequestVerificationToken': token
-                                },
-                                body: 'answerId=' + encodeURIComponent(id)
-                            });
-                            if (!resp.ok) throw new Error('Network response was not ok');
-                            var data = await resp.json();
-                            if (display) {
-                                const iconHtml = '<i data-lucide="thumbs-up" style="width:14px; height:14px; vertical-align:middle;"></i> ';
-                                display.innerHTML = iconHtml + data.upvotes;
-                                lucide.createIcons();
-                            }
-                        } catch (err) {
-                            console.error(err);
-                            alert('Failed to upvote. Please try again.');
+                btn.addEventListener('click', async function() {
+                    if (btn.dataset.pending === '1') return;
+                    btn.dataset.pending = '1';
+                    try {
+                        var resp = await fetch('@Url.Action("UpvoteAnswer", "Dashboard")', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
+                            body: 'answerId=' + encodeURIComponent(id)
+                        });
+                        var data = await resp.json();
+                        if (!resp.ok) {
+                            showToast(data.message || 'Could not upvote.', 'error');
+                            return;
                         }
-                    });
+                        var display = document.querySelector('[data-upvote-count="' + id + '"]');
+                        if (display) display.textContent = data.upvotes;
+                        setAnswerVoteState(btn, data.voted);
+                    } catch { showToast('Failed to upvote. Try again.', 'error'); }
+                    finally { btn.dataset.pending = '0'; }
                 });
-            })();
+            });
+
+            function markVoted(btn) { setAnswerVoteState(btn, true); }
+
+            function setAnswerVoteState(btn, voted) {
+                var icon = btn.querySelector('i');
+                btn.style.background  = voted ? 'var(--indigo-light)' : '';
+                btn.style.borderColor = voted ? 'var(--indigo)' : '';
+                btn.style.color       = voted ? 'var(--indigo)' : '';
+                btn.style.cursor      = 'pointer';
+                if (icon) { icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph ph-thumbs-up'; }
+                btn.title = voted ? 'Click to remove upvote' : 'Upvote this answer';
+            }
+
+            // ── Report content ────────────────────────────────────────
+            let _reportTargetId, _reportTargetType;
+            function openReportModal(targetId, targetType) {
+                _reportTargetId = targetId; _reportTargetType = targetType;
+                document.getElementById('reportReason').value = '';
+                document.getElementById('reportModal').style.display = 'block';
+                document.getElementById('reportModal').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            function closeReportModal() {
+                document.getElementById('reportModal').style.display = 'none';
+            }
+            async function submitReport() {
+                const reason = document.getElementById('reportReason').value.trim();
+                if (!reason) { showToast('Please describe why you are reporting this.', 'error'); return; }
+                try {
+                    const res = await fetch('/Dashboard/ReportContent', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
+                        body: `targetId=${_reportTargetId}&targetType=${_reportTargetType}&reason=${encodeURIComponent(reason)}`
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('Report submitted. Thank you!', 'success');
+                        closeReportModal();
+                    } else {
+                        showToast(data.message || 'Could not submit report.', 'error');
+                    }
+                } catch { showToast('Could not submit report. Try again.', 'error'); }
+            }
+
+            // ── Image attach label ────────────────────────────────────
+            document.querySelector('label input[type="file"]')?.addEventListener('change', function() {
+                var label = this.closest('label').querySelector('span');
+                if (label) label.textContent = this.files[0]?.name || 'Attach image';
+            });
+
+            // ── Accept Answer ─────────────────────────────────────────
+            document.querySelectorAll('.accept-btn').forEach(function(btn) {
+                btn.addEventListener('click', async function() {
+                    var id = btn.dataset.answerId;
+                    try {
+                        var resp = await fetch('@Url.Action("AcceptAnswer", "Dashboard")', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
+                            body: 'answerId=' + encodeURIComponent(id)
+                        });
+                        if (!resp.ok) throw new Error();
+                        showToast('Best answer marked! +15 pts awarded.', 'success');
+                        setTimeout(() => window.location.reload(), 800);
+                    } catch { showToast('Could not accept answer. Please try again.', 'error'); }
+                });
+            });
         </script>
     }
     else
     {
-        <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 12px;">
-            <p style="font-size: 16px; font-weight: 700; color: #0F172A;">Post not found</p>
+        <div style="text-align:center; padding:60px 20px; background:var(--surface); border-radius:var(--radius);">
+            <p style="font-size:16px; font-weight:700; color:var(--text);">Post not found</p>
         </div>
     }
 </div>

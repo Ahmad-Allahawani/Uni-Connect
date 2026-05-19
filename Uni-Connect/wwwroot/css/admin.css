@@ -1,0 +1,43 @@
+/* Admin layout */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 24px; }
+.stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+.stat-value { font-size: 32px; font-weight: 800; margin-bottom: 4px; line-height: 1; }
+.stat-label { font-size: 13px; color: var(--text-2); font-weight: 500; }
+.card-header { padding: 16px 20px; border-bottom: 1.5px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.card-body { padding: 20px; }
+.table-container { overflow-x: auto; }
+
+/* Table */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+    text-align: left; padding: 12px 16px; background: var(--bg);
+    font-weight: 600; color: var(--text-2); font-size: 12px;
+    text-transform: uppercase; letter-spacing: .5px;
+    border-bottom: 1.5px solid var(--border);
+}
+.data-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 14px; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--bg); }
+
+/* Badges */
+.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; }
+.badge-primary { background: var(--indigo-light); color: var(--indigo); }
+.badge-secondary { background: var(--bg); color: var(--text-2); }
+.badge-success { background: var(--emerald-light); color: #065F46; }
+.badge-danger { background: var(--rose-light); color: #9F1239; }
+.badge-warning { background: var(--amber-light); color: #92400E; }
+
+/* Buttons */
+.btn-danger { background: var(--rose); color: white; border: none; }
+.btn-danger:hover { background: #e11d48; transform: translateY(-1px); }
+
+/* Typography helpers */
+.h2 { font-size: 24px; font-weight: 800; }
+.h4 { font-size: 16px; font-weight: 700; }
+.text-2 { color: var(--text-2); font-size: 14px; }
+.text-3 { color: var(--text-3); font-size: 12px; }
+.text-mono { font-family: monospace; font-size: 12px; }
+
+/* Micro avatar */
+.av-xs { width: 24px; height: 24px; border-radius: 50%; overflow: hidden; }
