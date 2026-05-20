@@ -43,6 +43,18 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
+    <!-- SCROLL PROGRESS BAR -->
+    <div id="scroll-bar" style="position:fixed;top:0;left:0;height:3px;width:0%;background:#F59E0B;z-index:9999;transition:width .05s linear;pointer-events:none;box-shadow:0 0 8px rgba(245,158,11,.5)"></div>
+    <script>
+        (function(){
+            var bar=document.getElementById('scroll-bar');
+            function upd(){
+                var s=document.documentElement,scrolled=s.scrollTop||document.body.scrollTop,total=s.scrollHeight-s.clientHeight;
+                bar.style.width=total>0?(scrolled/total*100)+'%':'0%';
+            }
+            window.addEventListener('scroll',upd,{passive:true});
+        })();
+    </script>
     <!-- NAV -->
     <nav class="nav">
         <a asp-controller="Home" asp-action="Index" class="nav-logo" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; font-weight:900; font-size:20px;">
@@ -99,5 +111,51 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- EFFECT 1: Lenis smooth scroll -->
+    <script src="https://cdn.jsdelivr.net/npm/@@studio-freight/lenis@@1.0.42/dist/lenis.min.js"></script>
+    <script>
+    (function(){
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var lenis = new Lenis({
+        duration: 1.2,
+        easing: function(t){ return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+        orientation: 'vertical',
+        smoothWheel: true
+      });
+      function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+      requestAnimationFrame(raf);
+      if(window.ScrollTrigger){
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add(function(time){ lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+      }
+      window.lenis = lenis;
+    })();
+    </script>
+
+    <!-- EFFECT 5: Cursor glow (desktop only) -->
+    <div id="cursor-glow" aria-hidden="true" style="position:fixed;width:300px;height:300px;border-radius:50%;pointer-events:none;z-index:9998;background:radial-gradient(circle,rgba(61,82,160,0.06) 0%,transparent 70%);transform:translate(-50%,-50%);transition:opacity 0.3s;opacity:0;"></div>
+    <script>
+    (function(){
+      if(window.matchMedia('(pointer: coarse)').matches) return;
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var glow = document.getElementById('cursor-glow');
+      if(!glow) return;
+      var mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
+      document.addEventListener('mousemove', function(e){
+        mouseX = e.clientX; mouseY = e.clientY;
+        glow.style.opacity = '1';
+      });
+      document.addEventListener('mouseleave', function(){ glow.style.opacity = '0'; });
+      (function animate(){
+        glowX += (mouseX - glowX) * 0.08;
+        glowY += (mouseY - glowY) * 0.08;
+        glow.style.left = glowX + 'px';
+        glow.style.top  = glowY + 'px';
+        requestAnimationFrame(animate);
+      })();
+    })();
+    </script>
 </body>
 </html>

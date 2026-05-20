@@ -6,6 +6,8 @@
 
 <!-- HERO -->
 <section class="hero">
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
+    <canvas id="ambient-canvas" aria-hidden="true"></canvas>
     <div class="hero-badge"><i class="ph-fill ph-graduation-cap" style="font-size:14px;vertical-align:middle;margin-right:6px;"></i> Exclusive to Philadelphia University Students</div>
     <h1 class="hero-title">
         Help Each Other.<br>
@@ -63,7 +65,7 @@
 </section>
 
 <!-- HOW IT WORKS -->
-<section class="section" id="how">
+<section class="section" id="how" data-num="01">
     <div style="max-width:1100px;margin:0 auto">
         <div class="center">
             <div class="section-tag"><i class="ph-bold ph-lightning" style="font-size:13px;vertical-align:middle;margin-right:4px;"></i> Simple Process</div>
@@ -82,7 +84,8 @@
 </section>
 
 <!-- FEATURES -->
-<section class="section features-bg" id="features">
+<section class="section features-bg" id="features" data-num="02">
+    <canvas id="features-canvas" aria-hidden="true"></canvas>
     <div style="max-width:1100px;margin:0 auto">
         <div class="center">
             <div class="section-tag"><i class="ph-bold ph-star" style="font-size:13px;vertical-align:middle;margin-right:4px;"></i> Platform Features</div>
@@ -130,7 +133,7 @@
 </section>
 
 <!-- CAMPUS VENUES -->
-<section class="section" id="venues">
+<section class="section" id="venues" data-num="04">
     <div style="max-width:1100px;margin:0 auto">
         <div class="center">
             <div class="section-tag"><i class="ph-bold ph-buildings" style="font-size:13px;vertical-align:middle;margin-right:4px;"></i> Campus Partner Venues</div>
@@ -151,7 +154,7 @@
 </section>
 
 <!-- TESTIMONIALS -->
-<section class="section features-bg">
+<section class="section features-bg" data-num="05">
     <div style="max-width:1100px;margin:0 auto">
         <div class="center">
             <div class="section-tag"><i class="ph-bold ph-quotes" style="font-size:14px;vertical-align:middle;margin-right:4px;"></i> Student Stories</div>
@@ -183,3 +186,337 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+<!-- EFFECT 2: GSAP scroll reveal + hero word split -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero heading word-split reveal
+  var heroTitle = document.querySelector('.hero-title');
+  if(heroTitle){
+    var html = heroTitle.innerHTML;
+    // Split text nodes only, preserve inner HTML tags (like .grad span)
+    heroTitle.style.opacity = '1';
+    gsap.from(heroTitle, { y: 40, opacity: 0, duration: 0.9, ease: 'power3.out', delay: 0.1 });
+  }
+
+  // Section headings slide up
+  gsap.utils.toArray('.section-title').forEach(function(el){
+    gsap.from(el, {
+      scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' },
+      y: 40, opacity: 0, duration: 0.7, ease: 'power2.out'
+    });
+  });
+
+  // Cards stagger (GSAP overrides IntersectionObserver reveal for these)
+  gsap.utils.toArray('.step, .feat, .venue, .testi').forEach(function(el, i){
+    gsap.from(el, {
+      scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' },
+      y: 50, opacity: 0, duration: 0.55, delay: (i % 3) * 0.09, ease: 'power2.out'
+    });
+  });
+
+  // Hero parallax on canvas
+  var heroBg = document.getElementById('hero-canvas');
+  if(heroBg){
+    gsap.to(heroBg, {
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+      y: '30%', ease: 'none'
+    });
+  }
+
+  // GSAP + Lenis integration (if lenis loaded after GSAP)
+  if(window.lenis){
+    window.lenis.on('scroll', ScrollTrigger.update);
+  }
+})();
+</script>
+
+<!-- EFFECT 4: Text scramble on hero (first text node only, preserves .grad span) -->
+<script>
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var el = document.querySelector('.hero-title');
+  if(!el) return;
+  // Only scramble the first text node ("Help Each Other.")
+  var textNode = null;
+  for(var i=0;i<el.childNodes.length;i++){
+    if(el.childNodes[i].nodeType===3 && el.childNodes[i].textContent.trim()){
+      textNode = el.childNodes[i]; break;
+    }
+  }
+  if(!textNode) return;
+  var original = textNode.textContent;
+  var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  var frame = 0, totalFrames = 28;
+  function scramble(){
+    var progress = frame / totalFrames;
+    var result = original.split('').map(function(char, i){
+      if(char === ' ' || char === '\n') return char;
+      if(i < progress * original.length) return char;
+      return chars[Math.floor(Math.random() * chars.length)];
+    }).join('');
+    textNode.textContent = result;
+    frame++;
+    if(frame <= totalFrames) requestAnimationFrame(scramble);
+    else textNode.textContent = original;
+  }
+  window.addEventListener('load', function(){ setTimeout(scramble, 250); });
+})();
+</script>
+
+<!-- EFFECT 3: Ambient floating geometry canvas -->
+<script>
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var canvas = document.getElementById('ambient-canvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W, H, shapes = [];
+  var COLORS = ['61,82,160','112,145,230','245,158,11'];
+
+  function Shape(){
+    this.x = Math.random()*W; this.y = Math.random()*H;
+    this.size = Math.random()*55+15;
+    this.type = Math.floor(Math.random()*3);
+    this.color = COLORS[Math.floor(Math.random()*COLORS.length)];
+    this.vx = (Math.random()-0.5)*0.25; this.vy = (Math.random()-0.5)*0.25;
+    this.rotation = Math.random()*Math.PI*2;
+    this.rotSpeed = (Math.random()-0.5)*0.004;
+    this.opacity = Math.random()*0.12+0.04;
+  }
+
+  function resize(){
+    var rect = canvas.parentElement.getBoundingClientRect();
+    W = canvas.width = rect.width; H = canvas.height = rect.height;
+  }
+  function init(){
+    resize(); shapes = [];
+    var count = Math.max(6, Math.floor(W/130));
+    for(var i=0;i<count;i++) shapes.push(new Shape());
+  }
+
+  var scrollY = 0;
+  window.addEventListener('scroll', function(){ scrollY = window.scrollY; },{passive:true});
+  var hidden = false;
+  document.addEventListener('visibilitychange', function(){ hidden = document.hidden; });
+
+  function drawShape(s){
+    ctx.save();
+    ctx.translate(s.x, s.y - scrollY*0.08);
+    ctx.rotate(s.rotation);
+    ctx.strokeStyle = 'rgba('+s.color+','+s.opacity+')';
+    ctx.lineWidth = 1;
+    if(s.type===0){
+      ctx.beginPath(); ctx.arc(0,0,s.size/2,0,Math.PI*2); ctx.stroke();
+    } else if(s.type===1){
+      ctx.beginPath(); ctx.moveTo(0,-s.size/2); ctx.lineTo(s.size/2,s.size/2); ctx.lineTo(-s.size/2,s.size/2); ctx.closePath(); ctx.stroke();
+    } else {
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(-s.size/2,0); ctx.lineTo(s.size/2,0); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function draw(){
+    requestAnimationFrame(draw);
+    if(hidden) return;
+    ctx.clearRect(0,0,W,H);
+    shapes.forEach(function(s){
+      s.x+=s.vx; s.y+=s.vy; s.rotation+=s.rotSpeed;
+      if(s.x<-s.size) s.x=W+s.size; if(s.x>W+s.size) s.x=-s.size;
+      if(s.y<-s.size) s.y=H+s.size; if(s.y>H+s.size) s.y=-s.size;
+      drawShape(s);
+    });
+  }
+
+  window.addEventListener('resize', init);
+  init(); draw();
+})();
+</script>
+
+<script>
+(function () {
+  /* ── prefers-reduced-motion guard ── */
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  /* ════════════════════════════════════════
+     HERO PARTICLE CONSTELLATION
+  ════════════════════════════════════════ */
+  var heroSection = document.querySelector('.hero');
+  var hc = document.getElementById('hero-canvas');
+  if (hc && heroSection) {
+    var hCtx = hc.getContext('2d');
+    var mouse = { x: -9999, y: -9999 };
+    var N = 70;
+    var MAX_DIST = 120;
+    var particles = [];
+
+    function hResize() {
+      hc.width  = heroSection.offsetWidth;
+      hc.height = heroSection.offsetHeight;
+    }
+    hResize();
+    window.addEventListener('resize', hResize, { passive: true });
+
+    for (var i = 0; i < N; i++) {
+      particles.push({
+        x: Math.random() * hc.width,
+        y: Math.random() * hc.height,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6
+      });
+    }
+
+    window.addEventListener('mousemove', function (e) {
+      var r = heroSection.getBoundingClientRect();
+      mouse.x = e.clientX - r.left;
+      mouse.y = e.clientY - r.top;
+    }, { passive: true });
+
+    window.addEventListener('scroll', function () {
+      hc.style.transform = 'translateY(' + (window.scrollY * 0.4) + 'px)';
+    }, { passive: true });
+
+    function hDraw() {
+      if (document.hidden) { requestAnimationFrame(hDraw); return; }
+      hCtx.clearRect(0, 0, hc.width, hc.height);
+
+      /* gravity toward mouse for nearest 5 */
+      var sorted = particles.slice().sort(function (a, b) {
+        return Math.hypot(a.x - mouse.x, a.y - mouse.y) -
+               Math.hypot(b.x - mouse.x, b.y - mouse.y);
+      });
+      for (var k = 0; k < Math.min(5, sorted.length); k++) {
+        var p = sorted[k];
+        var ddx = mouse.x - p.x, ddy = mouse.y - p.y;
+        var d   = Math.hypot(ddx, ddy) || 1;
+        p.vx += ddx / d * 0.12;
+        p.vy += ddy / d * 0.12;
+      }
+
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.vx *= 0.97; p.vy *= 0.97;
+        var spd = Math.hypot(p.vx, p.vy);
+        if (spd > 2) { p.vx = p.vx / spd * 2; p.vy = p.vy / spd * 2; }
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = hc.width;  if (p.x > hc.width)  p.x = 0;
+        if (p.y < 0) p.y = hc.height; if (p.y > hc.height) p.y = 0;
+
+        hCtx.beginPath();
+        hCtx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+        hCtx.fillStyle = 'rgba(61,82,160,0.6)';
+        hCtx.fill();
+
+        for (var j = i + 1; j < particles.length; j++) {
+          var q = particles[j];
+          var dist = Math.hypot(p.x - q.x, p.y - q.y);
+          if (dist < MAX_DIST) {
+            hCtx.beginPath();
+            hCtx.moveTo(p.x, p.y);
+            hCtx.lineTo(q.x, q.y);
+            hCtx.strokeStyle = 'rgba(61,82,160,' + (0.18 * (1 - dist / MAX_DIST)) + ')';
+            hCtx.lineWidth = 1;
+            hCtx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(hDraw);
+    }
+    hDraw();
+  }
+
+  /* ════════════════════════════════════════
+     FEATURES SECTION PARTICLES
+  ════════════════════════════════════════ */
+  var featSection = document.getElementById('features');
+  var fc = document.getElementById('features-canvas');
+  if (fc && featSection) {
+    var fCtx = fc.getContext('2d');
+    var fParts = [];
+    var F = 40;
+    var fActive = false;
+
+    function fResize() {
+      fc.width  = featSection.offsetWidth;
+      fc.height = featSection.offsetHeight;
+    }
+    fResize();
+    window.addEventListener('resize', fResize, { passive: true });
+
+    for (var fi = 0; fi < F; fi++) {
+      fParts.push({
+        x: Math.random() * fc.width,
+        y: Math.random() * fc.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3
+      });
+    }
+
+    function fDraw() {
+      if (!fActive || document.hidden) return;
+      fCtx.clearRect(0, 0, fc.width, fc.height);
+      for (var fi = 0; fi < fParts.length; fi++) {
+        var fp = fParts[fi];
+        fp.x += fp.vx; fp.y += fp.vy;
+        if (fp.x < 0) fp.x = fc.width;  if (fp.x > fc.width)  fp.x = 0;
+        if (fp.y < 0) fp.y = fc.height; if (fp.y > fc.height) fp.y = 0;
+        fCtx.beginPath();
+        fCtx.arc(fp.x, fp.y, 2, 0, Math.PI * 2);
+        fCtx.fillStyle = 'rgba(61,82,160,0.25)';
+        fCtx.fill();
+        for (var fj = fi + 1; fj < fParts.length; fj++) {
+          var fq = fParts[fj];
+          var fd = Math.hypot(fp.x - fq.x, fp.y - fq.y);
+          if (fd < 100) {
+            fCtx.beginPath();
+            fCtx.moveTo(fp.x, fp.y); fCtx.lineTo(fq.x, fq.y);
+            fCtx.strokeStyle = 'rgba(61,82,160,' + (0.08 * (1 - fd / 100)) + ')';
+            fCtx.lineWidth = 0.8;
+            fCtx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(fDraw);
+    }
+
+    var fObs = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting && !fActive) {
+        fActive = true;
+        fc.classList.add('visible');
+        fDraw();
+      }
+    }, { threshold: 0.1 });
+    fObs.observe(featSection);
+  }
+
+  /* ════════════════════════════════════════
+     SCROLL REVEAL
+  ════════════════════════════════════════ */
+  var revealEls = document.querySelectorAll('.step, .feat, .venue, .testi');
+  if ('IntersectionObserver' in window) {
+    var revObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var el = entry.target;
+          var siblings = el.parentElement ? Array.from(el.parentElement.children) : [el];
+          var idx = siblings.indexOf(el);
+          setTimeout(function () { el.classList.add('revealed'); }, idx * 80);
+          revObs.unobserve(el);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(function (el) { revObs.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('revealed'); });
+  }
+
+})();
+</script>
+}

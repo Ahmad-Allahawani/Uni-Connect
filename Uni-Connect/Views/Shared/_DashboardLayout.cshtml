@@ -40,6 +40,11 @@
                 </button>
             </form>
         </div>
+        <!-- EFFECT 6: Live clock -->
+        <div class="nav-live-info" style="font-size:11px;color:var(--text-2);font-weight:500;display:flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;white-space:nowrap;">
+          <span style="opacity:0.5;">Philadelphia University</span>
+          <span id="live-clock" style="font-family:monospace;letter-spacing:0.05em;"></span>
+        </div>
         <div class="nav-actions">
             <a asp-controller="Dashboard" asp-action="Notifications" style="text-decoration:none; color:inherit;" aria-label="Notifications">
                 <div class="nav-bell" id="notifBell" role="img" aria-hidden="true">
@@ -294,6 +299,43 @@
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- EFFECT 1: Lenis smooth scroll for dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/@@studio-freight/lenis@@1.0.42/dist/lenis.min.js"></script>
+    <script>
+    (function(){
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var lenis = new Lenis({
+        duration: 1.2,
+        easing: function(t){ return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+        orientation: 'vertical',
+        smoothWheel: true
+      });
+      function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+      requestAnimationFrame(raf);
+      if(window.ScrollTrigger){
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add(function(time){ lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+      }
+      window.lenis = lenis;
+    })();
+    </script>
+    <!-- EFFECT 6: Live clock JS -->
+    <script>
+    (function(){
+      var clock = document.getElementById('live-clock');
+      if(!clock) return;
+      function tick(){
+        var now = new Date();
+        clock.textContent = now.toLocaleTimeString('en-US', {
+          hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false
+        });
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+    </script>
     <script>
         // Fallback for broken uploaded profile images — fires if an img fails to load
         document.addEventListener('DOMContentLoaded', function () {

@@ -994,3 +994,152 @@ button {
 
 /* Selection */
 ::selection { background: rgba(61,82,160,0.16); color: #2d3f7a; }
+
+
+/* ============================================================
+   PARTICLE CANVAS
+   ============================================================ */
+
+#hero-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    will-change: transform;
+}
+
+/* Keep hero content above canvas */
+.hero > *:not(#hero-canvas) {
+    position: relative;
+    z-index: 1;
+}
+
+/* Features section canvas container */
+.features-bg {
+    position: relative;
+    overflow: hidden;
+}
+
+#features-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+#features-canvas.visible {
+    opacity: 1;
+}
+
+.features-bg > * {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* ============================================================
+   CTA AURORA PULSE
+   ============================================================ */
+
+.cta {
+    position: relative;
+    overflow: hidden;
+}
+
+.cta::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(245,158,11,.22) 0%, rgba(61,82,160,.18) 40%, transparent 70%);
+    border-radius: 50%;
+    animation: aurora-pulse 5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.cta > * {
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes aurora-pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: .8; }
+    50%       { transform: translate(-50%, -50%) scale(1.22); opacity: 1; }
+}
+
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+
+.step,
+.feat,
+.venue,
+.testi {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity .5s ease, transform .5s ease;
+}
+
+.step.revealed,
+.feat.revealed,
+.venue.revealed,
+.testi.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .step, .feat, .venue, .testi {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    #hero-canvas, #features-canvas, #ambient-canvas { display: none; }
+    .cta::after { animation: none; }
+}
+
+/* ============================================================
+   EFFECT 3: Ambient floating geometry canvas
+   ============================================================ */
+#ambient-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.45;
+}
+
+/* Keep hero content above both canvases */
+.hero > *:not(#hero-canvas):not(#ambient-canvas) {
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================================
+   EFFECT 8: Section numbers
+   ============================================================ */
+.section[data-num] {
+    position: relative;
+}
+
+.section[data-num]::before {
+    content: attr(data-num);
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--indigo);
+    opacity: 0.35;
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+}
