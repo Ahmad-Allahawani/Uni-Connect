@@ -8,7 +8,7 @@
 }
 
 <div style="max-width: 900px; margin: 0 auto; padding: 20px;">
-    <!-- Header -->
+   
     <div style="margin-bottom: 30px;">
         <h1 style="font-size: 32px; font-weight: 800; color: #0F172A; margin: 0 0 8px 0;">
             Private Sessions 💬
@@ -18,7 +18,7 @@
         </p>
     </div>
 
-    <!-- Sessions List -->
+   
     @if (Model != null && Model.Count > 0)
     {
         <div style="display: grid; gap: 16px;">
@@ -59,7 +59,7 @@
                                 </span>
                             </div>
 
-                            <!-- Message Count Badge -->
+                           
                             <div style="text-align: center; flex-shrink: 0;">
                                 <div style="background: #3D52A0; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">
                                     @(session.Messages?.Count(m => !m.IsDeleted) ?? 0)
