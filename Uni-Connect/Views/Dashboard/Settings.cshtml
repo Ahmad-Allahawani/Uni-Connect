@@ -142,40 +142,57 @@
     </div>
 
     <!-- Danger Zone -->
+    <!-- Danger Zone -->
     <div class="card danger-card">
         <div class="card-title danger-title"><i class="ph-fill ph-warning" style="font-size:20px;"></i> Danger Zone</div>
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
             <div>
                 <div style="font-weight:700; font-size:14px; margin-bottom:4px">Delete Account</div>
-                <div style="font-size:12px; color:var(--text-2)">Permanently remove your account and all data. This cannot be undone.</div>
+                <div style="font-size:12px; color:var(--text-2)">Your account will be deactivated and hidden from the platform immediately.</div>
             </div>
-            <button class="btn btn-rose btn-sm" onclick="confirmDelete()">Delete Account</button>
-        </div>
-        <div id="deleteAccountMsg" style="display:none; margin-top:14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px; font-size:13px; color:var(--text-2); line-height:1.6;">
-            <strong style="color:var(--text);">To delete your account:</strong> email
-            <a href="mailto:admin@philadelphia.edu.jo" style="color:var(--indigo); font-weight:700;">admin@philadelphia.edu.jo</a>
-            with your university ID and subject "Account Deletion Request". Your account will be removed within 24 hours.
+            <button type="button" class="btn btn-rose btn-sm" onclick="document.getElementById('deleteModal').style.display='flex'">
+                Delete Account
+            </button>
         </div>
     </div>
-</div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal"
+         style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);
+            z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:white; border-radius:12px; padding:32px 28px; max-width:420px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+            <i class="ph-fill ph-warning" style="font-size:44px; color:#dc2626;"></i>
+            <h2 style="font-size:18px; font-weight:800; margin:12px 0 8px;">Delete your account?</h2>
+            <p style="font-size:13px; color:var(--text-2); margin:0 0 24px; line-height:1.6;">
+                This will immediately deactivate your account. Your posts and answers will remain
+                but your profile will no longer be visible or accessible.
+            </p>
+            <div style="display:flex; gap:12px; justify-content:center;">
+                <button type="button"
+                        onclick="document.getElementById('deleteModal').style.display='none'"
+                        class="btn btn-ghost btn-sm">
+                    Cancel
+                </button>
+                <form asp-action="DeleteAccount" asp-controller="Dashboard" method="post" style="margin:0;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-rose btn-sm">
+                        Yes, delete my account
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
 @section Scripts {
-<script>
-    function previewFile(input) {
-        const file = input.files[0];
-        if (!file) return;
-        document.getElementById('photoFileName').textContent = file.name;
-        const reader = new FileReader();
-        reader.onload = e => { document.getElementById('profilePreview').src = e.target.result; };
-        reader.readAsDataURL(file);
-        showToast('Photo selected — click Save Changes to upload.', 'success');
-    }
-
-    function confirmDelete() {
-        if (confirm("Are you absolutely sure you want to delete your account? This cannot be undone.")) {
-            document.getElementById('deleteAccountMsg').style.display = 'block';
-            document.getElementById('deleteAccountMsg').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-    }
-</script>
+        <script>
+            function previewFile(input) {
+                const file = input.files[0];
+                if (!file) return;
+                document.getElementById('photoFileName').textContent = file.name;
+                const reader = new FileReader();
+                reader.onload = e => { document.getElementById('profilePreview').src = e.target.result; };
+                reader.readAsDataURL(file);
+                showToast('Photo selected — click Save Changes to upload.', 'success');
+            }
+        </script>
 }

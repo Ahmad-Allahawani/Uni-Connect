@@ -171,6 +171,66 @@
         color: var(--text-2);
         margin-top: 3px;
     }
+    /* ── History Chat Modal ── */
+    #historyChatModal {
+        padding: 0;
+        align-items: flex-end;
+    }
+
+        #historyChatModal > div {
+            width: 100%;
+            max-width: 100%;
+            height: 85vh;
+            border-radius: 20px 20px 0 0;
+            animation: slideUpModal .25s ease;
+        }
+
+    @@keyframes slideUpModal {
+        from
+
+    {
+        transform: translateY(40px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    }
+
+    /* Desktop: centered dialog instead of bottom sheet */
+    @@media (min-width: 640px) {
+        #historyChatModal
+
+    {
+        align-items: center;
+        padding: 24px;
+    }
+
+    #historyChatModal > div {
+        max-width: 560px;
+        height: 75vh;
+        max-height: 680px;
+        border-radius: 20px;
+    }
+
+    }
+
+    /* Scrollbar styling for modal messages */
+    #historyModalMessages::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #historyModalMessages::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #historyModalMessages::-webkit-scrollbar-thumb {
+        background: var(--indigo);
+        border-radius: 3px;
+    }
 </style>
 
 <main class="main">
@@ -363,6 +423,10 @@
                                 <div style="font-size:12px;color:var(--text-2);">@s.CreatedAt.ToString("MMM dd, yyyy")</div>
                             </div>
                             <span class="chip" style="background:#f1f5f9;color:var(--text-2);">Closed</span>
+                            <button class="btn btn-ghost btn-sm" style="display:inline-flex;align-items:center;gap:6px;"
+                                    onclick="openHistoryChat(@s.PrivateSessionID, '@otherName')">
+                                <i class="ph ph-chat-circle-text" style="font-size:15px;"></i> View Chat
+                            </button>
                         </div>
                     }
                 </div>
@@ -570,6 +634,11 @@
     // ACCEPT / DECLINE REQUEST
     // ═══════════════════════════════════════════════
     async function acceptRequest(requestId, btn) {
+        const res = await fetch('/Session/AcceptRequest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `requestId=${requestId}`
+        });
         if (btn) { btn.disabled = true; btn.textContent = 'Accepting…'; }
         try {
             const res = await fetch('/Session/AcceptRequest', {
@@ -743,5 +812,90 @@
         t.textContent = msg;
         t.style.display = 'block';
         setTimeout(() => t.style.display = 'none', 3000);
+    }
+        async function openHistoryChat(sessionId, otherName) {
+        // Build modal on first call
+        let modal = document.getElementById('historyChatModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'historyChatModal';
+            modal.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:1000;align-items:center;justify-content:center;';
+            modal.innerHTML = `
+                <div style="background:var(--surface);border-radius:20px;width:90%;max-width:560px;height:75vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;">
+                    <!-- Header -->
+                    <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0;">
+                        <div class="av av-sm"><img id="historyModalAvatar" src="" alt="" /></div>
+                        <div style="flex:1;">
+                            <div id="historyModalName" style="font-weight:700;font-size:15px;"></div>
+                            <div style="font-size:11px;color:var(--text-2);display:flex;align-items:center;gap:4px;">
+                                <i class="ph-fill ph-lock" style="font-size:12px;"></i> Read-only — session closed
+                            </div>
+                        </div>
+                        <button onclick="document.getElementById('historyChatModal').style.display='none'"
+                                style="background:none;border:none;cursor:pointer;color:var(--text-2);font-size:20px;line-height:1;padding:4px;">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
+                    <!-- Messages -->
+                    <div id="historyModalMessages"
+                         style="flex:1;min-height:0;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;background:#fbfbfc;
+                                scrollbar-width:thin;scrollbar-color:var(--indigo,#3D52A0) transparent;">
+                        <div style="text-align:center;color:var(--text-3);font-size:13px;">Loading messages…</div>
+                    </div>
+                    <!-- Locked footer -->
+                    <div style="padding:14px 20px;border-top:1px solid var(--border);background:var(--surface-2,#f8f9fb);display:flex;align-items:center;gap:10px;flex-shrink:0;">
+                        <i class="ph-fill ph-lock" style="font-size:16px;color:var(--text-3);"></i>
+                        <span style="font-size:13px;color:var(--text-2);">This session is closed. You can view messages but cannot reply.</span>
+                    </div>
+                </div>`;
+            document.body.appendChild(modal);
+        }
+
+        // Set header info
+        document.getElementById('historyModalName').textContent = otherName;
+        const avatarEl = document.getElementById('historyModalAvatar');
+        avatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(otherName)}&background=3D52A0&color=fff`;
+        avatarEl.alt = otherName;
+
+        // Show modal
+        modal.style.display = 'flex';
+
+        // Load messages
+        const msgs = document.getElementById('historyModalMessages');
+        msgs.innerHTML = '<div style="text-align:center;color:var(--text-3);font-size:13px;padding:20px;">Loading messages…</div>';
+
+        try {
+            const res = await fetch(`/api/messages/${sessionId}`);
+            if (!res.ok) throw new Error();
+            const messages = await res.json();
+            msgs.innerHTML = '';
+
+            if (messages.length === 0) {
+                msgs.innerHTML = '<div style="text-align:center;color:var(--text-3);font-size:13px;padding:20px;">No messages in this session.</div>';
+                return;
+            }
+
+            messages.forEach(m => {
+                const side = m.senderID === ME_ID ? 'me' : 'them';
+                const wrap = document.createElement('div');
+                const safe = safeImgUrl(m.imageUrl);
+                const imgHtml = safe
+                    ? `<div style="margin-top:6px;"><a href="${safe}" target="_blank"><img src="${safe}" style="max-width:200px;max-height:200px;border-radius:8px;object-fit:cover;cursor:pointer;display:block;" /></a></div>`
+                    : '';
+                const text = m.messageText && m.messageText.trim() && m.messageText.trim() !== ' '
+                    ? `<div class="msg ${side === 'me' ? 'msg-me' : 'msg-them'}">${escapeHtml(m.messageText)}${imgHtml}</div>`
+                    : safe ? `<div class="msg ${side === 'me' ? 'msg-me' : 'msg-them'}" style="padding:6px;">${imgHtml}</div>` : '';
+
+                wrap.style.cssText = side === 'me'
+                    ? 'display:flex;flex-direction:column;align-items:flex-end;'
+                    : 'display:flex;flex-direction:column;align-items:flex-start;';
+                wrap.innerHTML = `${text}<div class="msg-time" style="${side === 'me' ? 'text-align:right;' : ''}">${m.time}</div>`;
+                msgs.appendChild(wrap);
+            });
+
+            msgs.scrollTop = msgs.scrollHeight;
+        } catch {
+            msgs.innerHTML = '<div style="text-align:center;color:var(--text-3);font-size:13px;padding:20px;">Could not load messages.</div>';
+        }
     }
 </script>

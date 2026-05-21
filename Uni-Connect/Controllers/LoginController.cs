@@ -40,12 +40,50 @@ namespace Uni_Connect.Controllers
             try
             {
                 var user = await _context.Users
+                    .IgnoreQueryFilters()
                     .FirstOrDefaultAsync(u => u.Email.ToLower() == model.Email.ToLower());
 
-                // Check null first — do NOT reveal whether email exists via lockout message
+
                 if (user == null)
                 {
                     ModelState.AddModelError("", "Invalid email or password");
+                    return View(model);
+                }
+                if (!user.IsEmailVerified)
+                {
+                   
+                    string newToken = System.Security.Cryptography.RandomNumberGenerator.GetHexString(32);
+                    user.EmailVerificationToken = newToken;
+                    user.EmailVerificationTokenExpiry = DateTime.UtcNow.AddHours(24);
+                    await _context.SaveChangesAsync();
+
+                    var verifyUrl = Url.Action("VerifyEmail", "Login",
+                        new { token = newToken }, Request.Scheme);
+
+                    string emailBody = $@"
+                        <!DOCTYPE html>
+                        <html>
+                        <body style='font-family:Arial,sans-serif;background:#f4f4f4;padding:20px;'>
+                          <div style='max-width:500px;margin:auto;background:#fff;border-radius:8px;padding:30px;'>
+                            <h2 style='color:#333;'>Verify Your Uni-Connect Account</h2>
+                            <p>Hi {user.Name},</p>
+                            <p>Your account hasn't been verified yet. Click the button below to verify your email and access your account.</p>
+                            <div style='text-align:center;margin:30px 0;'>
+                              <a href='{verifyUrl}' style='background:#4CAF50;color:#fff;padding:12px 28px;
+                                 text-decoration:none;border-radius:6px;font-size:16px;display:inline-block;'>
+                                Verify My Email
+                              </a>
+                            </div>
+                            <p style='color:#666;font-size:13px;'>This link expires in 24 hours.</p>
+                            <hr style='border:none;border-top:1px solid #eee;margin:20px 0;'/>
+                            <p style='color:#999;font-size:12px;'>© {DateTime.UtcNow.Year} Uni-Connect · Philadelphia University</p>
+                          </div>
+                        </body>
+                        </html>";
+
+                    await _emailService.SendEmailAsync(user.Email, "Verify Your Uni-Connect Account", emailBody);
+
+                    ModelState.AddModelError("", "Your email isn't verified yet. We've sent you a new verification link — please check your inbox.");
                     return View(model);
                 }
 
@@ -77,6 +115,12 @@ namespace Uni_Connect.Controllers
                         $"Invalid email or password. ({user.FailedLoginAttempts}/5 attempts)");
                     return View(model);
                 }
+                if (user.IsDeleted)
+                {
+                    TempData["ReactivateEmail"] = user.Email;
+                    TempData["ReactivateName"] = user.Name;
+                    return RedirectToAction("Reactivate_Page");
+                }
 
                 user.FailedLoginAttempts = 0;
                 user.AccountLockedUntil = null;
@@ -100,9 +144,9 @@ namespace Uni_Connect.Controllers
 
                 return RedirectToAction("Dashboard", "Dashboard");
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
-                ModelState.AddModelError("", "Database error: Please try again later.");
+                ModelState.AddModelError("", $"Database error: {ex.Message}");
                 return View(model);
             }
             catch (Exception)
@@ -122,6 +166,8 @@ namespace Uni_Connect.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register_Page(RegisterViewModel model)
         {
+            string verificationToken = System.Security.Cryptography.RandomNumberGenerator.GetHexString(32);
+
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -157,6 +203,9 @@ namespace Uni_Connect.Controllers
                     YearOfStudy = model.YearOfStudy,
                     Points = 0,
                     IsDeleted = false,
+                    IsEmailVerified = false,                          
+                    EmailVerificationToken = verificationToken,       
+                    EmailVerificationTokenExpiry = DateTime.UtcNow.AddHours(24), 
                     CreatedAt = DateTime.UtcNow,
                     ProfileImageUrl = null
                 };
@@ -164,16 +213,39 @@ namespace Uni_Connect.Controllers
                 _context.Users.Add(newUser);
                 await _context.SaveChangesAsync();
 
-                // Award welcome bonus via PointService so transaction record is created
-                await _pointService.AwardPoints(newUser.UserID, 50,
-                    "Welcome Bonus", "Welcome to UniConnect!", "🎉");
+                var verifyUrl = Url.Action("VerifyEmail", "Login", new { token = verificationToken }, Request.Scheme);
+                string emailBody = $@"
+                    <!DOCTYPE html>
+                    <html>
+                    <body style='font-family:Arial,sans-serif;background:#f4f4f4;padding:20px;'>
+                      <div style='max-width:500px;margin:auto;background:#fff;border-radius:8px;padding:30px;'>
+                        <h2 style='color:#333;'>Welcome to Uni-Connect! 🎉</h2>
+                        <p>Hi {newUser.Name},</p>
+                        <p>Thanks for registering. Please verify your email address to activate your account.</p>
+                        <div style='text-align:center;margin:30px 0;'>
+                          <a href='{verifyUrl}' style='background:#4CAF50;color:#fff;padding:12px 28px;
+                             text-decoration:none;border-radius:6px;font-size:16px;display:inline-block;'>
+                            Verify My Email
+                          </a>
+                        </div>
+                        <p style='color:#666;font-size:13px;'>This link expires in 24 hours. If you didn't register, ignore this email.</p>
+                        <hr style='border:none;border-top:1px solid #eee;margin:20px 0;'/>
+                        <p style='color:#999;font-size:12px;'>© {DateTime.UtcNow.Year} Uni-Connect · Philadelphia University</p>
+                      </div>
+                    </body>
+                    </html>";
+
+                await _emailService.SendEmailAsync(newUser.Email, "Verify Your Uni-Connect Account", emailBody);
+                
+
+
 
                 TempData["SuccessMessage"] = "Account created successfully! You earned +50 welcome points 🎉 Please sign in.";
                 return RedirectToAction("Login_Page");
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
-                ModelState.AddModelError("", "Database error: Please try again later.");
+                ModelState.AddModelError("", $"Database error: {ex.Message}");
                 return View(model);
             }
             catch (Exception)
@@ -181,6 +253,42 @@ namespace Uni_Connect.Controllers
                 ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
                 return View(model);
             }
+        }
+        [HttpGet]
+        public async Task<IActionResult> VerifyEmail(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                TempData["ErrorMessage"] = "Invalid verification link.";
+                return RedirectToAction("Login_Page");
+            }
+
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.EmailVerificationToken == token);
+
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Invalid or already used verification link.";
+                return RedirectToAction("Login_Page");
+            }
+
+            if (user.EmailVerificationTokenExpiry < DateTime.UtcNow)
+            {
+                TempData["ErrorMessage"] = "Verification link has expired. Please register again or contact support.";
+                return RedirectToAction("Login_Page");
+            }
+
+            user.IsEmailVerified = true;
+            user.EmailVerificationToken = null;
+            user.EmailVerificationTokenExpiry = null;
+            await _context.SaveChangesAsync();
+
+            
+            await _pointService.AwardPoints(user.UserID, 50,
+                "Welcome Bonus", "Welcome to UniConnect!", "🎉");
+
+            TempData["SuccessMessage"] = "✅ Email verified! You earned +50 welcome points 🎉 Please sign in.";
+            return RedirectToAction("Login_Page");
         }
 
         [HttpPost]
@@ -223,12 +331,25 @@ namespace Uni_Connect.Controllers
                         new { token = resetToken }, Request.Scheme);
 
                     string emailBody = $@"
-                        <h2>Password Reset - Uni-Connect</h2>
-                        <p>Hi {user.Name},</p>
-                        <p>Click the link below to reset your password. This link expires in 30 minutes.</p>
-                        <a href='{resetUrl}' style='background:#4CAF50;color:white;padding:10px 20px;
-                           text-decoration:none;border-radius:5px;'>Reset My Password</a>
-                        <p>If you didn't request this, ignore this email.</p>";
+                        <!DOCTYPE html>
+                        <html>
+                        <body style='font-family:Arial,sans-serif;background:#f4f4f4;padding:20px;'>
+                          <div style='max-width:500px;margin:auto;background:#fff;border-radius:8px;padding:30px;'>
+                            <h2 style='color:#333;'>Password Reset Request</h2>
+                            <p>Hi {user.Name},</p>
+                            <p>We received a request to reset your Uni-Connect password. Click the button below to choose a new password. This link expires in <strong>30 minutes</strong>.</p>
+                            <div style='text-align:center;margin:30px 0;'>
+                              <a href='{resetUrl}' style='background:#4CAF50;color:#fff;padding:12px 28px;
+                                 text-decoration:none;border-radius:6px;font-size:16px;display:inline-block;'>
+                                Reset My Password
+                              </a>
+                            </div>
+                            <p style='color:#666;font-size:13px;'>If you didn't request a password reset, you can safely ignore this email.</p>
+                            <hr style='border:none;border-top:1px solid #eee;margin:20px 0;'/>
+                            <p style='color:#999;font-size:12px;'>© {DateTime.UtcNow.Year} Uni-Connect · Philadelphia University</p>
+                          </div>
+                        </body>
+                        </html>";
 
                     await _emailService.SendEmailAsync(user.Email, "Reset Your Password", emailBody);
 
@@ -242,9 +363,9 @@ namespace Uni_Connect.Controllers
                 ViewBag.SentToEmail = model.Email;
                 return View(model);
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex )
             {
-                ModelState.AddModelError("", "Database error: Please try again later.");
+                ModelState.AddModelError("", $"Database error: {ex.Message}");
                 return View(model);
             }
             catch (Exception)
@@ -302,16 +423,70 @@ namespace Uni_Connect.Controllers
                 TempData["SuccessMessage"] = "✅ Password reset successfully! Please sign in with your new password.";
                 return RedirectToAction("Login_Page");
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex )
             {
-                ModelState.AddModelError("", "Database error: Please try again later.");
-                return View("ResetPass_Page", model);
+                ModelState.AddModelError("", $"Database error: {ex.Message}");
+                return View(model);
             }
             catch (Exception)
             {
                 ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
                 return View("ResetPass_Page", model);
             }
+        }
+        [HttpGet]
+        public IActionResult Reactivate_Page()
+        {
+            
+            if (TempData["ReactivateEmail"] == null)
+                return RedirectToAction("Login_Page");
+
+            
+            TempData.Keep("ReactivateEmail");
+            TempData.Keep("ReactivateName");
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reactivate_Page(string confirm)
+        {
+            var email = TempData["ReactivateEmail"]?.ToString();
+            if (string.IsNullOrEmpty(email))
+                return RedirectToAction("Login_Page");
+
+            var user = await _context.Users
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+
+            if (user == null || !user.IsDeleted)
+                return RedirectToAction("Login_Page");
+
+            // Reactivate
+            user.IsDeleted = false;
+            user.FailedLoginAttempts = 0;
+            user.AccountLockedUntil = null;
+            user.LastLoginAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            // Sign them in
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+        new Claim(ClaimTypes.Name, user.Name),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Role, user.Role ?? "User")
+    };
+
+            if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+                claims.Add(new Claim("ProfileImageUrl", user.ProfileImageUrl));
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+            TempData["SuccessMessage"] = "Welcome back! Your account has been reactivated.";
+            return RedirectToAction("Dashboard", "Dashboard");
         }
     }
 }

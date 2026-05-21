@@ -70,7 +70,7 @@
    ═══════════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+/*html { scroll-behavior: smooth; }*/
 
 body {
   font-family: var(--font-body) !important;
@@ -117,13 +117,13 @@ p { max-width: 65ch; line-height: 1.65; }
 /* ═══════════════════════════════════════════════════════════
    SCROLL REVEAL — taste-skill IntersectionObserver pattern
    ═══════════════════════════════════════════════════════════ */
-.reveal {
+/*.reveal {
   opacity: 0;
   transform: translateY(14px);
   transition: opacity var(--dur-slow) var(--ease-spring),
               transform var(--dur-slow) var(--ease-spring);
 }
-.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal.visible { opacity: 1; transform: translateY(0); }*/
 
 /* Staggered reveal — set --index on element */
 .reveal-stagger {
@@ -890,14 +890,7 @@ p { max-width: 65ch; line-height: 1.65; }
 /* ═══════════════════════════════════════════════════════════
    SCROLLBAR — taste-skill thin branded
    ═══════════════════════════════════════════════════════════ */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: rgba(61,82,160,0.16);
-  border-radius: 99px;
-  transition: background 0.2s;
-}
-::-webkit-scrollbar-thumb:hover { background: rgba(61,82,160,0.30); }
+
 
 
 /* ═══════════════════════════════════════════════════════════

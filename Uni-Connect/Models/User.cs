@@ -48,6 +48,10 @@ namespace Uni_Connect.Models
         public int FailedLoginAttempts { get; set; } = 0;
         public DateTime? AccountLockedUntil { get; set; }
 
+        public bool IsEmailVerified { get; set; } = false;
+        public string? EmailVerificationToken { get; set; }
+        public DateTime? EmailVerificationTokenExpiry { get; set; }
+
         public ICollection<Post> Posts { get; set; }
         public ICollection<Answer> Answers { get; set; }
         public ICollection<Request> Requests { get; set; }
