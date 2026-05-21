@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Uni_Connect.Models;
+using Uni_Connect.Services;
 using Uni_Connect.ViewModels;
 
 namespace Uni_Connect.Controllers
@@ -12,11 +13,15 @@ namespace Uni_Connect.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly EmailService _emailService;
+        private readonly IPointService _pointService;
+        private readonly IWebHostEnvironment _environment;
 
-        public LoginController(ApplicationDbContext context, EmailService emailService)
+        public LoginController(ApplicationDbContext context, EmailService emailService, IPointService pointService, IWebHostEnvironment environment)
         {
             _context = context;
             _emailService = emailService;
+            _pointService = pointService;
+            _environment = environment;
         }
 
         [HttpGet]
@@ -30,26 +35,25 @@ namespace Uni_Connect.Controllers
         public async Task<IActionResult> Login_Page(LoginViewModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
             try
             {
                 var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.Email.ToLower() == model.Email.ToLower());
 
-                if (user != null && user.AccountLockedUntil.HasValue && user.AccountLockedUntil > DateTime.Now)
-                {
-                    TimeSpan timeRemaining = user.AccountLockedUntil.Value - DateTime.Now;
-                    ModelState.AddModelError("",
-                        $"Account temporarily locked. Try again in {(int)timeRemaining.TotalMinutes + 1} minutes.");
-                    return View(model);
-                }
-
+                // Check null first — do NOT reveal whether email exists via lockout message
                 if (user == null)
                 {
                     ModelState.AddModelError("", "Invalid email or password");
+                    return View(model);
+                }
+
+                if (user.AccountLockedUntil.HasValue && user.AccountLockedUntil > DateTime.UtcNow)
+                {
+                    var timeRemaining = user.AccountLockedUntil.Value - DateTime.UtcNow;
+                    ModelState.AddModelError("",
+                        $"Account temporarily locked. Try again in {(int)timeRemaining.TotalMinutes + 1} minutes.");
                     return View(model);
                 }
 
@@ -61,16 +65,14 @@ namespace Uni_Connect.Controllers
 
                     if (user.FailedLoginAttempts >= 5)
                     {
-                        user.AccountLockedUntil = DateTime.Now.AddMinutes(15);
+                        user.AccountLockedUntil = DateTime.UtcNow.AddMinutes(15);
                         await _context.SaveChangesAsync();
-
                         ModelState.AddModelError("",
                             "Too many failed login attempts. Account locked for 15 minutes.");
                         return View(model);
                     }
 
                     await _context.SaveChangesAsync();
-
                     ModelState.AddModelError("",
                         $"Invalid email or password. ({user.FailedLoginAttempts}/5 attempts)");
                     return View(model);
@@ -78,7 +80,7 @@ namespace Uni_Connect.Controllers
 
                 user.FailedLoginAttempts = 0;
                 user.AccountLockedUntil = null;
-                user.LastLoginAt = DateTime.Now;
+                user.LastLoginAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
 
                 var claims = new List<Claim>
@@ -86,15 +88,15 @@ namespace Uni_Connect.Controllers
                     new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
                     new Claim(ClaimTypes.Name, user.Name),
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, user.Role?? "User")
+                    new Claim(ClaimTypes.Role, user.Role ?? "User")
                 };
+                if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+                    claims.Add(new Claim("ProfileImageUrl", user.ProfileImageUrl));
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
 
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    principal);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                 return RedirectToAction("Dashboard", "Dashboard");
             }
@@ -103,12 +105,11 @@ namespace Uni_Connect.Controllers
                 ModelState.AddModelError("", "Database error: Please try again later.");
                 return View(model);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ModelState.AddModelError("", ex.Message);
+                ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
                 return View(model);
             }
-
         }
 
         [HttpGet]
@@ -122,9 +123,7 @@ namespace Uni_Connect.Controllers
         public async Task<IActionResult> Register_Page(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
             if (!model.Email.ToLower().EndsWith("@philadelphia.edu.jo"))
             {
@@ -144,7 +143,6 @@ namespace Uni_Connect.Controllers
                 }
 
                 string universityId = model.Email.Split('@')[0];
-
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
                 var newUser = new User
@@ -157,14 +155,18 @@ namespace Uni_Connect.Controllers
                     Role = "Student",
                     Faculty = model.Faculty,
                     YearOfStudy = model.YearOfStudy,
-                    Points = 50,
+                    Points = 0,
                     IsDeleted = false,
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
                     ProfileImageUrl = null
                 };
 
                 _context.Users.Add(newUser);
                 await _context.SaveChangesAsync();
+
+                // Award welcome bonus via PointService so transaction record is created
+                await _pointService.AwardPoints(newUser.UserID, 50,
+                    "Welcome Bonus", "Welcome to UniConnect!", "🎉");
 
                 TempData["SuccessMessage"] = "Account created successfully! You earned +50 welcome points 🎉 Please sign in.";
                 return RedirectToAction("Login_Page");
@@ -174,9 +176,9 @@ namespace Uni_Connect.Controllers
                 ModelState.AddModelError("", "Database error: Please try again later.");
                 return View(model);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ModelState.AddModelError("", ex.Message);
+                ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
                 return View(model);
             }
         }
@@ -200,24 +202,23 @@ namespace Uni_Connect.Controllers
         public async Task<IActionResult> ForgotPass_Page(ForgotPasswordViewModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
             try
             {
                 var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.Email.ToLower() == model.Email.ToLower());
 
-                string resetToken = new Random().Next(100000, 999999).ToString();
+                // Use cryptographically secure RNG
+                string resetToken = System.Security.Cryptography.RandomNumberGenerator
+                    .GetInt32(100000, 1000000).ToString();
 
                 if (user != null)
                 {
                     user.PasswordResetToken = resetToken;
-                    user.PasswordResetTokenExpiry = DateTime.Now.AddMinutes(30);
+                    user.PasswordResetTokenExpiry = DateTime.UtcNow.AddMinutes(30);
                     await _context.SaveChangesAsync();
 
-                    // Build the reset URL with the token
                     var resetUrl = Url.Action("ResetPass_Page", "Login",
                         new { token = resetToken }, Request.Scheme);
 
@@ -230,10 +231,13 @@ namespace Uni_Connect.Controllers
                         <p>If you didn't request this, ignore this email.</p>";
 
                     await _emailService.SendEmailAsync(user.Email, "Reset Your Password", emailBody);
-                    ViewBag.DebugResetUrl = Url.Action("ResetPass_Page", "Login",
-                        new { token = resetToken }, Request.Scheme);
+
+#if DEBUG
+                    if (_environment.IsDevelopment())
+                        ViewBag.DebugResetUrl = resetUrl;
+#endif
                 }
-                
+
                 ViewBag.EmailSent = true;
                 ViewBag.SentToEmail = model.Email;
                 return View(model);
@@ -243,10 +247,9 @@ namespace Uni_Connect.Controllers
                 ModelState.AddModelError("", "Database error: Please try again later.");
                 return View(model);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // TEMPORARY: show real error for debugging
-                ModelState.AddModelError("", ex.Message + " | " + ex.InnerException?.Message);
+                ModelState.AddModelError("", "An unexpected error occurred. Please try again.");
                 return View(model);
             }
         }
@@ -269,10 +272,7 @@ namespace Uni_Connect.Controllers
         public async Task<IActionResult> ResetPass_Page(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View("ResetPass_Page", model);
-
-            }
 
             try
             {
@@ -285,15 +285,13 @@ namespace Uni_Connect.Controllers
                     return View("ResetPass_Page", model);
                 }
 
-                if (user.PasswordResetTokenExpiry.HasValue && user.PasswordResetTokenExpiry < DateTime.Now)
+                if (user.PasswordResetTokenExpiry.HasValue && user.PasswordResetTokenExpiry < DateTime.UtcNow)
                 {
                     ModelState.AddModelError("", "Reset code has expired. Please request a new one.");
                     return View("ResetPass_Page", model);
                 }
 
-                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
-
-                user.PasswordHash = hashedPassword;
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
                 user.PasswordResetToken = null;
                 user.PasswordResetTokenExpiry = null;
                 user.FailedLoginAttempts = 0;

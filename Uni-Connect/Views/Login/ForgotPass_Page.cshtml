@@ -10,13 +10,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Forgot Password — UniConnect</title>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
     <link href="~/css/login.css" rel="stylesheet" />
+    <script src="https://unpkg.com/@@phosphor-icons/web@@2.1.1"></script>
 </head>
 <body class="auth-bg">
 
     <nav class="auth-navbar">
         <a asp-controller="Home" asp-action="Index" class="nav-logo">
-            <div class="nav-logo-icon"><i class="fas fa-graduation-cap"></i></div>
+            <div class="nav-logo-icon" style="padding:0;overflow:visible;background:none;border:none;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32" role="img" aria-label="UniConnect">
+                    <rect width="64" height="64" rx="17" fill="#ffffff"/>
+                    <path d="M32 13 C 27 13, 14 16, 11 21 L 11 50 C 14 46, 27 43, 32 43 L 32 13 Z" fill="#3D52A0"/>
+                    <path d="M32 13 C 37 13, 50 16, 53 21 L 53 50 C 50 46, 37 43, 32 43 L 32 13 Z" fill="#7091E6"/>
+                    <rect x="30.5" y="12" width="3" height="32" rx="1.5" fill="#1E2A5E" opacity="0.22"/>
+                    <path d="M 11 50 Q 32 55 53 50" stroke="#3D52A0" stroke-width="1.5" fill="none" stroke-opacity="0.1" stroke-linecap="round"/>
+                    <circle cx="19" cy="58" r="5" fill="#F59E0B"/>
+                    <circle cx="45" cy="58" r="5" fill="#7091E6"/>
+                    <line x1="19" y1="53" x2="31" y2="43.5" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-opacity="0.9"/>
+                    <line x1="45" y1="53" x2="33" y2="43.5" stroke="#7091E6" stroke-width="2" stroke-linecap="round" stroke-opacity="0.9"/>
+                </svg>
+            </div>
             <span>UniConnect</span>
         </a>
         <div style="display:flex;align-items:center;gap:12px">
@@ -32,7 +46,7 @@
             {
                
                 <div class="auth-card" style="text-align:center;padding:40px 32px">
-                    <div style="width:80px;height:80px;background:var(--emerald-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 20px"><i class="fas fa-envelope" style="color:var(--emerald)"></i></div>
+                    <div style="width:80px;height:80px;background:var(--emerald-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px"><i class="ph-fill ph-envelope" style="font-size:36px;color:var(--emerald)"></i></div>
                     <h1 class="auth-title" style="margin-bottom:10px">Check your inbox!</h1>
                     <p style="font-size:14px;color:var(--text-2);line-height:1.7;margin-bottom:8px">We sent a password reset link to:</p>
                     <div style="font-size:15px;font-weight:800;color:var(--indigo);background:var(--indigo-light);border-radius:10px;padding:10px 18px;margin-bottom:22px;display:inline-block">@ViewBag.SentToEmail</div>
@@ -56,7 +70,7 @@
             {
                 
                 <div style="text-align:center;margin-bottom:24px">
-                    <div class="auth-logo-icon">🔑</div>
+                    <div class="auth-logo-icon"><i class="ph-duotone ph-key" style="font-size:40px;color:var(--indigo);"></i></div>
                     <h1 class="auth-title">Forgot password?</h1>
                     <p class="auth-subtitle">No worries! Enter your university email and we'll send you a reset link.</p>
                 </div>
@@ -82,13 +96,14 @@
                 </div>
             }
 
-            <div class="auth-notice"><span style="font-size:18px;flex-shrink:0"><i class="fas fa-lock"></i></span><p>Password reset is only available for registered @@philadelphia.edu.jo email addresses.</p></div>
+            <div class="auth-notice"><span style="flex-shrink:0;display:flex;"><i class="ph-fill ph-lock" style="font-size:18px;"></i></span><p>Password reset is only available for registered @@philadelphia.edu.jo email addresses.</p></div>
         </div>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://unpkg.com/@@phosphor-icons/web@@2.1.1"></script>
 
 </body>
 </html>

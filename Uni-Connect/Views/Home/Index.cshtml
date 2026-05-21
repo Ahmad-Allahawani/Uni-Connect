@@ -3,17 +3,20 @@
 
 }
 
+
 <!-- HERO -->
 <section class="hero">
-    <div class="hero-badge">🎓 Exclusive to Philadelphia University Students</div>
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
+    <canvas id="ambient-canvas" aria-hidden="true"></canvas>
+    <div class="hero-badge"><i class="ph-fill ph-graduation-cap" style="font-size:14px;vertical-align:middle;margin-right:6px;"></i> Exclusive to Philadelphia University Students</div>
     <h1 class="hero-title">
         Help Each Other.<br>
         <span class="grad">Earn Real Rewards.</span>
     </h1>
     <p class="hero-sub">The peer-learning platform built only for Philadelphia University students. Ask questions, share knowledge, earn points — then spend them at the university cafeteria, library, bookshop and more.</p>
     <div class="hero-btns">
-        <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-primary btn-lg">Get Started Free 🚀</button></a>
-        <a href="#how"><button class="btn btn-ghost btn-lg">See How It Works ↓</button></a>
+        <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-primary btn-lg">Get Started Free</button></a>
+        <a href="#how"><button class="btn btn-ghost btn-lg">See How It Works <i class="ph-bold ph-caret-down" style="font-size:14px;vertical-align:middle;margin-left:4px;"></i></button></a>
     </div>
 
     <div class="hero-stats">
@@ -28,73 +31,74 @@
         <div class="mock">
             <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
                 <div class="av av-sm"><img src="https://i.pravatar.cc/38?img=11" alt="Ahmad"></div>
-                <div><div style="font-weight:700;font-size:13px">Ahmad K.</div><div style="font-size:11px;color:#64748B">2 hours ago</div></div>
-                <span style="margin-left:auto;background:#D1FAE5;color:#065F46;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700">✅ Solved</span>
+                <div><div style="font-weight:700;font-size:13px">Ahmad K.</div><div style="font-size:11px;color:var(--text-2)">2 hours ago</div></div>
+                <span style="margin-left:auto;background:var(--emerald-light);color:var(--emerald);padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700"><i class="ph-fill ph-check-circle" style="font-size:11px;vertical-align:middle;margin-right:3px;"></i> Solved</span>
             </div>
             <div style="font-size:14px;font-weight:800;margin-bottom:10px;line-height:1.4">How does AVL tree rotation actually work?</div>
-            <div style="display:flex;gap:12px;font-size:12px;color:#64748B"><span>👍 42</span><span>💬 7 answers</span><span>👁 124 views</span></div>
+            <div style="display:flex;gap:12px;font-size:12px;color:var(--text-2)"><span><i class="ph-bold ph-thumbs-up" style="font-size:12px;vertical-align:middle;"></i> 42</span><span><i class="ph ph-chat-circle" style="font-size:12px;vertical-align:middle;"></i> 7 answers</span><span><i class="ph ph-eye" style="font-size:12px;vertical-align:middle;"></i> 124 views</span></div>
         </div>
         <div class="mock">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-                <div style="width:44px;height:44px;background:linear-gradient(135deg,#FEF3C7,#FDE68A);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px">🪙</div>
-                <div><div style="font-size:14px;font-weight:800;color:#F59E0B">+15 pts earned!</div><div style="font-size:12px;color:#64748B">Best Answer selected</div></div>
+                <div style="width:44px;height:44px;background:var(--amber-light);border-radius:12px;display:flex;align-items:center;justify-content:center;"><i class="ph-fill ph-coin" style="font-size:28px;color:var(--amber);"></i></div>
+                <div><div style="font-size:14px;font-weight:800;color:var(--amber)">+15 pts earned!</div><div style="font-size:12px;color:var(--text-2)">Best Answer selected</div></div>
             </div>
-            <div style="background:#E2E8F0;border-radius:99px;height:8px;overflow:hidden;margin-bottom:7px"><div style="width:84%;height:100%;background:linear-gradient(90deg,#3D52A0,#7091E6);border-radius:99px"></div></div>
-            <div style="font-size:12px;color:#64748B">840 / 1000 pts — 160 to Verified Tutor 🏅</div>
+            <div style="background:var(--border);border-radius:99px;height:8px;overflow:hidden;margin-bottom:7px"><div style="width:84%;height:100%;background:linear-gradient(90deg,var(--indigo),var(--violet));border-radius:99px"></div></div>
+            <div style="font-size:12px;color:var(--text-2)">840 / 1000 pts — 160 to Verified Tutor</div>
         </div>
-        <div class="mock" style="background:linear-gradient(135deg,#FEF9C3,#FFFBEB)">
+        <div class="mock" style="background:var(--amber-light)">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:13px">
-                <span style="font-size:30px">☕</span>
-                <div><div style="font-weight:800;font-size:14px">Cafeteria Discount</div><div style="font-size:12px;color:#64748B">10% off your next meal</div></div>
-                <span style="background:#F43F5E;color:#fff;border-radius:99px;padding:3px 10px;font-size:11px;font-weight:800;margin-left:auto">10% OFF</span>
+                <i class="ph-duotone ph-coffee" style="font-size:36px;color:var(--amber-dark);"></i>
+                <div><div style="font-weight:800;font-size:14px">Cafeteria Discount</div><div style="font-size:12px;color:var(--text-2)">10% off your next meal</div></div>
+                <span style="background:var(--rose);color:#fff;border-radius:99px;padding:3px 10px;font-size:11px;font-weight:800;margin-left:auto">10% OFF</span>
             </div>
-            <div style="background:#F59E0B;color:#fff;padding:9px;border-radius:10px;text-align:center;font-weight:800;font-size:13px">Redeem — 200 pts 🪙</div>
+            <div style="background:var(--amber);color:#fff;padding:9px;border-radius:10px;text-align:center;font-weight:800;font-size:13px">Redeem — 200 pts <i class="ph-fill ph-coin" style="font-size:13px;vertical-align:middle;margin-left:2px;color:inherit;"></i></div>
         </div>
         <div class="mock">
-            <div style="font-size:13px;font-weight:800;margin-bottom:11px;color:#64748B">🏆 Leaderboard — This Month</div>
+            <div style="font-size:13px;font-weight:800;margin-bottom:11px;color:var(--text-2)"><i class="ph-bold ph-trophy" style="font-size:13px;vertical-align:middle;margin-right:4px;"></i> Leaderboard — This Month</div>
             <div style="display:flex;flex-direction:column;gap:9px">
-                <div style="display:flex;align-items:center;gap:9px"><span style="font-size:17px">🥇</span><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=65" alt="Sami"></div><span style="font-size:13px;font-weight:700;flex:1">Sami T. ✓</span><span style="font-weight:900;font-size:13px;color:#F59E0B">1,240</span></div>
-                <div style="display:flex;align-items:center;gap:9px"><span style="font-size:17px">🥈</span><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=20" alt="Mona"></div><span style="font-size:13px;font-weight:700;flex:1">Mona A.</span><span style="font-weight:900;font-size:13px;color:#F59E0B">1,080</span></div>
-                <div style="display:flex;align-items:center;gap:9px"><span style="font-size:17px">🥉</span><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=47" alt="Rania"></div><span style="font-size:13px;font-weight:700;flex:1">Rania K.</span><span style="font-weight:900;font-size:13px;color:#F59E0B">960</span></div>
+                <div style="display:flex;align-items:center;gap:9px"><i class="ph-fill ph-medal" style="font-size:17px;color:var(--amber);"></i><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=65" alt="Sami"></div><span style="font-size:13px;font-weight:700;flex:1">Sami T. ✓</span><span style="font-weight:900;font-size:13px;color:var(--amber)">1,240</span></div>
+                <div style="display:flex;align-items:center;gap:9px"><i class="ph-fill ph-medal" style="font-size:17px;color:var(--text-3);"></i><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=20" alt="Mona"></div><span style="font-size:13px;font-weight:700;flex:1">Mona A.</span><span style="font-weight:900;font-size:13px;color:var(--amber)">1,080</span></div>
+                <div style="display:flex;align-items:center;gap:9px"><i class="ph-fill ph-medal" style="font-size:17px;color:#CD7F32;"></i><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=47" alt="Rania"></div><span style="font-size:13px;font-weight:700;flex:1">Rania K.</span><span style="font-weight:900;font-size:13px;color:var(--amber)">960</span></div>
             </div>
         </div>
     </div>
 </section>
 
 <!-- HOW IT WORKS -->
-<section class="section" id="how">
+<section class="section" id="how" data-num="01">
     <div style="max-width:1100px;margin:0 auto">
         <div class="center">
-            <div class="section-tag">⚡ Simple Process</div>
+            <div class="section-tag"><i class="ph-bold ph-lightning" style="font-size:13px;vertical-align:middle;margin-right:4px;"></i> Simple Process</div>
             <h2 class="section-title">How UniConnect works</h2>
             <p class="section-sub">Six steps — from creating your account to redeeming real discounts at campus venues.</p>
         </div>
         <div class="steps-grid">
-            <div class="step"><span class="step-ico">📧</span><div class="step-num">01</div><div class="step-title">Register with university email</div><div class="step-desc">Sign up using your official Philadelphia University email. Only enrolled students can join — verified against the university registry. You receive <strong>+50 welcome points</strong> instantly.</div></div>
-            <div class="step"><span class="step-ico">🙋</span><div class="step-num">02</div><div class="step-title">Ask questions or help others</div><div class="step-desc">Post academic questions (costs 10 pts) and answer others to earn points back. Better answers get more upvotes. Best Answer earns +15 pts bonus automatically.</div></div>
-            <div class="step"><span class="step-ico">🪙</span><div class="step-num">03</div><div class="step-title">Earn points for every contribution</div><div class="step-desc">Every helpful action earns points — upvotes, best answers, private tutoring sessions, daily logins. Reach 1,000 pts to unlock <strong>Verified Tutor</strong> badge.</div></div>
-            <div class="step"><span class="step-ico">💬</span><div class="step-num">04</div><div class="step-title">Request private tutoring sessions</div><div class="step-desc">Need deeper help? Request a one-on-one private chat session with a verified tutor. Rate your session to help others in the future.</div></div>
-            <div class="step"><span class="step-ico">🏆</span><div class="step-num">05</div><div class="step-title">Climb the faculty leaderboard</div><div class="step-desc">Monthly rankings for each faculty. Top contributors earn special recognition and unlock exclusive rewards. Compete with classmates in a friendly academic environment.</div></div>
-            <div class="step" style="background:linear-gradient(135deg,#EEF2FF,#E8EEFF);border-color:#C7D7FF"><span class="step-ico">🎁</span><div class="step-num">06</div><div class="step-title">Redeem at campus venues</div><div class="step-desc">Exchange points for <strong>real discounts</strong> at the university cafeteria, library, bookshop, print centre and more. A QR code is sent to your university email — scan it at the venue.</div></div>
+            <div class="step"><span class="step-ico"><i class="ph-duotone ph-envelope" style="font-size:24px;color:var(--indigo);"></i></span><div class="step-num">01</div><div class="step-title">Register with university email</div><div class="step-desc">Sign up using your official Philadelphia University email. Only enrolled students can join — verified against the university registry. You receive <strong>+50 welcome points</strong> instantly.</div></div>
+            <div class="step"><span class="step-ico"><i class="ph-duotone ph-hand-waving" style="font-size:24px;color:var(--indigo);"></i></span><div class="step-num">02</div><div class="step-title">Ask questions or help others</div><div class="step-desc">Post academic questions (costs 10 pts) and answer others to earn points back. Better answers get more upvotes. Best Answer earns +15 pts bonus automatically.</div></div>
+            <div class="step"><span class="step-ico"><i class="ph-fill ph-coin" style="font-size:24px;color:var(--amber);"></i></span><div class="step-num">03</div><div class="step-title">Earn points for every contribution</div><div class="step-desc">Every helpful action earns points — upvotes, best answers, private tutoring sessions, daily logins. Reach 1,000 pts to unlock <strong>Verified Tutor</strong> badge.</div></div>
+            <div class="step"><span class="step-ico"><i class="ph-bold ph-chat-circle-dots" style="font-size:24px;color:var(--indigo);"></i></span><div class="step-num">04</div><div class="step-title">Request private tutoring sessions</div><div class="step-desc">Need deeper help? Request a one-on-one private chat session with a verified tutor. Rate your session to help others in the future.</div></div>
+            <div class="step"><span class="step-ico"><i class="ph-fill ph-trophy" style="font-size:24px;color:var(--amber);"></i></span><div class="step-num">05</div><div class="step-title">Climb the faculty leaderboard</div><div class="step-desc">Monthly rankings for each faculty. Top contributors earn special recognition and unlock exclusive rewards. Compete with classmates in a friendly academic environment.</div></div>
+            <div class="step" style="background:linear-gradient(135deg,var(--indigo-light),var(--indigo-light));border-color:var(--border)"><span class="step-ico"><i class="ph-duotone ph-gift" style="font-size:24px;color:var(--indigo);"></i></span><div class="step-num">06</div><div class="step-title">Redeem at campus venues</div><div class="step-desc">Exchange points for <strong>real discounts</strong> at the university cafeteria, library, bookshop, print centre and more. A QR code is sent to your university email — scan it at the venue.</div></div>
         </div>
     </div>
 </section>
 
 <!-- FEATURES -->
-<section class="section features-bg" id="features">
+<section class="section features-bg" id="features" data-num="02">
+    <canvas id="features-canvas" aria-hidden="true"></canvas>
     <div style="max-width:1100px;margin:0 auto">
         <div class="center">
-            <div class="section-tag">✨ Platform Features</div>
+            <div class="section-tag"><i class="ph-bold ph-star" style="font-size:13px;vertical-align:middle;margin-right:4px;"></i> Platform Features</div>
             <h2 class="section-title">Built for university life</h2>
             <p class="section-sub">Every feature designed around how students actually study, ask for help, and collaborate.</p>
         </div>
         <div class="features-grid">
-            <div class="feat"><div class="feat-ico" style="background:#EEF2FF">🔍</div><div class="feat-title">Smart Question Feed</div><div class="feat-desc">Browse questions by faculty, course, or topic. Live search finds existing answers before you post — saving your 10 pts asking cost.</div></div>
-            <div class="feat"><div class="feat-ico" style="background:#D1FAE5">✅</div><div class="feat-title">Best Answer System</div><div class="feat-desc">Question owners mark the most helpful answer. Best answers are pinned at the top and earn the contributor an automatic +15 pt reward.</div></div>
-            <div class="feat"><div class="feat-ico" style="background:#EDE9FE">💬</div><div class="feat-title">Private Tutoring Chat</div><div class="feat-desc">One-on-one real-time chat with verified tutors. Sessions are private and rated by both parties for transparency and quality.</div></div>
-            <div class="feat"><div class="feat-ico" style="background:#FEF3C7">🪙</div><div class="feat-title">Points & Campus Rewards</div><div class="feat-desc">Earn points helping others and spend them at real campus locations — cafeteria, library, bookshop, print centre, gym and more.</div></div>
-            <div class="feat"><div class="feat-ico" style="background:#FFE4E6">🏆</div><div class="feat-title">Faculty Leaderboard</div><div class="feat-desc">Monthly rankings per faculty. Top 3 contributors earn special recognition badges and exclusive rewards for their academic community.</div></div>
-            <div class="feat"><div class="feat-ico" style="background:#E0F2FE">🛡️</div><div class="feat-title">AI-Assisted Moderation</div><div class="feat-desc">Content reviewed by AI and human admins. Report inappropriate posts anytime — admins review within 24 hours to keep the platform safe.</div></div>
+            <div class="feat"><div class="feat-ico" style="background:var(--indigo-light)"><i class="ph-bold ph-magnifying-glass" style="font-size:22px;color:var(--indigo);"></i></div><div class="feat-title">Smart Question Feed</div><div class="feat-desc">Browse questions by faculty, course, or topic. Live search finds existing answers before you post — saving your 10 pts asking cost.</div></div>
+            <div class="feat"><div class="feat-ico" style="background:var(--emerald-light)"><i class="ph-fill ph-check-circle" style="font-size:22px;color:var(--emerald);"></i></div><div class="feat-title">Best Answer System</div><div class="feat-desc">Question owners mark the most helpful answer. Best answers are pinned at the top and earn the contributor an automatic +15 pt reward.</div></div>
+            <div class="feat"><div class="feat-ico" style="background:var(--violet-light)"><i class="ph-bold ph-chats" style="font-size:22px;color:var(--violet);"></i></div><div class="feat-title">Private Tutoring Chat</div><div class="feat-desc">One-on-one real-time chat with verified tutors. Sessions are private and rated by both parties for transparency and quality.</div></div>
+            <div class="feat"><div class="feat-ico" style="background:var(--amber-light)"><i class="ph-fill ph-coin" style="font-size:22px;color:var(--amber);"></i></div><div class="feat-title">Points & Campus Rewards</div><div class="feat-desc">Earn points helping others and spend them at real campus locations — cafeteria, library, bookshop, print centre, gym and more.</div></div>
+            <div class="feat"><div class="feat-ico" style="background:var(--rose-light)"><i class="ph-fill ph-trophy" style="font-size:22px;color:var(--rose);"></i></div><div class="feat-title">Faculty Leaderboard</div><div class="feat-desc">Monthly rankings per faculty. Top 3 contributors earn special recognition badges and exclusive rewards for their academic community.</div></div>
+            <div class="feat"><div class="feat-ico" style="background:var(--indigo-light)"><i class="ph-fill ph-shield-check" style="font-size:22px;color:var(--indigo);"></i></div><div class="feat-title">AI-Assisted Moderation</div><div class="feat-desc">Content reviewed by AI and human admins. Report inappropriate posts anytime — admins review within 24 hours to keep the platform safe.</div></div>
         </div>
     </div>
 </section>
@@ -103,63 +107,63 @@
 <section class="pts-bg" id="rewards">
     <div class="pts-2col">
         <div>
-            <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:7px 18px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px">🪙 The Points System</div>
+            <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:7px 18px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px"><i class="ph-fill ph-coin" style="font-size:13px;vertical-align:middle;margin-right:4px;color:var(--amber);"></i> The Points System</div>
             <h2 style="font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-1px;line-height:1.15;color:#fff;margin-bottom:14px">Earn real rewards for helping others</h2>
             <p style="font-size:16px;color:rgba(255,255,255,.75);line-height:1.75;margin-bottom:24px">Every contribution earns points. Spend them on real discounts across the university campus — because helping classmates should have real benefits.</p>
             <div style="display:flex;flex-direction:column;gap:10px">
-                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><span style="font-size:19px">🔒</span><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">University emails only — 100% verified students</span></div>
-                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><span style="font-size:19px">📧</span><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">QR codes sent directly to your university email</span></div>
-                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><span style="font-size:19px">🆓</span><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">Completely free — no credit card ever needed</span></div>
+                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><i class="ph-fill ph-lock" style="font-size:20px;color:rgba(255,255,255,.85);"></i><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">University emails only — 100% verified students</span></div>
+                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><i class="ph-duotone ph-envelope" style="font-size:20px;color:rgba(255,255,255,.85);"></i><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">QR codes sent directly to your university email</span></div>
+                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><i class="ph-duotone ph-gift" style="font-size:20px;color:rgba(255,255,255,.85);"></i><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">Completely free — no credit card ever needed</span></div>
             </div>
         </div>
         <div>
             <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.09em;margin-bottom:14px">HOW POINTS WORK:</div>
             <div class="pts-grid">
-                <div class="pts-item"><div class="pts-ico">💬</div><div><div style="font-weight:700;font-size:13px">Post an Answer</div><div style="font-size:11px;opacity:.7">Help a classmate</div></div><div class="pts-val earn">+5</div></div>
-                <div class="pts-item"><div class="pts-ico">👍</div><div><div style="font-weight:700;font-size:13px">Get Upvoted</div><div style="font-size:11px;opacity:.7">Per upvote received</div></div><div class="pts-val earn">+10</div></div>
-                <div class="pts-item"><div class="pts-ico">✅</div><div><div style="font-weight:700;font-size:13px">Best Answer</div><div style="font-size:11px;opacity:.7">Marked as best</div></div><div class="pts-val earn">+15</div></div>
-                <div class="pts-item"><div class="pts-ico">🎓</div><div><div style="font-weight:700;font-size:13px">Tutor Session</div><div style="font-size:11px;opacity:.7">Accept a request</div></div><div class="pts-val earn">+20</div></div>
-                <div class="pts-item"><div class="pts-ico">⭐</div><div><div style="font-weight:700;font-size:13px">5-Star Rating</div><div style="font-size:11px;opacity:.7">Perfect session</div></div><div class="pts-val earn">+15</div></div>
-                <div class="pts-item"><div class="pts-ico">📅</div><div><div style="font-weight:700;font-size:13px">Daily Login</div><div style="font-size:11px;opacity:.7">Log in every day</div></div><div class="pts-val earn">+2</div></div>
-                <div class="pts-item"><div class="pts-ico">❓</div><div><div style="font-weight:700;font-size:13px">Post Question</div><div style="font-size:11px;opacity:.7">Costs points</div></div><div class="pts-val cost">−10</div></div>
-                <div class="pts-item"><div class="pts-ico">💬</div><div><div style="font-weight:700;font-size:13px">Request Session</div><div style="font-size:11px;opacity:.7">Costs per request</div></div><div class="pts-val cost">−5</div></div>
+                <div class="pts-item"><div class="pts-ico"><i class="ph-bold ph-chat-circle" style="font-size:20px;color:var(--indigo);"></i></div><div><div style="font-weight:700;font-size:13px">Post an Answer</div><div style="font-size:11px;opacity:.7">Help a classmate</div></div><div class="pts-val earn">+5</div></div>
+                <div class="pts-item"><div class="pts-ico"><i class="ph-fill ph-thumbs-up" style="font-size:20px;color:var(--violet);"></i></div><div><div style="font-weight:700;font-size:13px">Get Upvoted</div><div style="font-size:11px;opacity:.7">Per upvote received</div></div><div class="pts-val earn">+10</div></div>
+                <div class="pts-item"><div class="pts-ico"><i class="ph-fill ph-seal-check" style="font-size:20px;color:var(--emerald);"></i></div><div><div style="font-weight:700;font-size:13px">Best Answer</div><div style="font-size:11px;opacity:.7">Marked as best</div></div><div class="pts-val earn">+15</div></div>
+                <div class="pts-item"><div class="pts-ico"><i class="ph-fill ph-graduation-cap" style="font-size:20px;color:var(--amber);"></i></div><div><div style="font-weight:700;font-size:13px">Tutor Session</div><div style="font-size:11px;opacity:.7">Accept a request</div></div><div class="pts-val earn">+20</div></div>
+                <div class="pts-item"><div class="pts-ico"><i class="ph-fill ph-star" style="font-size:20px;color:var(--amber);"></i></div><div><div style="font-weight:700;font-size:13px">5-Star Rating</div><div style="font-size:11px;opacity:.7">Perfect session</div></div><div class="pts-val earn">+15</div></div>
+                <div class="pts-item"><div class="pts-ico"><i class="ph-duotone ph-calendar-check" style="font-size:20px;color:var(--indigo);"></i></div><div><div style="font-weight:700;font-size:13px">Daily Login</div><div style="font-size:11px;opacity:.7">Log in every day</div></div><div class="pts-val earn">+2</div></div>
+                <div class="pts-item"><div class="pts-ico"><i class="ph-bold ph-question" style="font-size:20px;color:var(--rose);"></i></div><div><div style="font-weight:700;font-size:13px">Post Question</div><div style="font-size:11px;opacity:.7">Costs points</div></div><div class="pts-val cost">−10</div></div>
+                <div class="pts-item"><div class="pts-ico"><i class="ph-bold ph-chat-circle-dots" style="font-size:20px;color:var(--rose);"></i></div><div><div style="font-weight:700;font-size:13px">Request Session</div><div style="font-size:11px;opacity:.7">Costs per request</div></div><div class="pts-val cost">−5</div></div>
             </div>
         </div>
     </div>
 </section>
 
 <!-- CAMPUS VENUES -->
-<section class="section" id="venues">
+<section class="section" id="venues" data-num="04">
     <div style="max-width:1100px;margin:0 auto">
         <div class="center">
-            <div class="section-tag">🏪 Campus Partner Venues</div>
+            <div class="section-tag"><i class="ph-bold ph-buildings" style="font-size:13px;vertical-align:middle;margin-right:4px;"></i> Campus Partner Venues</div>
             <h2 class="section-title">Spend your points on campus</h2>
             <p class="section-sub">Exchange earned points for real discounts at university partner venues. New venues added every semester!</p>
         </div>
         <div class="venues-grid">
-            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#FEF9C3,#FDE68A)">☕<div class="venue-off">10% OFF</div></div><div class="venue-body"><div class="venue-name">University Cafeteria</div><div class="venue-pts">🪙 200 pts to redeem</div><div class="venue-loc">📍 Main Building, Ground Floor</div></div></div>
-            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#EEF2FF,#C7D7FF)">📚<div class="venue-off">5 JD OFF</div></div><div class="venue-body"><div class="venue-name">University Library</div><div class="venue-pts">🪙 400 pts to redeem</div><div class="venue-loc">📍 Library Building, Level 2</div></div></div>
-            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0)">📖<div class="venue-off">15% OFF</div></div><div class="venue-body"><div class="venue-name">Campus Bookshop</div><div class="venue-pts">🪙 350 pts to redeem</div><div class="venue-loc">📍 Student Centre, Level 1</div></div></div>
-            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#FFE4E6,#FFC4CE)">🖨️<div class="venue-off">20 Pages Free</div></div><div class="venue-body"><div class="venue-name">Print & Copy Centre</div><div class="venue-pts">🪙 150 pts to redeem</div><div class="venue-loc">📍 IT Building, Room 102</div></div></div>
-            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#E0F2FE,#BAE6FD)">🥤<div class="venue-off">Free Drink</div></div><div class="venue-body"><div class="venue-name">Student Canteen</div><div class="venue-pts">🪙 180 pts to redeem</div><div class="venue-loc">📍 Engineering Building</div></div></div>
-            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE)">🏃<div class="venue-off">1 Week Free</div></div><div class="venue-body"><div class="venue-name">Sports & Gym Centre</div><div class="venue-pts">🪙 500 pts to redeem</div><div class="venue-loc">📍 Sports Complex</div></div></div>
-            <div class="venue"><div class="venue-img" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA)">🖥️<div class="venue-off">2hr Free</div></div><div class="venue-body"><div class="venue-name">Computer Lab Booking</div><div class="venue-pts">🪙 100 pts to redeem</div><div class="venue-loc">📍 IT Building, Lab 3</div></div></div>
-            <div class="venue" style="background:linear-gradient(135deg,#EEF2FF,#F4F6FF);border-color:#C7D7FF;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:210px;text-align:center"><div style="font-size:36px;margin-bottom:12px">➕</div><div style="font-weight:800;font-size:15px;color:#3D52A0;margin-bottom:6px">More Coming Soon</div><div style="font-size:13px;color:#64748B;padding:0 16px">New venues added every semester</div></div>
+            <div class="venue"><div class="venue-img" style="background:var(--amber-light)"><i class="ph-duotone ph-coffee" style="font-size:36px;color:var(--amber-dark);"></i><div class="venue-off">10% OFF</div></div><div class="venue-body"><div class="venue-name">University Cafeteria</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 200 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Main Building, Ground Floor</div></div></div>
+            <div class="venue"><div class="venue-img" style="background:var(--indigo-light)"><i class="ph-duotone ph-books" style="font-size:36px;color:var(--indigo);"></i><div class="venue-off">5 JD OFF</div></div><div class="venue-body"><div class="venue-name">University Library</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 400 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Library Building, Level 2</div></div></div>
+            <div class="venue"><div class="venue-img" style="background:var(--emerald-light)"><i class="ph-duotone ph-book-open" style="font-size:36px;color:var(--emerald);"></i><div class="venue-off">15% OFF</div></div><div class="venue-body"><div class="venue-name">Campus Bookshop</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 350 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Student Centre, Level 1</div></div></div>
+            <div class="venue"><div class="venue-img" style="background:var(--rose-light)"><i class="ph-duotone ph-printer" style="font-size:36px;color:var(--rose);"></i><div class="venue-off">20 Pages Free</div></div><div class="venue-body"><div class="venue-name">Print & Copy Centre</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 150 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> IT Building, Room 102</div></div></div>
+            <div class="venue"><div class="venue-img" style="background:var(--violet-light)"><i class="ph-duotone ph-cup" style="font-size:36px;color:var(--violet);"></i><div class="venue-off">Free Drink</div></div><div class="venue-body"><div class="venue-name">Student Canteen</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 180 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Engineering Building</div></div></div>
+            <div class="venue"><div class="venue-img" style="background:var(--violet-light)"><i class="ph-duotone ph-person-simple-run" style="font-size:36px;color:var(--violet);"></i><div class="venue-off">1 Week Free</div></div><div class="venue-body"><div class="venue-name">Sports & Gym Centre</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 500 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Sports Complex</div></div></div>
+            <div class="venue"><div class="venue-img" style="background:var(--amber-light)"><i class="ph-duotone ph-desktop" style="font-size:36px;color:var(--indigo);"></i><div class="venue-off">2hr Free</div></div><div class="venue-body"><div class="venue-name">Computer Lab Booking</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 100 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> IT Building, Lab 3</div></div></div>
+            <div class="venue" style="background:var(--indigo-light);border-color:var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:210px;text-align:center"><div style="margin-bottom:12px"><i class="ph-duotone ph-plus-circle" style="font-size:40px;color:var(--indigo);"></i></div><div style="font-weight:800;font-size:15px;color:var(--indigo);margin-bottom:6px">More Coming Soon</div><div style="font-size:13px;color:var(--text-2);padding:0 16px">New venues added every semester</div></div>
         </div>
     </div>
 </section>
 
 <!-- TESTIMONIALS -->
-<section class="section features-bg">
+<section class="section features-bg" data-num="05">
     <div style="max-width:1100px;margin:0 auto">
         <div class="center">
-            <div class="section-tag">💬 Student Stories</div>
+            <div class="section-tag"><i class="ph-bold ph-quotes" style="font-size:14px;vertical-align:middle;margin-right:4px;"></i> Student Stories</div>
             <h2 class="section-title">What students are saying</h2>
         </div>
         <div class="testi-grid">
-            <div class="testi"><div class="testi-q">"</div><div class="testi-txt">UniConnect saved me the night before my algorithms final. I asked about Dijkstra at midnight and got a perfect answer with code examples in 20 minutes!</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=11" alt="Ahmad"></div><div><div style="font-weight:800;font-size:14px">Ahmad K.</div><div style="font-size:12px;color:#64748B">IT Faculty · Year 3</div></div><div style="margin-left:auto;font-size:14px">⭐⭐⭐⭐⭐</div></div></div>
-            <div class="testi"><div class="testi-q">"</div><div class="testi-txt">I earned 1,200+ points answering CS questions and have redeemed library credit twice. Helping classmates and getting real rewards — this platform is genius!</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=65" alt="Sami"></div><div><div style="font-weight:800;font-size:14px">Sami T. ✓</div><div style="font-size:12px;color:#64748B">Verified Tutor · IT Faculty</div></div><div style="margin-left:auto;font-size:14px">⭐⭐⭐⭐⭐</div></div></div>
-            <div class="testi"><div class="testi-q">"</div><div class="testi-txt">I used 200 points for a cafeteria discount — 10% off my lunch! The system motivates me to actually participate and help classmates every day.</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=47" alt="Lina"></div><div><div style="font-weight:800;font-size:14px">Lina H.</div><div style="font-size:12px;color:#64748B">Engineering · Year 2</div></div><div style="margin-left:auto;font-size:14px">⭐⭐⭐⭐⭐</div></div></div>
+            <div class="testi"><div class="testi-q">"</div><div class="testi-txt">UniConnect saved me the night before my algorithms final. I asked about Dijkstra at midnight and got a perfect answer with code examples in 20 minutes!</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=11" alt="Ahmad"></div><div><div style="font-weight:800;font-size:14px">Ahmad K.</div><div style="font-size:12px;color:var(--text-2)">IT Faculty · Year 3</div></div><div style="margin-left:auto;display:flex;gap:2px;color:var(--amber);"><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i></div></div></div>
+            <div class="testi"><div class="testi-q">"</div><div class="testi-txt">I earned 1,200+ points answering CS questions and have redeemed library credit twice. Helping classmates and getting real rewards — this platform is genius!</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=65" alt="Sami"></div><div><div style="font-weight:800;font-size:14px">Sami T. ✓</div><div style="font-size:12px;color:var(--text-2)">Verified Tutor · IT Faculty</div></div><div style="margin-left:auto;display:flex;gap:2px;color:var(--amber);"><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i></div></div></div>
+            <div class="testi"><div class="testi-q">"</div><div class="testi-txt">I used 200 points for a cafeteria discount — 10% off my lunch! The system motivates me to actually participate and help classmates every day.</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=47" alt="Lina"></div><div><div style="font-weight:800;font-size:14px">Lina H.</div><div style="font-size:12px;color:var(--text-2)">Engineering · Year 2</div></div><div style="margin-left:auto;display:flex;gap:2px;color:var(--amber);"><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i></div></div></div>
         </div>
     </div>
 </section>
@@ -167,11 +171,11 @@
 <!-- CTA -->
 <section class="cta">
     <div style="max-width:720px;margin:0 auto">
-        <div style="font-size:56px;margin-bottom:20px">🎓</div>
+        <div style="margin-bottom:20px;display:flex;justify-content:center;"><img src="/images/logo/icon.svg" width="72" height="72" alt="UniConnect" style="border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.25);" /></div>
         <h2 style="font-size:clamp(34px,5vw,56px);font-weight:900;line-height:1.1;letter-spacing:-1.5px;margin-bottom:18px">Ready to learn smarter?</h2>
         <p style="font-size:18px;opacity:.8;line-height:1.7;margin-bottom:40px;max-width:560px;margin-left:auto;margin-right:auto">Join 1,284+ Philadelphia University students already helping each other, earning points, and getting real discounts across campus.</p>
         <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-            <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-white btn-lg">Create Free Account →</button></a>
+            <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-white btn-lg">Create Free Account <i class="ph-bold ph-arrow-right" style="font-size:14px;vertical-align:middle;margin-left:4px;"></i></button></a>
             <a asp-controller="Login" asp-action="Login_Page"><button class="btn btn-outline-white btn-lg">Sign In</button></a>
         </div>
         <div class="cta-checks">
@@ -182,3 +186,337 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+<!-- EFFECT 2: GSAP scroll reveal + hero word split -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero heading word-split reveal
+  var heroTitle = document.querySelector('.hero-title');
+  if(heroTitle){
+    var html = heroTitle.innerHTML;
+    // Split text nodes only, preserve inner HTML tags (like .grad span)
+    heroTitle.style.opacity = '1';
+    gsap.from(heroTitle, { y: 40, opacity: 0, duration: 0.9, ease: 'power3.out', delay: 0.1 });
+  }
+
+  // Section headings slide up
+  gsap.utils.toArray('.section-title').forEach(function(el){
+    gsap.from(el, {
+      scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' },
+      y: 40, opacity: 0, duration: 0.7, ease: 'power2.out'
+    });
+  });
+
+  // Cards stagger (GSAP overrides IntersectionObserver reveal for these)
+  gsap.utils.toArray('.step, .feat, .venue, .testi').forEach(function(el, i){
+    gsap.from(el, {
+      scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' },
+      y: 50, opacity: 0, duration: 0.55, delay: (i % 3) * 0.09, ease: 'power2.out'
+    });
+  });
+
+  // Hero parallax on canvas
+  var heroBg = document.getElementById('hero-canvas');
+  if(heroBg){
+    gsap.to(heroBg, {
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+      y: '30%', ease: 'none'
+    });
+  }
+
+  // GSAP + Lenis integration (if lenis loaded after GSAP)
+  if(window.lenis){
+    window.lenis.on('scroll', ScrollTrigger.update);
+  }
+})();
+</script>
+
+<!-- EFFECT 4: Text scramble on hero (first text node only, preserves .grad span) -->
+<script>
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var el = document.querySelector('.hero-title');
+  if(!el) return;
+  // Only scramble the first text node ("Help Each Other.")
+  var textNode = null;
+  for(var i=0;i<el.childNodes.length;i++){
+    if(el.childNodes[i].nodeType===3 && el.childNodes[i].textContent.trim()){
+      textNode = el.childNodes[i]; break;
+    }
+  }
+  if(!textNode) return;
+  var original = textNode.textContent;
+  var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  var frame = 0, totalFrames = 28;
+  function scramble(){
+    var progress = frame / totalFrames;
+    var result = original.split('').map(function(char, i){
+      if(char === ' ' || char === '\n') return char;
+      if(i < progress * original.length) return char;
+      return chars[Math.floor(Math.random() * chars.length)];
+    }).join('');
+    textNode.textContent = result;
+    frame++;
+    if(frame <= totalFrames) requestAnimationFrame(scramble);
+    else textNode.textContent = original;
+  }
+  window.addEventListener('load', function(){ setTimeout(scramble, 250); });
+})();
+</script>
+
+<!-- EFFECT 3: Ambient floating geometry canvas -->
+<script>
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var canvas = document.getElementById('ambient-canvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W, H, shapes = [];
+  var COLORS = ['61,82,160','112,145,230','245,158,11'];
+
+  function Shape(){
+    this.x = Math.random()*W; this.y = Math.random()*H;
+    this.size = Math.random()*55+15;
+    this.type = Math.floor(Math.random()*3);
+    this.color = COLORS[Math.floor(Math.random()*COLORS.length)];
+    this.vx = (Math.random()-0.5)*0.25; this.vy = (Math.random()-0.5)*0.25;
+    this.rotation = Math.random()*Math.PI*2;
+    this.rotSpeed = (Math.random()-0.5)*0.004;
+    this.opacity = Math.random()*0.12+0.04;
+  }
+
+  function resize(){
+    var rect = canvas.parentElement.getBoundingClientRect();
+    W = canvas.width = rect.width; H = canvas.height = rect.height;
+  }
+  function init(){
+    resize(); shapes = [];
+    var count = Math.max(6, Math.floor(W/130));
+    for(var i=0;i<count;i++) shapes.push(new Shape());
+  }
+
+  var scrollY = 0;
+  window.addEventListener('scroll', function(){ scrollY = window.scrollY; },{passive:true});
+  var hidden = false;
+  document.addEventListener('visibilitychange', function(){ hidden = document.hidden; });
+
+  function drawShape(s){
+    ctx.save();
+    ctx.translate(s.x, s.y - scrollY*0.08);
+    ctx.rotate(s.rotation);
+    ctx.strokeStyle = 'rgba('+s.color+','+s.opacity+')';
+    ctx.lineWidth = 1;
+    if(s.type===0){
+      ctx.beginPath(); ctx.arc(0,0,s.size/2,0,Math.PI*2); ctx.stroke();
+    } else if(s.type===1){
+      ctx.beginPath(); ctx.moveTo(0,-s.size/2); ctx.lineTo(s.size/2,s.size/2); ctx.lineTo(-s.size/2,s.size/2); ctx.closePath(); ctx.stroke();
+    } else {
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(-s.size/2,0); ctx.lineTo(s.size/2,0); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function draw(){
+    requestAnimationFrame(draw);
+    if(hidden) return;
+    ctx.clearRect(0,0,W,H);
+    shapes.forEach(function(s){
+      s.x+=s.vx; s.y+=s.vy; s.rotation+=s.rotSpeed;
+      if(s.x<-s.size) s.x=W+s.size; if(s.x>W+s.size) s.x=-s.size;
+      if(s.y<-s.size) s.y=H+s.size; if(s.y>H+s.size) s.y=-s.size;
+      drawShape(s);
+    });
+  }
+
+  window.addEventListener('resize', init);
+  init(); draw();
+})();
+</script>
+
+<script>
+(function () {
+  /* ── prefers-reduced-motion guard ── */
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  /* ════════════════════════════════════════
+     HERO PARTICLE CONSTELLATION
+  ════════════════════════════════════════ */
+  var heroSection = document.querySelector('.hero');
+  var hc = document.getElementById('hero-canvas');
+  if (hc && heroSection) {
+    var hCtx = hc.getContext('2d');
+    var mouse = { x: -9999, y: -9999 };
+    var N = 70;
+    var MAX_DIST = 120;
+    var particles = [];
+
+    function hResize() {
+      hc.width  = heroSection.offsetWidth;
+      hc.height = heroSection.offsetHeight;
+    }
+    hResize();
+    window.addEventListener('resize', hResize, { passive: true });
+
+    for (var i = 0; i < N; i++) {
+      particles.push({
+        x: Math.random() * hc.width,
+        y: Math.random() * hc.height,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6
+      });
+    }
+
+    window.addEventListener('mousemove', function (e) {
+      var r = heroSection.getBoundingClientRect();
+      mouse.x = e.clientX - r.left;
+      mouse.y = e.clientY - r.top;
+    }, { passive: true });
+
+    window.addEventListener('scroll', function () {
+      hc.style.transform = 'translateY(' + (window.scrollY * 0.4) + 'px)';
+    }, { passive: true });
+
+    function hDraw() {
+      if (document.hidden) { requestAnimationFrame(hDraw); return; }
+      hCtx.clearRect(0, 0, hc.width, hc.height);
+
+      /* gravity toward mouse for nearest 5 */
+      var sorted = particles.slice().sort(function (a, b) {
+        return Math.hypot(a.x - mouse.x, a.y - mouse.y) -
+               Math.hypot(b.x - mouse.x, b.y - mouse.y);
+      });
+      for (var k = 0; k < Math.min(5, sorted.length); k++) {
+        var p = sorted[k];
+        var ddx = mouse.x - p.x, ddy = mouse.y - p.y;
+        var d   = Math.hypot(ddx, ddy) || 1;
+        p.vx += ddx / d * 0.12;
+        p.vy += ddy / d * 0.12;
+      }
+
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.vx *= 0.97; p.vy *= 0.97;
+        var spd = Math.hypot(p.vx, p.vy);
+        if (spd > 2) { p.vx = p.vx / spd * 2; p.vy = p.vy / spd * 2; }
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = hc.width;  if (p.x > hc.width)  p.x = 0;
+        if (p.y < 0) p.y = hc.height; if (p.y > hc.height) p.y = 0;
+
+        hCtx.beginPath();
+        hCtx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+        hCtx.fillStyle = 'rgba(61,82,160,0.6)';
+        hCtx.fill();
+
+        for (var j = i + 1; j < particles.length; j++) {
+          var q = particles[j];
+          var dist = Math.hypot(p.x - q.x, p.y - q.y);
+          if (dist < MAX_DIST) {
+            hCtx.beginPath();
+            hCtx.moveTo(p.x, p.y);
+            hCtx.lineTo(q.x, q.y);
+            hCtx.strokeStyle = 'rgba(61,82,160,' + (0.18 * (1 - dist / MAX_DIST)) + ')';
+            hCtx.lineWidth = 1;
+            hCtx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(hDraw);
+    }
+    hDraw();
+  }
+
+  /* ════════════════════════════════════════
+     FEATURES SECTION PARTICLES
+  ════════════════════════════════════════ */
+  var featSection = document.getElementById('features');
+  var fc = document.getElementById('features-canvas');
+  if (fc && featSection) {
+    var fCtx = fc.getContext('2d');
+    var fParts = [];
+    var F = 40;
+    var fActive = false;
+
+    function fResize() {
+      fc.width  = featSection.offsetWidth;
+      fc.height = featSection.offsetHeight;
+    }
+    fResize();
+    window.addEventListener('resize', fResize, { passive: true });
+
+    for (var fi = 0; fi < F; fi++) {
+      fParts.push({
+        x: Math.random() * fc.width,
+        y: Math.random() * fc.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3
+      });
+    }
+
+    function fDraw() {
+      if (!fActive || document.hidden) return;
+      fCtx.clearRect(0, 0, fc.width, fc.height);
+      for (var fi = 0; fi < fParts.length; fi++) {
+        var fp = fParts[fi];
+        fp.x += fp.vx; fp.y += fp.vy;
+        if (fp.x < 0) fp.x = fc.width;  if (fp.x > fc.width)  fp.x = 0;
+        if (fp.y < 0) fp.y = fc.height; if (fp.y > fc.height) fp.y = 0;
+        fCtx.beginPath();
+        fCtx.arc(fp.x, fp.y, 2, 0, Math.PI * 2);
+        fCtx.fillStyle = 'rgba(61,82,160,0.25)';
+        fCtx.fill();
+        for (var fj = fi + 1; fj < fParts.length; fj++) {
+          var fq = fParts[fj];
+          var fd = Math.hypot(fp.x - fq.x, fp.y - fq.y);
+          if (fd < 100) {
+            fCtx.beginPath();
+            fCtx.moveTo(fp.x, fp.y); fCtx.lineTo(fq.x, fq.y);
+            fCtx.strokeStyle = 'rgba(61,82,160,' + (0.08 * (1 - fd / 100)) + ')';
+            fCtx.lineWidth = 0.8;
+            fCtx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(fDraw);
+    }
+
+    var fObs = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting && !fActive) {
+        fActive = true;
+        fc.classList.add('visible');
+        fDraw();
+      }
+    }, { threshold: 0.1 });
+    fObs.observe(featSection);
+  }
+
+  /* ════════════════════════════════════════
+     SCROLL REVEAL
+  ════════════════════════════════════════ */
+  var revealEls = document.querySelectorAll('.step, .feat, .venue, .testi');
+  if ('IntersectionObserver' in window) {
+    var revObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var el = entry.target;
+          var siblings = el.parentElement ? Array.from(el.parentElement.children) : [el];
+          var idx = siblings.indexOf(el);
+          setTimeout(function () { el.classList.add('revealed'); }, idx * 80);
+          revObs.unobserve(el);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(function (el) { revObs.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('revealed'); });
+  }
+
+})();
+</script>
+}

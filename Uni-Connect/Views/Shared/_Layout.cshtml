@@ -4,16 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - UniConnect</title>
+    <link rel="icon" type="image/svg+xml" href="~/images/logo/icon.svg" />
     
     <!-- FONTS & ICONS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@@phosphor-icons/web@@2.1.1" defer></script>
     
     <!-- CSS -->
-    
     <link href="~/css/Home.css" rel="stylesheet" />
+    <link href="~/css/brand.css" rel="stylesheet" />
     
     <style>
         :root {
@@ -30,11 +31,11 @@
 
         .footer {
             background: #0F172A;
-            color: #64748B;
+            color: var(--text-2);
             padding: 48px;
             text-align: center
         }
-        .ftr-lnk { color: #64748B; text-decoration: none; font-size: 14px; font-weight: 600; transition: color .2s; }
+        .ftr-lnk { color: var(--text-2); text-decoration: none; font-size: 14px; font-weight: 600; transition: color .2s; }
         .ftr-lnk:hover { color: #fff; }
         
         .nav-logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--indigo), var(--violet)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; }
@@ -42,10 +43,24 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
+    <!-- SCROLL PROGRESS BAR -->
+    <div id="scroll-bar" style="position:fixed;top:0;left:0;height:3px;width:0%;background:#F59E0B;z-index:9999;transition:width .05s linear;pointer-events:none;box-shadow:0 0 8px rgba(245,158,11,.5)"></div>
+    <script>
+        (function(){
+            var bar=document.getElementById('scroll-bar');
+            function upd(){
+                var s=document.documentElement,scrolled=s.scrollTop||document.body.scrollTop,total=s.scrollHeight-s.clientHeight;
+                bar.style.width=total>0?(scrolled/total*100)+'%':'0%';
+            }
+            window.addEventListener('scroll',upd,{passive:true});
+        })();
+    </script>
     <!-- NAV -->
     <nav class="nav">
         <a asp-controller="Home" asp-action="Index" class="nav-logo" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; font-weight:900; font-size:20px;">
-            <div class="nav-logo-icon"><i class="fas fa-graduation-cap"></i></div>
+            <div class="nav-logo-icon" style="padding:0;overflow:hidden;background:none;border:none;width:36px;height:36px;flex-shrink:0;">
+                <img src="/images/logo/icon.svg" width="36" height="36" alt="UniConnect" style="display:block;border-radius:10px;" />
+            </div>
             UniConnect
         </a>
         <div class="nav-links">
@@ -57,13 +72,13 @@
         <div class="nav-actions">
             @if (User.Identity.IsAuthenticated)
             {
-                <a asp-controller="Dashboard" asp-action="Dashboard"><button class="btn btn-primary btn-sm">My Dashboard →</button></a>
+                <a asp-controller="Dashboard" asp-action="Dashboard"><button class="btn btn-primary btn-sm">My Dashboard <i class="ph-bold ph-arrow-right" style="font-size:13px;vertical-align:middle;"></i></button></a>
                 <a asp-controller="Login" asp-action="Logout" class="ftr-lnk" style="margin-left:15px">Sign Out</a>
             }
             else
             {
                 <a asp-controller="Login" asp-action="Login_Page"><button class="btn btn-ghost btn-sm">Sign In</button></a>
-                <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-primary btn-sm">Join Free <i class="fas fa-rocket" style="margin-left:6px"></i></button></a>
+                <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-primary btn-sm" style="display:inline-flex;align-items:center;gap:6px;">Join Free <i class="ph-bold ph-rocket" style="font-size:14px;"></i></button></a>
             }
         </div>
     </nav>
@@ -75,7 +90,7 @@
     <footer class="footer">
         <div style="max-width:900px;margin:0 auto">
             <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px">
-                <div style="width:36px;height:36px;background:linear-gradient(135deg,#3D52A0,#7091E6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px">🎓</div>
+                <div style="width:36px;height:36px;flex-shrink:0;"><img src="/images/logo/icon.svg" width="36" height="36" alt="UniConnect" style="display:block;border-radius:10px;" /></div>
                 <span style="font-weight:900;font-size:18px;color:#CBD5E1">UniConnect</span>
             </div>
             <p style="font-size:14px;margin-bottom:18px">Philadelphia University Peer Learning Platform</p>
@@ -86,7 +101,7 @@
                 <a href="leaderboard.html" class="ftr-lnk">Leaderboard</a>
                 <a href="points.html" class="ftr-lnk">Rewards</a>
             </div>
-            <div style="border-top:1px solid #1E293B;padding-top:22px;font-size:13px;line-height:1.8">
+            <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:22px;font-size:13px;line-height:1.8">
                 Built by <strong style="color:#94A3B8">Ahmad Allahwani · Ahmad Al-Atrash · Mustafa Maqousi · Abdul-Razzaq Qara</strong><br>
                 Philadelphia University · Graduation Project 2026
             </div>
@@ -96,5 +111,51 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- EFFECT 1: Lenis smooth scroll -->
+    <script src="https://cdn.jsdelivr.net/npm/@@studio-freight/lenis@@1.0.42/dist/lenis.min.js"></script>
+    <script>
+    (function(){
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var lenis = new Lenis({
+        duration: 1.2,
+        easing: function(t){ return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+        orientation: 'vertical',
+        smoothWheel: true
+      });
+      function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+      requestAnimationFrame(raf);
+      if(window.ScrollTrigger){
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add(function(time){ lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+      }
+      window.lenis = lenis;
+    })();
+    </script>
+
+    <!-- EFFECT 5: Cursor glow (desktop only) -->
+    <div id="cursor-glow" aria-hidden="true" style="position:fixed;width:300px;height:300px;border-radius:50%;pointer-events:none;z-index:9998;background:radial-gradient(circle,rgba(61,82,160,0.06) 0%,transparent 70%);transform:translate(-50%,-50%);transition:opacity 0.3s;opacity:0;"></div>
+    <script>
+    (function(){
+      if(window.matchMedia('(pointer: coarse)').matches) return;
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var glow = document.getElementById('cursor-glow');
+      if(!glow) return;
+      var mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
+      document.addEventListener('mousemove', function(e){
+        mouseX = e.clientX; mouseY = e.clientY;
+        glow.style.opacity = '1';
+      });
+      document.addEventListener('mouseleave', function(){ glow.style.opacity = '0'; });
+      (function animate(){
+        glowX += (mouseX - glowX) * 0.08;
+        glowY += (mouseY - glowY) * 0.08;
+        glow.style.left = glowX + 'px';
+        glow.style.top  = glowY + 'px';
+        requestAnimationFrame(animate);
+      })();
+    })();
+    </script>
 </body>
 </html>

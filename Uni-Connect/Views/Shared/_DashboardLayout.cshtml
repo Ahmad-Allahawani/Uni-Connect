@@ -6,47 +6,64 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - UniConnect</title>
+    <link rel="icon" type="image/svg+xml" href="~/images/logo/icon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="~/css/design-system.css" rel="stylesheet" />
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="~/css/brand.css" rel="stylesheet" />
+    <script src="https://unpkg.com/@@phosphor-icons/web@@2.1.1"></script>
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <!-- NAVBAR -->
     <nav class="navbar">
         <div style="display: flex; align-items: center; gap: 16px; flex: 1;">
-            <button class="nav-hamburger" id="sidebarToggle" style="display:none; border:none; background:none; cursor:pointer; font-size:20px;">☰</button>
+            <button class="nav-hamburger" id="sidebarToggle" aria-label="Open menu" style="display:none; border:none; background:none; cursor:pointer; padding:6px; border-radius:8px; color:var(--text-2); transition:background .2s;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">
+                <i class="ph ph-list" style="font-size:22px;" aria-hidden="true"></i>
+            </button>
             <a asp-controller="Home" asp-action="Index" style="text-decoration:none;">
                 <div class="nav-logo">
-                    <div class="nav-logo-icon"><i class="fas fa-graduation-cap"></i></div>
-                    <span>UniConnect</span>
+                    <div class="nav-logo-icon" style="padding:0;overflow:hidden;background:none;border:none;width:36px;height:36px;">
+                        <img src="/images/logo/icon.svg" width="36" height="36" alt="UniConnect" style="display:block;border-radius:10px;" />
+                    </div>
+                    <span><span class="logo-uni">Uni</span><span class="logo-conn">Connect</span></span>
                 </div>
             </a>
-            <div class="nav-search">
-                <input type="text" class="form-input" placeholder="Search questions..." />
-                <i data-lucide="search" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text-2); pointer-events:none; width:18px; height:18px;"></i>
-            </div>
+            <form method="get" asp-controller="Dashboard" asp-action="Search" style="position:relative; flex:1; max-width:480px;">
+                <input type="text" name="q" class="form-input" placeholder="Search questions..."
+                       value="@Context.Request.Query["q"]"
+                       autocomplete="off"
+                       style="padding-right:42px; width:100%;" />
+                <button type="submit" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-2); display:flex; align-items:center;">
+                    <i class="ph ph-magnifying-glass" style="font-size:18px;"></i>
+                </button>
+            </form>
+        </div>
+        <!-- EFFECT 6: Live clock -->
+        <div class="nav-live-info" style="font-size:11px;color:var(--text-2);font-weight:500;display:flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;white-space:nowrap;">
+          <span style="opacity:0.5;">Philadelphia University</span>
+          <span id="live-clock" style="font-family:monospace;letter-spacing:0.05em;"></span>
         </div>
         <div class="nav-actions">
-            <a asp-controller="Dashboard" asp-action="Notifications" style="text-decoration:none; color:inherit;">
-                <div class="nav-bell" id="notifBell">
-                    <i data-lucide="bell" style="width:20px; height:20px;"></i>
+            <a asp-controller="Dashboard" asp-action="Notifications" style="text-decoration:none; color:inherit;" aria-label="Notifications">
+                <div class="nav-bell" id="notifBell" role="img" aria-hidden="true">
+                    <i class="ph ph-bell" style="font-size:20px;"></i>
                     <span class="nav-bell-badge" id="notifBadge" style="display:none">0</span>
                 </div>
             </a>
             <div style="position: relative;">
-                <button class="nav-user" id="navUserBtn" style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; border: none; background: none; cursor: pointer; border-radius: 8px; transition: background .2s;" onmouseover="this.style.background='#EEF2FF'" onmouseout="this.style.background='none'">
-                    <div class="av av-sm"><img src="https://ui-avatars.com/api/?name=@(User.FindFirst(ClaimTypes.Name)?.Value ?? "Student")&background=3D52A0&color=fff&size=44" alt="User" /></div>
+                <button class="nav-user" id="navUserBtn" aria-label="Open user menu" aria-haspopup="true" aria-expanded="false" style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; border: none; background: none; cursor: pointer; border-radius: 8px; transition: background .2s;" onmouseover="this.style.background='var(--indigo-light)'" onmouseout="this.style.background='none'">
+                    @{ var _navImg = User.FindFirst("ProfileImageUrl")?.Value; }
+                    <div class="av av-sm"><img src="@(string.IsNullOrEmpty(_navImg) ? AvatarHelper.Url(User.FindFirst(ClaimTypes.Name)?.Value, 44) : _navImg)" alt="User avatar" /></div>
+                    <span class="nav-user-name" style="font-size:13px; font-weight:600; color:var(--text); display:none;">@(User.FindFirst(ClaimTypes.Name)?.Value?.Split(' ').First() ?? "")</span>
                 </button>
                 <div class="nav-user-dropdown" id="navUserDropdown">
-                    <a asp-controller="Dashboard" asp-action="Profile" class="nav-dropdown-item" style="text-decoration:none;"><i data-lucide="user"></i> My Profile</a>
-                    <a asp-controller="Dashboard" asp-action="Settings" class="nav-dropdown-item" style="text-decoration:none;"><i data-lucide="settings"></i> Settings</a>
-                    <hr style="margin:0; border:none; border-top:1px solid #E2E8F0;">
+                    <a asp-controller="Dashboard" asp-action="Profile" class="nav-dropdown-item" style="text-decoration:none;"><i class="ph-fill ph-user-circle" style="font-size:16px;color:var(--indigo);"></i> My Profile</a>
+                    <a asp-controller="Dashboard" asp-action="Settings" class="nav-dropdown-item" style="text-decoration:none;"><i class="ph ph-gear" style="font-size:16px;color:var(--text-2);"></i> Settings</a>
+                    <hr style="margin:0; border:none; border-top:1px solid var(--border);">
                     <form method="post" asp-controller="Login" asp-action="Logout" style="display:inline;">
-                        <button type="submit" class="nav-dropdown-item logout" style="text-decoration:none; background:none; border:none; cursor:pointer; padding:12px 16px; width:100%; text-align:left;"><i data-lucide="log-out"></i> Sign Out</button>
+                        <button type="submit" class="nav-dropdown-item logout" style="text-decoration:none; background:none; border:none; cursor:pointer; padding:12px 16px; width:100%; text-align:left;"><i class="ph ph-sign-out" style="font-size:16px;"></i> Sign Out</button>
                     </form>
                 </div>
             </div>
@@ -61,41 +78,58 @@
         <!-- SIDEBAR -->
         <aside class="sidebar" id="sidebar">
             <a asp-controller="Dashboard" asp-action="Profile" class="sidebar-user" style="text-decoration:none;">
-                <div class="av av-md"><img src="https://ui-avatars.com/api/?name=@(User.FindFirst(ClaimTypes.Name)?.Value ?? "Student")&background=3D52A0&color=fff&size=60" alt="User" /></div>
+                @{ var _sideImg = User.FindFirst("ProfileImageUrl")?.Value; }
+                <div class="av av-md" style="border:2px solid var(--indigo-light);"><img src="@(string.IsNullOrEmpty(_sideImg) ? AvatarHelper.Url(User.FindFirst(ClaimTypes.Name)?.Value, 60) : _sideImg)" alt="User" /></div>
                 <div>
                     <div class="sidebar-user-name">@(User.FindFirst(ClaimTypes.Name)?.Value ?? "Student")</div>
-                    <div class="sidebar-user-pts"><i data-lucide="coins" style="width:14px; height:14px; vertical-align: middle; margin-right: 4px;"></i> <span id="sidebarPoints">-</span> points</div>
+                    <div class="sidebar-user-pts"><i class="ph-fill ph-lightning" style="font-size:13px; vertical-align: middle; margin-right: 3px;"></i> <span id="sidebarPoints">-</span> pts</div>
                 </div>
             </a>
 
             <nav class="sidebar-nav">
-                <a asp-controller="Dashboard" asp-action="Dashboard" class="nav-item" id="navDashboard"><i data-lucide="layout-dashboard"></i> Home Feed</a>
-                <a asp-controller="Dashboard" asp-action="CreatePost" class="nav-item" id="navCreatePost"><i data-lucide="plus-circle"></i> Ask Question</a>
+                <a asp-controller="Dashboard" asp-action="Dashboard" class="nav-item" id="navDashboard">
+                    <i class="ph-bold ph-squares-four ni-dashboard" style="font-size:18px;"></i> Home Feed
+                </a>
                 <a asp-controller="Session" asp-action="ChatPage" class="nav-item" id="navChat">
-                    <i data-lucide="messages-square"></i> Private Sessions
+                    <i class="ph-bold ph-chats ni-chat" style="font-size:18px;"></i> Private Sessions
                     <span class="nav-badge" id="msgBadge" style="display:none">0</span>
                 </a>
-                <a asp-controller="Dashboard" asp-action="Leaderboard" class="nav-item" id="navLeaderboard"><i data-lucide="trophy"></i> Leaderboard</a>
+                <a asp-controller="Dashboard" asp-action="Leaderboard" class="nav-item" id="navLeaderboard">
+                    <i class="ph-bold ph-trophy ni-trophy" style="font-size:18px;"></i> Leaderboard
+                </a>
                 <a asp-controller="Dashboard" asp-action="Notifications" class="nav-item" id="navNotifications">
-                    <i data-lucide="bell"></i> Notifications
+                    <i class="ph-bold ph-bell ni-bell" style="font-size:18px;"></i> Notifications
                     <span class="nav-badge" id="sidebarNotifBadge" style="display:none">0</span>
                 </a>
-                <a asp-controller="Dashboard" asp-action="Profile" class="nav-item" id="navProfile"><i data-lucide="user"></i> My Profile</a>
-                <a asp-controller="Dashboard" asp-action="Points" class="nav-item" id="navPoints"><i data-lucide="coins"></i> Points & Rewards</a>
-                <a asp-controller="Dashboard" asp-action="Settings" class="nav-item" id="navSettings"><i data-lucide="settings"></i> Settings</a>
+                <a asp-controller="Dashboard" asp-action="Profile" class="nav-item" id="navProfile">
+                    <i class="ph-bold ph-user-circle ni-profile" style="font-size:18px;"></i> My Profile
+                </a>
+                <a asp-controller="Dashboard" asp-action="Points" class="nav-item" id="navPoints">
+                    <i class="ph-bold ph-lightning ni-points" style="font-size:18px;"></i> Points & Rewards
+                </a>
+                <a asp-controller="Dashboard" asp-action="Settings" class="nav-item" id="navSettings">
+                    <i class="ph-bold ph-gear ni-settings" style="font-size:18px;"></i> Settings
+                </a>
             </nav>
 
+            <!-- Sidebar points widget — actionable "Next reward" (F8) -->
             <div class="pts-widget">
-                <div class="pts-widget-num" id="ptWidget">-</div>
-                <div class="pts-widget-label">POINTS THIS SEMESTER</div>
+                <div class="pts-widget-header">
+                    <i class="ph-fill ph-gift" aria-hidden="true"></i>
+                    <span>Next reward</span>
+                </div>
+                <div class="pts-widget-reward" id="ptWidgetReward">Cafeteria 10% off</div>
                 <div class="pts-widget-bar">
                     <div class="pts-widget-fill" id="ptWidgetBar" style="width: 0%;"></div>
                 </div>
-                <div class="pts-widget-sub" id="ptWidgetSub">-</div>
+                <div class="pts-widget-sub" id="ptWidgetSub">— pts to unlock</div>
+                <a asp-action="Points" asp-controller="Dashboard" class="pts-widget-cta">
+                    Browse rewards <i class="ph-bold ph-arrow-right" style="font-size:11px;" aria-hidden="true"></i>
+                </a>
             </div>
 
             <form method="post" asp-controller="Login" asp-action="Logout" style="display: contents;">
-                <button type="submit" class="sidebar-logout" style="border: none; background: none; cursor: pointer; padding: 12px 16px; width: 100%; text-align: left; font-size: 14px; color: #64748B; transition: all 0.2s; display: flex; align-items: center; gap: 8px;"><i data-lucide="log-out" style="width:18px; height:18px;"></i> Sign Out</button>
+                <button type="submit" class="sidebar-logout" style="border: none; background: none; cursor: pointer; padding: 12px 18px; width: 100%; text-align: left; font-size: 13.5px; color: var(--rose); transition: all 0.2s; display: flex; align-items: center; gap: 10px; font-weight:600;"><i class="ph ph-sign-out" style="font-size:17px;"></i> Sign Out</button>
             </form>
         </aside>
 
@@ -140,13 +174,13 @@
             document.body.style.overflow = '';
         }
 
-        // Set active nav based on controller/action from route
         function setActiveNav() {
             const path = window.location.pathname.toLowerCase();
             document.querySelectorAll('.sidebar-nav .nav-item').forEach(link => {
                 link.classList.remove('active');
-                const href = link.getAttribute('href')?.toLowerCase() || '';
-                if (href && path.includes(href.split('/').pop())) {
+                const href = (link.getAttribute('href') || '').toLowerCase().replace(/\/$/, '');
+                if (!href || href === '#') return;
+                if (path === href || path.startsWith(href + '/') || path === href + '.cshtml') {
                     link.classList.add('active');
                 }
             });
@@ -161,13 +195,16 @@
     <!-- JavaScript -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
-        // User dropdown
+        // User dropdown — also update aria-expanded (F5)
         document.getElementById('navUserBtn')?.addEventListener('click', function(e) {
             e.stopPropagation();
-            document.getElementById('navUserDropdown').classList.toggle('open');
+            const dropdown = document.getElementById('navUserDropdown');
+            const isOpen = dropdown.classList.toggle('open');
+            this.setAttribute('aria-expanded', isOpen);
         });
         document.addEventListener('click', function() {
             document.getElementById('navUserDropdown').classList.remove('open');
+            document.getElementById('navUserBtn')?.setAttribute('aria-expanded', 'false');
         });
 
         // Toast function
@@ -178,10 +215,6 @@
             document.body.appendChild(t);
             setTimeout(() => t.remove(), 3000);
         }
-    </script>
-    <script>
-        // Initialize Lucide icons
-        lucide.createIcons();
     </script>
     <script>
                async function loadNotificationCount() {
@@ -217,17 +250,126 @@
             }
         }
 
+        async function loadUserPoints() {
+            try {
+                const res = await fetch('/api/user/points');
+                if (!res.ok) return;
+                const data = await res.json();
+
+                const sp = document.getElementById('sidebarPoints');
+                if (sp) sp.textContent = data.points.toLocaleString();
+
+                // Sidebar "Next reward" widget (F8)
+                const rewards = [
+                    { name: 'Computer Lab 2hr', cost: 100 },
+                    { name: 'Print 20 pages free', cost: 150 },
+                    { name: 'Cafeteria 10% off',  cost: 200 },
+                    { name: 'Canteen free drink',  cost: 180 },
+                    { name: 'Bookshop 15% off',    cost: 350 },
+                    { name: 'Library 5 JD credit', cost: 400 },
+                    { name: 'Gym 1 week free',     cost: 500 },
+                ];
+                const pts = data.points || 0;
+                const next = rewards.find(r => r.cost > pts) || rewards[rewards.length - 1];
+                const toNext = Math.max(0, next.cost - pts);
+                const pct = Math.min((pts / next.cost) * 100, 100);
+
+                const rewardEl = document.getElementById('ptWidgetReward');
+                if (rewardEl) rewardEl.textContent = next.name;
+
+                const bar = document.getElementById('ptWidgetBar');
+                if (bar) bar.style.width = pct + '%';
+
+                const sub = document.getElementById('ptWidgetSub');
+                if (sub) sub.textContent = toNext > 0 ? `${toNext} more pts to unlock` : 'Ready to redeem!';
+            } catch (e) { /* silent */ }
+        }
+
         // Load on page ready, then refresh every 30 seconds
         document.addEventListener('DOMContentLoaded', () => {
             @if (User.Identity?.IsAuthenticated == true)
             {
                     <text>
                     loadNotificationCount();
+                    loadUserPoints();
                     setInterval(loadNotificationCount, 30000);
+                    setInterval(loadUserPoints, 60000);
                     </text>
             }
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- EFFECT 1: Lenis smooth scroll for dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/@@studio-freight/lenis@@1.0.42/dist/lenis.min.js"></script>
+    <script>
+    (function(){
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var lenis = new Lenis({
+        duration: 1.2,
+        easing: function(t){ return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+        orientation: 'vertical',
+        smoothWheel: true
+      });
+      function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+      requestAnimationFrame(raf);
+      if(window.ScrollTrigger){
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add(function(time){ lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+      }
+      window.lenis = lenis;
+    })();
+    </script>
+    <!-- EFFECT 6: Live clock JS -->
+    <script>
+    (function(){
+      var clock = document.getElementById('live-clock');
+      if(!clock) return;
+      function tick(){
+        var now = new Date();
+        clock.textContent = now.toLocaleTimeString('en-US', {
+          hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false
+        });
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+    </script>
+    <script>
+        // Fallback for broken uploaded profile images — fires if an img fails to load
+        document.addEventListener('DOMContentLoaded', function () {
+            const pal = ['3D52A0','7C3AED','059669','D97706','0891B2','BE185D','C2410C','0F766E'];
+            function svgAvatar(name) {
+                const n = name || 'U';
+                const init = n.charAt(0).toUpperCase();
+                const sum = n.split('').reduce(function(s,c){return s+c.charCodeAt(0);},0);
+                const col = pal[Math.abs(sum) % pal.length];
+                return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23" + col + "'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' fill='white' font-size='16' font-family='sans-serif' font-weight='bold'%3E" + init + "%3C/text%3E%3C/svg%3E";
+            }
+            document.querySelectorAll('.av img').forEach(function(img) {
+                img.addEventListener('error', function () {
+                    this.src = svgAvatar(this.alt);
+                    this.onerror = null;
+                });
+            });
+        });
+    </script>
+    <script>
+        // taste-skill: IntersectionObserver scroll reveals — never window scroll listener
+        (function () {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('visible');
+                        io.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+            document.querySelectorAll('.reveal, .reveal-stagger').forEach(function (el) {
+                io.observe(el);
+            });
+        })();
+    </script>
 </body>
 </html>

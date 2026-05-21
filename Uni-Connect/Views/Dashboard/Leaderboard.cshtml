@@ -2,121 +2,14 @@
 @{
     ViewData["Title"] = "Leaderboard — UniConnect";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+
+    var leaderboard = ViewBag.Leaderboard as List<Uni_Connect.Models.User> ?? new List<Uni_Connect.Models.User>();
+    var myRankIndex = leaderboard.FindIndex(u => u.UserID == Model.UserID);
+    var myRank = myRankIndex >= 0 ? myRankIndex + 1 : (int?)null;
 }
 
 @section Styles {
-<style>
-    .leaderboard-wrapper { max-width: 1000px; margin: 0 auto; }
-    
-    .leaderboard-header {
-        display: flex; justify-content: space-between;
-        align-items: flex-end; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;
-    }
-    
-    .leaderboard-title { font-size: 28px; font-weight: 800; }
-    .leaderboard-subtitle { font-size: 14px; color: var(--text-2); margin-top: 4px; }
-    
-    .leaderboard-filters { display: flex; gap: 12px; }
-    .leaderboard-filters select { width: 160px; font-size: 13px; }
-    
-    .rank-banner {
-        background: linear-gradient(90deg, var(--indigo-light), var(--violet-light));
-        border: 1.5px solid #C7D7FF; border-radius: 16px;
-        padding: 20px 24px; margin-bottom: 40px;
-        display: flex; align-items: center; gap: 20px;
-        flex-wrap: wrap;
-    }
-    
-    .rank-banner-icon { font-size: 32px; }
-    .rank-banner-content { flex: 1; min-width: 200px; }
-    .rank-banner-title {
-        font-weight: 800; font-size: 16px; color: var(--indigo);
-        margin-bottom: 2px;
-    }
-    .rank-banner-text {
-        font-size: 14px; color: var(--text-2); font-weight: 600;
-    }
-    
-    .rank-banner-points { text-align: right; }
-    .rank-banner-pts-num { font-weight: 900; font-size: 20px; color: var(--indigo); }
-    .rank-banner-pts-label {
-        font-size: 11px; text-transform: uppercase; font-weight: 800;
-        color: var(--text-2); letter-spacing: 0.5px;
-    }
-    
-    .podium-section { margin-bottom: 48px; }
-    
-    .podium-wrap {
-        display: flex; align-items: flex-end;
-        justify-content: center; gap: 16px;
-        margin-bottom: 0; flex-wrap: wrap;
-    }
-    
-    .podium-card {
-        background: var(--surface); border-radius: 16px;
-        padding: 24px; text-align: center;
-        border: 1px solid var(--border);
-        width: 180px; transition: all .2s;
-    }
-    
-    .podium-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-    
-    .podium-medal { font-size: 32px; margin-bottom: 12px; }
-    
-    .podium-1st {
-        background: linear-gradient(135deg, #FEF3C7, #FDE68A);
-        border: 2px solid var(--amber); width: 220px;
-        order: 2; box-shadow: 0 8px 28px rgba(245,158,11,.2);
-    }
-    
-    .podium-2nd {
-        border: 2px solid #C0C0C0; order: 1;
-    }
-    
-    .podium-3rd {
-        border: 2px solid #CD7F32; order: 3;
-    }
-    
-    .podium-ranking-table { margin-top: 40px; }
-    
-    .ranking-header {
-        font-size: 12px; font-weight: 700; text-transform: uppercase;
-        color: var(--text-2); letter-spacing: 0.5px;
-        display: flex; align-items: center; gap: 12px;
-        padding: 12px 16px; margin-bottom: 12px;
-    }
-    
-    .rank-row {
-        display: flex; align-items: center; gap: 12px;
-        padding: 16px 20px; background: var(--surface);
-        border: 1px solid var(--border);
-        margin-bottom: 8px; border-radius: 12px;
-        transition: all .2s; cursor: pointer;
-    }
-    .rank-row:hover {
-        border-color: var(--indigo);
-        box-shadow: var(--shadow-sm);
-        transform: translateX(2px);
-    }
-    
-    .rank-num {
-        font-weight: 900; font-size: 16px;
-        width: 40px; text-align: center;
-    }
-    
-    .rank-info { flex: 1; display: flex; align-items: center; gap: 12px; }
-    .rank-avatar { width: 36px; height: 36px; border-radius: 50%; }
-    
-    .rank-name { font-weight: 800; font-size: 14px; margin-bottom: 2px; }
-    .rank-faculty { font-size: 11px; color: var(--text-2); font-weight: 600; }
-    
-    .rank-points { font-weight: 900; font-size: 16px; text-align: right; min-width: 80px; }
-    
-    .highlight-row { background: var(--indigo-light); border-color: var(--indigo); }
-    .highlight-row .rank-num { color: var(--indigo); }
-    .highlight-row .rank-name { color: var(--indigo); }
-    .highlight-row .rank-points { color: var(--indigo); }
-</style>
+<link href="~/css/leaderboard.css" rel="stylesheet" />
 }
 
 <div class="leaderboard-wrapper">
@@ -157,16 +50,16 @@
                     }
                 </select>
                 <input type="number" name="top" min="1" max="500" value="@(ViewBag.Top ?? 100)" class="form-input" style="width:110px; padding:6px;" />
-                <button type="submit" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px;"><i data-lucide="filter" style="width:16px; height:16px;"></i> Filter</button>
+                <button type="submit" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px;"><i class="ph-bold ph-funnel" style="font-size:16px;"></i> Filter</button>
             </form>
         </div>
     </div>
 
     <!-- Your Rank Banner -->
     <div class="rank-banner">
-        <div class="rank-banner-icon"><i data-lucide="award" style="width:40px; height:40px; color:var(--indigo);"></i></div>
+        <div class="rank-banner-icon"><i class="ph-duotone ph-trophy" style="font-size:40px; color:var(--indigo);"></i></div>
         <div class="rank-banner-content">
-            <div class="rank-banner-title">You are ranked #6 overall!</div>
+            <div class="rank-banner-title">You are ranked #@(myRank.HasValue ? myRank.Value.ToString() : "N/A") overall!</div>
             <div class="rank-banner-text">Keep helping classmates to climb higher on the leaderboard.</div>
         </div>
         <div class="rank-banner-points">
@@ -176,10 +69,11 @@
     </div>
 
     <!-- Podium Section -->
+    @if (leaderboard.Count >= 1)
+    {
     <div class="podium-section">
-        <div class="podium-wrap">
+        <div class="podium-wrap" style="justify-content:center;">
             @{
-                var leaderboard = ViewBag.Leaderboard as List<Uni_Connect.Models.User> ?? new List<Uni_Connect.Models.User>();
                 var top3 = leaderboard.Take(3).ToList();
                 
                 // 2nd Place
@@ -187,9 +81,9 @@
                 {
                     var u2 = top3[1];
                     <div class="podium-card podium-2nd">
-                        <div class="podium-medal">🥈</div>
-                        <div class="av av-lg" style="margin: 0 auto 14px; border: 3px solid #C0C0C0;">
-                            <img src="https://ui-avatars.com/api/?name=@u2.Name&background=3D52A0&color=fff&size=60" alt="@u2.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                        <div class="podium-medal"><i class="ph-fill ph-medal" style="font-size:32px;color:var(--text-3);"></i></div>
+                        <div class="av av-lg" style="margin: 0 auto 14px; border: 3px solid var(--text-3);">
+                            <img src="@AvatarHelper.Url(u2.Name, 60)" alt="@u2.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
                         </div>
                         <div style="font-weight: 800; font-size: 15px;">@u2.Name</div>
                         <div style="font-size: 12px; color: var(--text-2); font-weight: 600; margin-bottom: 10px;">@u2.Faculty</div>
@@ -202,9 +96,9 @@
                 {
                     var u1 = top3[0];
                     <div class="podium-card podium-1st">
-                        <div class="podium-medal">🥇</div>
+                        <div class="podium-medal"><i class="ph-fill ph-medal" style="font-size:36px;color:var(--amber);"></i></div>
                         <div class="av av-xl" style="margin: 0 auto 14px; border: 4px solid var(--amber);">
-                            <img src="https://ui-avatars.com/api/?name=@u1.Name&background=3D52A0&color=fff&size=80" alt="@u1.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                            <img src="@AvatarHelper.Url(u1.Name, 80)" alt="@u1.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
                         </div>
                         <div style="font-weight: 900; font-size: 16px;">@u1.Name</div>
                         <span class="chip chip-emerald" style="display: inline-block; margin-bottom: 10px;">Top Contributor</span>
@@ -217,9 +111,9 @@
                 {
                     var u3 = top3[2];
                     <div class="podium-card podium-3rd">
-                        <div class="podium-medal">🥉</div>
+                        <div class="podium-medal"><i class="ph-fill ph-medal" style="font-size:30px;color:#CD7F32;"></i></div>
                         <div class="av av-lg" style="margin: 0 auto 14px; border: 3px solid #CD7F32;">
-                            <img src="https://ui-avatars.com/api/?name=@u3.Name&background=3D52A0&color=fff&size=60" alt="@u3.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                            <img src="@AvatarHelper.Url(u3.Name, 60)" alt="@u3.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
                         </div>
                         <div style="font-weight: 800; font-size: 15px;">@u3.Name</div>
                         <div style="font-size: 12px; color: var(--text-2); font-weight: 600; margin-bottom: 10px;">@u3.Faculty</div>
@@ -229,10 +123,11 @@
             }
         </div>
     </div>
+    }
 
     <!-- Full Rankings Table -->
     <div class="podium-ranking-table">
-        <div class="ranking-header"><i data-lucide="list" style="width:14px; height:14px;"></i> # | Student | Points</div>
+        <div class="ranking-header"><i class="ph ph-list" style="font-size:14px;"></i> # | Student | Points</div>
         @{
             int rankNum = 1;
             foreach (var u in leaderboard)
@@ -241,7 +136,7 @@
                 <div class="rank-row @(isCurrent ? "highlight-row" : "")" onclick="window.location.href='@Url.Action("ViewProfile", "Dashboard", new { username = u.Username })'">
                     <div class="rank-num">#@rankNum</div>
                     <div class="rank-info">
-                        <img src="https://ui-avatars.com/api/?name=@u.Name&background=3D52A0&color=fff&size=36" class="rank-avatar" />
+                        <img src="@AvatarHelper.Url(u.Name, 36)" class="rank-avatar" />
                         <div>
                             <div class="rank-name">@u.Name @(isCurrent ? "(YOU)" : "")</div>
                             <div class="rank-faculty">@u.Faculty</div>

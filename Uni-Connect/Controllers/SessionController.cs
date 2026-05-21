@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Uni_Connect.Models;
+using Uni_Connect.Services;
 
 namespace Uni_Connect.Controllers
 {
@@ -10,9 +11,9 @@ namespace Uni_Connect.Controllers
     public class SessionController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly NotificationService _notificationService;
+        private readonly INotificationService _notificationService;
 
-        public SessionController(ApplicationDbContext context, NotificationService notificationService)
+        public SessionController(ApplicationDbContext context, INotificationService notificationService)
         {
             _context = context;
             _notificationService = notificationService;
@@ -72,55 +73,70 @@ namespace Uni_Connect.Controllers
 
        
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendRequest(int recipientId, int postId, string description)
         {
-            var me = GetCurrentUserId();
-
-            if (me == recipientId)
-                return BadRequest("You cannot request a session with yourself.");
-
-            // prevent duplicate pending request
-            var existing = await _context.Requests.AnyAsync(r =>
-                r.OwnerID == me && r.RecipientID == recipientId &&
-                r.Status == "Pending" && !r.IsDeleted);
-
-            if (existing)
-                return BadRequest("You already have a pending request with this student.");
-
-            var sessionAlreadyExists = await _context.PrivateSessions.AnyAsync(s =>
-                !s.IsDeleted && s.IsActive &&
-                ((s.StudentID == me && s.HelperID == recipientId) ||
-                 (s.StudentID == recipientId && s.HelperID == me)));
-
-            if (sessionAlreadyExists)
-                return BadRequest("You already have an active session with this user.");
-            var request = new Request
+            try
             {
-                OwnerID = me,
-                RecipientID = recipientId,
-                PostID = postId,
-                Description = description,
-                Status = "Pending",
-                CreatedAt = DateTime.UtcNow
-            };
+                var me = GetCurrentUserId();
 
-            _context.Requests.Add(request);
-            await _context.SaveChangesAsync();
+                if (me == recipientId)
+                    return BadRequest(new { message = "You cannot request a session with yourself." });
 
-            
-            var sender = await _context.Users.FindAsync(me);
-            await _notificationService.CreateAsync(
-                recipientId,
-                $"{sender!.Name} sent you a session request.",
-                "SessionRequest",
-                request.RequestID
-            );
+                var existing = await _context.Requests.AnyAsync(r =>
+                    r.OwnerID == me && r.RecipientID == recipientId &&
+                    r.Status == "Pending" && !r.IsDeleted);
 
-            return Ok(new { message = "Request sent!" });
+                if (existing)
+                    return BadRequest(new { message = "You already have a pending request with this student." });
+
+                var sessionAlreadyExists = await _context.PrivateSessions.AnyAsync(s =>
+                    !s.IsDeleted && s.IsActive &&
+                    ((s.StudentID == me && s.HelperID == recipientId) ||
+                     (s.StudentID == recipientId && s.HelperID == me)));
+
+                if (sessionAlreadyExists)
+                    return BadRequest(new { message = "You already have an active session with this user." });
+
+                var request = new Request
+                {
+                    OwnerID = me,
+                    RecipientID = recipientId,
+                    PostID = postId,
+                    Description = description ?? "",
+                    Status = "Pending",
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _context.Requests.Add(request);
+                await _context.SaveChangesAsync();
+
+                var sender = await _context.Users.FindAsync(me);
+                if (sender != null)
+                {
+                    try
+                    {
+                        await _notificationService.CreateAsync(
+                            recipientId,
+                            $"{sender.Name} sent you a session request.",
+                            "SessionRequest",
+                            request.RequestID
+                        );
+                    }
+                    catch { /* notification failure doesn't block request */ }
+                }
+
+                return Ok(new { message = "Request sent!" });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred. Please try again." });
+            }
         }
 
-        
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AcceptRequest(int requestId)
         {
             var me = GetCurrentUserId();
@@ -133,7 +149,6 @@ namespace Uni_Connect.Controllers
 
             if (request == null) return NotFound();
 
-            
             var sessionExists = await _context.PrivateSessions
                 .AnyAsync(s => s.RequestID == requestId);
 
@@ -167,8 +182,9 @@ namespace Uni_Connect.Controllers
             });
         }
 
-        
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeclineRequest(int requestId)
         {
             var me = GetCurrentUserId();
@@ -187,22 +203,61 @@ namespace Uni_Connect.Controllers
             return Ok();
         }
 
-       
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CloseSession(int sessionId)
         {
             var me = GetCurrentUserId();
 
             var session = await _context.PrivateSessions
+                .Include(s => s.Request)
                 .FirstOrDefaultAsync(s => s.PrivateSessionID == sessionId &&
                                           (s.StudentID == me || s.HelperID == me));
 
             if (session == null) return NotFound();
 
             session.IsActive = false;
+            session.ClosedAt = DateTime.UtcNow;
+
+            // Mark session's own request as Closed
+            if (session.Request != null)
+                session.Request.Status = "Closed";
+
+            // Clean up any other lingering pending requests between these two users
+            // (can happen if a request was never properly accepted before a session started)
+            var lingering = await _context.Requests
+                .Where(r => !r.IsDeleted && r.Status == "Pending" &&
+                            ((r.OwnerID == session.StudentID && r.RecipientID == session.HelperID) ||
+                             (r.OwnerID == session.HelperID && r.RecipientID == session.StudentID)))
+                .ToListAsync();
+            foreach (var req in lingering)
+                req.Status = "Closed";
+
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(new { sessionId = session.PrivateSessionID });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RateSession(int sessionId, int rating)
+        {
+            if (rating < 1 || rating > 5) return BadRequest(new { message = "Rating must be between 1 and 5." });
+
+            var me = GetCurrentUserId();
+
+            var session = await _context.PrivateSessions
+                .FirstOrDefaultAsync(s => s.PrivateSessionID == sessionId &&
+                                          (s.StudentID == me || s.HelperID == me) &&
+                                          !s.IsActive);
+
+            if (session == null) return NotFound();
+
+            session.Rating = rating;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true });
         }
 
         private async Task<User?> GetCurrentUser()
@@ -210,9 +265,7 @@ namespace Uni_Connect.Controllers
             var userIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userIdStr)) return null;
             int userId = int.Parse(userIdStr);
-            return await _context.Users
-            .Include(u => u.Notifications)
-            .FirstOrDefaultAsync(u => u.UserID == userId);
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserID == userId);
         }
 
         private int GetCurrentUserId() =>

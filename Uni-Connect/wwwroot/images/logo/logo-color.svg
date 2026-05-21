@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 72" width="340" height="72" role="img">
+  <title>UniConnect — Peer Learning Platform</title>
+  <defs>
+    <linearGradient id="bgG" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4A63BE"/>
+      <stop offset="100%" stop-color="#2d3f7a"/>
+    </linearGradient>
+    <linearGradient id="pageL" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#E8EEFF" stop-opacity="0.92"/>
+    </linearGradient>
+    <linearGradient id="wordUni" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3D52A0"/>
+      <stop offset="100%" stop-color="#2d3f7a"/>
+    </linearGradient>
+    <linearGradient id="wordCon" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7091E6"/>
+      <stop offset="100%" stop-color="#93B4FF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon background -->
+  <rect x="0" y="6" width="60" height="60" rx="16" fill="url(#bgG)"/>
+  <!-- Left page -->
+  <path d="M30 16 C 26 16, 15 18.5, 12 23 L 12 50 C 15 46.5, 26 44, 30 44 L 30 16 Z" fill="url(#pageL)"/>
+  <!-- Right page -->
+  <path d="M30 16 C 34 16, 45 18.5, 48 23 L 48 50 C 45 46.5, 34 44, 30 44 L 30 16 Z" fill="#ffffff" opacity="0.35"/>
+  <!-- Spine -->
+  <rect x="29" y="15" width="2" height="30" rx="1" fill="#0F172A" opacity="0.14"/>
+  <!-- Base arc -->
+  <path d="M 12 50 Q 30 55 48 50" stroke="#ffffff" stroke-width="1.5" fill="none" stroke-opacity="0.16" stroke-linecap="round"/>
+  <!-- Amber node -->
+  <circle cx="19" cy="58" r="4.8" fill="#F59E0B"/>
+  <!-- Violet node -->
+  <circle cx="41" cy="58" r="4.8" fill="#93B4FF"/>
+  <!-- Knowledge lines -->
+  <line x1="19" y1="53.2" x2="29.5" y2="44.5" stroke="#F59E0B" stroke-width="1.9" stroke-linecap="round" stroke-opacity="0.95"/>
+  <line x1="41" y1="53.2" x2="30.5" y2="44.5" stroke="#93B4FF" stroke-width="1.9" stroke-linecap="round" stroke-opacity="0.95"/>
+
+  <!-- Wordmark: "Uni" -->
+  <text x="78" y="34"
+        font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif"
+        font-size="27" font-weight="900" fill="url(#wordUni)" letter-spacing="-0.6">Uni</text>
+  <!-- Wordmark: "Connect" -->
+  <text x="127" y="34"
+        font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif"
+        font-size="27" font-weight="900" fill="url(#wordCon)" letter-spacing="-0.6">Connect</text>
+
+  <!-- Tagline -->
+  <text x="79" y="54"
+        font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif"
+        font-size="10.5" font-weight="700" fill="#94A3B8" letter-spacing="0.11em">PEER LEARNING PLATFORM</text>
+</svg>

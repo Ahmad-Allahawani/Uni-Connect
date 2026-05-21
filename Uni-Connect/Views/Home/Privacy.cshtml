@@ -1,6 +1,112 @@
-﻿@{
+@{
     ViewData["Title"] = "Privacy Policy";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+@section Styles {
+<link href="~/css/privacy.css" rel="stylesheet" />
+}
+
+<div class="privacy-wrap">
+    <div class="privacy-hero">
+        <div class="privacy-hero-icon">
+            <i class="ph-duotone ph-shield-check" style="font-size:36px;color:var(--indigo);"></i>
+        </div>
+        <h1>Privacy Policy</h1>
+        <p>How UniConnect collects, uses, and protects your information</p>
+        <div style="margin-top:16px;">
+            <span class="privacy-badge"><i class="ph-fill ph-check-circle" style="font-size:14px;"></i> Last updated: May 2026</span>
+        </div>
+    </div>
+
+    <div class="privacy-section">
+        <h2><i class="ph-duotone ph-info" style="font-size:20px;color:var(--indigo);"></i> Overview</h2>
+        <p>UniConnect ("we", "our", or "the platform") is a peer-learning community built exclusively for enrolled students of Philadelphia University. This Privacy Policy explains what personal data we collect, why we collect it, and how we handle it. By using UniConnect, you agree to the practices described here.</p>
+    </div>
+
+    <hr class="privacy-divider" />
+
+    <div class="privacy-section">
+        <h2><i class="ph-duotone ph-database" style="font-size:20px;color:var(--indigo);"></i> Information We Collect</h2>
+        <p>We collect the minimum information needed to operate the platform:</p>
+        <ul>
+            <li><strong>Account data</strong> — your full name, university email address (@@philadelphia.edu.jo), faculty, and year of study, provided at registration.</li>
+            <li><strong>Profile data</strong> — an optional profile photo URL that you choose to add in Settings.</li>
+            <li><strong>Content you post</strong> — questions, answers, images attached to posts or answers, and private chat messages.</li>
+            <li><strong>Activity data</strong> — points earned or spent, session requests sent and received, upvotes cast, and notification events.</li>
+        </ul>
+        <p>We do <strong>not</strong> collect payment information, device identifiers, or location data.</p>
+    </div>
+
+    <hr class="privacy-divider" />
+
+    <div class="privacy-section">
+        <h2><i class="ph-duotone ph-eye" style="font-size:20px;color:var(--indigo);"></i> How We Use Your Information</h2>
+        <ul>
+            <li>To create and manage your account and authenticate your identity as a Philadelphia University student.</li>
+            <li>To display your profile, posts, and answers to other platform members.</li>
+            <li>To deliver real-time chat and session request notifications via SignalR.</li>
+            <li>To calculate and display points, achievements, and leaderboard rankings.</li>
+            <li>To send password reset links to your university email when requested.</li>
+            <li>To allow platform administrators to moderate content and enforce community standards.</li>
+        </ul>
+    </div>
+
+    <hr class="privacy-divider" />
+
+    <div class="privacy-section">
+        <h2><i class="ph-duotone ph-users-three" style="font-size:20px;color:var(--indigo);"></i> Information Visible to Others</h2>
+        <p>The following is visible to all authenticated UniConnect members:</p>
+        <ul>
+            <li>Your display name, faculty, year of study, and profile photo.</li>
+            <li>Questions and answers you post publicly.</li>
+            <li>Your points total and leaderboard position.</li>
+        </ul>
+        <p>Private chat messages are visible only to you and the person you are chatting with. Administrators may access messages for moderation purposes when a report is filed.</p>
+    </div>
+
+    <hr class="privacy-divider" />
+
+    <div class="privacy-section">
+        <h2><i class="ph-duotone ph-share-network" style="font-size:20px;color:var(--indigo);"></i> Data Sharing</h2>
+        <p>We do not sell, rent, or share your personal data with third parties for marketing purposes. Your data stays within UniConnect and is only shared:</p>
+        <ul>
+            <li>With other authenticated students, as described in the section above.</li>
+            <li>With platform administrators for moderation and support.</li>
+            <li>If required by applicable law or a valid legal process.</li>
+        </ul>
+        <p>We use the DiceBear Avatars API to generate placeholder profile images from your name. No personal data beyond the initials of your name is sent to this service.</p>
+    </div>
+
+    <hr class="privacy-divider" />
+
+    <div class="privacy-section">
+        <h2><i class="ph-duotone ph-lock" style="font-size:20px;color:var(--indigo);"></i> Security</h2>
+        <p>Your password is stored as a salted BCrypt hash — we never store or transmit plain-text passwords. All platform connections use HTTPS. Password reset tokens are single-use and expire after 15 minutes.</p>
+        <p>While we take reasonable precautions to protect your data, no system is completely secure. Please choose a strong password and do not share your credentials with others.</p>
+    </div>
+
+    <hr class="privacy-divider" />
+
+    <div class="privacy-section">
+        <h2><i class="ph-duotone ph-user-circle-minus" style="font-size:20px;color:var(--indigo);"></i> Your Rights</h2>
+        <ul>
+            <li><strong>Access & correction</strong> — you can update your name, faculty, year, and profile photo at any time via Settings.</li>
+            <li><strong>Account deletion</strong> — you may request permanent deletion of your account and all associated data by contacting the platform administrator.</li>
+            <li><strong>Data portability</strong> — contact us if you need an export of your personal data.</li>
+        </ul>
+    </div>
+
+    <hr class="privacy-divider" />
+
+    <div class="privacy-section">
+        <h2><i class="ph-duotone ph-envelope" style="font-size:20px;color:var(--indigo);"></i> Contact</h2>
+        <div class="privacy-contact-card">
+            <i class="ph-duotone ph-graduation-cap" style="font-size:32px;color:var(--indigo);flex-shrink:0;"></i>
+            <div>
+                <div style="font-weight:800;font-size:15px;color:var(--text);margin-bottom:4px;">Philadelphia University — UniConnect Team</div>
+                <div style="font-size:13px;color:var(--text-2);line-height:1.7;">If you have questions about this Privacy Policy or wish to exercise your data rights, please reach out through your university email or contact the platform administrator directly through the UniConnect dashboard.</div>
+            </div>
+        </div>
+    </div>
+</div>

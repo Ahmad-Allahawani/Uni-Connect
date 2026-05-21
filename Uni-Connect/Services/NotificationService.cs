@@ -1,25 +1,29 @@
-﻿using Uni_Connect.Models;
+using Uni_Connect.Models;
 
-public class NotificationService
+namespace Uni_Connect.Services
 {
-    private readonly ApplicationDbContext _context;
-
-    public NotificationService(ApplicationDbContext context)
+    public class NotificationService : INotificationService
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
 
-    public async Task CreateAsync(int recipientId, string message, string type, int? relatedId = null)
-    {
-        var notification = new Notification
+        public NotificationService(ApplicationDbContext context)
         {
-            UserID = recipientId,
-            Message = message,
-            Type = type,
-            RelatedID = relatedId,
-            CreatedAt = DateTime.UtcNow
-        };
-        _context.Notifications.Add(notification);
-        await _context.SaveChangesAsync();
+            _context = context;
+        }
+
+        public async Task CreateAsync(int recipientId, string message, string type, int? relatedId = null, int? actorUserId = null)
+        {
+            var notification = new Notification
+            {
+                UserID = recipientId,
+                Message = message,
+                Type = type,
+                RelatedID = relatedId,
+                ActorUserID = actorUserId,
+                CreatedAt = DateTime.UtcNow
+            };
+            _context.Notifications.Add(notification);
+            await _context.SaveChangesAsync();
+        }
     }
 }

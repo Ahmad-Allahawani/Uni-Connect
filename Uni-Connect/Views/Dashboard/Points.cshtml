@@ -6,145 +6,14 @@
 }
 
 @section Styles {
-<style>
-    /* Tabs styling */
-    .tabs {
-        display: flex;
-        gap: 2px;
-        border-bottom: 2px solid var(--border);
-        margin-bottom: 24px;
-        overflow-x: auto;
-    }
-    .tabs::-webkit-scrollbar { height: 0; }
-    .tab {
-        padding: 12px 20px;
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text-2);
-        cursor: pointer;
-        border-bottom: 2px solid transparent;
-        margin-bottom: -2px;
-        border-radius: 8px 8px 0 0;
-        transition: all 0.2s;
-        white-space: nowrap;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .tab:hover { color: var(--indigo); background: var(--indigo-light); }
-    .tab.active { color: var(--indigo); border-bottom-color: var(--indigo); }
-
-    /* Hero Card */
-    .points-hero {
-        background: linear-gradient(135deg, var(--indigo), #5B73C7 50%, var(--violet));
-        border-radius: 20px;
-        padding: 32px;
-        color: #fff;
-        margin-bottom: 28px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 20px;
-        position: relative;
-        overflow: hidden;
-    }
-    .points-hero-icon {
-        position: absolute;
-        right: -20px;
-        bottom: -20px;
-        font-size: 110px;
-        opacity: .08;
-        pointer-events: none;
-    }
-
-    /* Venues Grid */
-    .venues-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 20px;
-    }
-    .venue-card {
-        background: var(--surface);
-        border: 1.5px solid var(--border);
-        border-radius: 14px;
-        overflow: hidden;
-        transition: all .25s;
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-    }
-    .venue-card:hover:not(.locked) {
-        box-shadow: var(--shadow-md);
-        transform: translateY(-3px);
-        border-color: var(--indigo);
-    }
-    .venue-card.locked { opacity: .55; cursor: not-allowed; }
-    .venue-img {
-        height: 120px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 52px;
-        position: relative;
-    }
-    .venue-off {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: var(--rose);
-        color: #fff;
-        border-radius: 99px;
-        padding: 4px 12px;
-        font-size: 11px;
-        font-weight: 800;
-    }
-    .venue-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
-    .venue-name { font-weight: 800; font-size: 16px; margin-bottom: 6px; }
-    .venue-desc { font-size: 13px; color: var(--text-2); margin-bottom: 16px; line-height: 1.5; flex: 1; }
-    .venue-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
-    .venue-pts { font-size: 14px; font-weight: 800; color: var(--amber); }
-
-    /* Modal Styling */
-    .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 23, 42, .55);
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        backdrop-filter: blur(6px);
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.25s;
-    }
-    .modal-overlay.open { opacity: 1; visibility: visible; }
-    .modal-box {
-        background: #fff;
-        border-radius: 20px;
-        padding: 30px;
-        width: 100%;
-        max-width: 460px;
-        box-shadow: 0 24px 64px rgba(61, 82, 160, .22);
-        transform: scale(0.9);
-        transition: transform 0.25s;
-    }
-    .modal-overlay.open .modal-box { transform: scale(1); }
-
-    /* Hidden utilities */
-    .hidden { display: none !important; }
-    .fade-in { animation: fadeIn 0.3s ease; }
-    @@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-</style>
+<link href="~/css/points.css" rel="stylesheet" />
 }
 
 <div class="points-hero">
-    <div class="points-hero-icon"><i data-lucide="coins"></i></div>
+    <div class="points-hero-icon"><i class="ph-fill ph-coins"></i></div>
     <div style="z-index: 1;">
         <div style="font-size:13px; opacity:.75; margin-bottom:6px; font-weight:600">Your Current Balance</div>
-        <div style="font-size:52px; font-weight:900; line-height:1; letter-spacing:-1px; display:flex; align-items:center; gap:12px;">@Model.CurrentPoints <i data-lucide="coins" style="width:32px; height:32px;"></i></div>
+        <div style="font-size:52px; font-weight:900; line-height:1; letter-spacing:-1px; display:flex; align-items:center; gap:12px;">@Model.CurrentPoints <i class="ph-fill ph-coins" style="font-size:32px;"></i></div>
         <div style="margin-top:12px; font-size:13px; opacity:.85">
             <strong>Level @Model.CurrentLevel</strong> — @Model.NextLevelPoints pts to Level @(Model.CurrentLevel + 1)
         </div>
@@ -166,10 +35,10 @@
 
 <!-- TABS -->
 <div class="tabs">
-    <div class="tab active" onclick="showTab('tab-venues', this)"><i data-lucide="shopping-bag"></i> Redeem at Venues</div>
-    <div class="tab" onclick="showTab('tab-earn', this)"><i data-lucide="trending-up"></i> How to Earn</div>
-    <div class="tab" onclick="showTab('tab-history', this)"><i data-lucide="history"></i> Transactions</div>
-    <div class="tab" onclick="showTab('tab-achievements', this)"><i data-lucide="award"></i> Achievements</div>
+    <div class="tab active" onclick="showTab('tab-venues', this)"><i class="ph-bold ph-gift"></i> Redeem at Venues</div>
+    <div class="tab" onclick="showTab('tab-earn', this)"><i class="ph-bold ph-trend-up"></i> How to Earn</div>
+    <div class="tab" onclick="showTab('tab-history', this)"><i class="ph-bold ph-receipt"></i> Transactions</div>
+    <div class="tab" onclick="showTab('tab-achievements', this)"><i class="ph-bold ph-trophy"></i> Achievements</div>
 </div>
 
 <div id="tab-container">
@@ -182,39 +51,39 @@
 
         <div class="venues-grid">
             <!-- Cafeteria -->
-            <div class="venue-card" onclick="openRedeemModal('University Cafeteria', '☕', '10% OFF discount on any meal', 200, 'Main Building, Ground Floor')">
-                <div class="venue-img" style="background:linear-gradient(135deg,#FEF9C3,#FDE68A)">☕<div class="venue-off">10% OFF</div></div>
+            <div class="venue-card" onclick="openRedeemModal('University Cafeteria', 'coffee', '10% OFF discount on any meal', 200, 'Main Building, Ground Floor')">
+                <div class="venue-img" style="background:var(--amber-light);display:flex;align-items:center;justify-content:center;position:relative;"><i class="ph-duotone ph-coffee" style="font-size:40px;color:var(--amber-dark);"></i><div class="venue-off">10% OFF</div></div>
                 <div class="venue-body">
                     <div class="venue-name">University Cafeteria</div>
                     <div class="venue-desc">Valid for all drinks, snacks, and full meals. Single-use voucher.</div>
                     <div class="venue-footer">
-                        <div class="venue-pts">🪙 200 pts</div>
+                        <div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:14px;color:var(--amber);vertical-align:middle;"></i> 200 pts</div>
                         <button class="btn btn-amber btn-sm">Redeem</button>
                     </div>
                 </div>
             </div>
 
             <!-- Library -->
-            <div class="venue-card" onclick="openRedeemModal('University Library', '📚', '5 JD Printing Credit', 400, 'Library Building, Level 2')">
-                <div class="venue-img" style="background:linear-gradient(135deg,#EEF2FF,#C7D7FF)">📚<div class="venue-off">5 JD OFF</div></div>
+            <div class="venue-card" onclick="openRedeemModal('University Library', 'books', '5 JD Printing Credit', 400, 'Library Building, Level 2')">
+                <div class="venue-img" style="background:var(--indigo-light);display:flex;align-items:center;justify-content:center;position:relative;"><i class="ph-duotone ph-books" style="font-size:40px;color:var(--indigo);"></i><div class="venue-off">5 JD OFF</div></div>
                 <div class="venue-body">
                     <div class="venue-name">University Library</div>
                     <div class="venue-desc">Use for printing, scanning, or study room bookings. Valid for 30 days.</div>
                     <div class="venue-footer">
-                        <div class="venue-pts">🪙 400 pts</div>
+                        <div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:14px;color:var(--amber);vertical-align:middle;"></i> 400 pts</div>
                         <button class="btn btn-primary btn-sm">Redeem</button>
                     </div>
                 </div>
             </div>
 
             <!-- Bookshop -->
-            <div class="venue-card" onclick="openRedeemModal('Campus Bookshop', '📖', '15% OFF Stationery', 350, 'Student Centre, Level 1')">
-                <div class="venue-img" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0)">📖<div class="venue-off">15% OFF</div></div>
+            <div class="venue-card" onclick="openRedeemModal('Campus Bookshop', 'book-open', '15% OFF Stationery', 350, 'Student Centre, Level 1')">
+                <div class="venue-img" style="background:var(--emerald-light);display:flex;align-items:center;justify-content:center;position:relative;"><i class="ph-duotone ph-book-open" style="font-size:40px;color:var(--emerald);"></i><div class="venue-off">15% OFF</div></div>
                 <div class="venue-body">
                     <div class="venue-name">Campus Bookshop</div>
                     <div class="venue-desc">15% discount on all stationery and university merchandise.</div>
                     <div class="venue-footer">
-                        <div class="venue-pts">🪙 350 pts</div>
+                        <div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:14px;color:var(--amber);vertical-align:middle;"></i> 350 pts</div>
                         <button class="btn btn-emerald btn-sm">Redeem</button>
                     </div>
                 </div>
@@ -226,7 +95,7 @@
     <div id="tab-earn" class="tab-content hidden fade-in">
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 24px;">
             <div>
-                <h3 style="font-size:16px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i data-lucide="trending-up" class="text-emerald"></i> Ways to Earn Points</h3>
+                <h3 style="font-size:16px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i class="ph-bold ph-trend-up" style="font-size:18px;color:var(--emerald);"></i> Ways to Earn Points</h3>
                 <div class="card" style="padding:0; overflow:hidden;">
                     <div style="padding:14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border)">
                         <div><strong>Answer a Question</strong><br/><small style="color:var(--text-2)">Help a fellow student</small></div>
@@ -243,7 +112,7 @@
                 </div>
             </div>
             <div>
-                <h3 style="font-size:16px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i data-lucide="trending-down" class="text-rose"></i> Points Decisions</h3>
+                <h3 style="font-size:16px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i class="ph-bold ph-trend-down" style="font-size:18px;color:var(--rose);"></i> Points Decisions</h3>
                 <div class="card" style="padding:0; overflow:hidden;">
                     <div style="padding:14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border)">
                         <div><strong>Post a Question</strong><br/><small style="color:var(--text-2)">Encourages searching first</small></div>
@@ -271,7 +140,14 @@
                 {
                     <div style="padding:16px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border)">
                         <div style="display:flex; align-items:center; gap:16px;">
-                            <span style="font-size:20px;">@tx.Icon</span>
+                            @if (tx.Amount > 0)
+                            {
+                                <i class="ph-fill ph-arrow-fat-up" style="font-size:16px;color:var(--emerald);"></i>
+                            }
+                            else
+                            {
+                                <i class="ph-fill ph-arrow-fat-down" style="font-size:16px;color:var(--rose);"></i>
+                            }
                             <div>
                                 <div style="font-weight:700; font-size:14px;">@tx.Title</div>
                                 <div style="font-size:12px; color:var(--text-2);">@tx.Time · @tx.Detail</div>
@@ -291,13 +167,20 @@
         <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px;">
             @foreach (var achievement in Model.Achievements)
             {
+                var achIcon = achievement.Title switch {
+                    "First Steps" => "ph-fill ph-target",
+                    "Helper"      => "ph-fill ph-handshake",
+                    "Questioner"  => "ph-bold ph-question",
+                    "Tutor"       => "ph-fill ph-seal-check",
+                    _             => "ph-fill ph-star"
+                };
                 <div class="card @(achievement.Unlocked ? "" : "locked")" style="text-align:center; @(achievement.Unlocked ? "background:var(--amber-light); border-color:var(--amber);" : "")">
-                    <div style="font-size:32px; margin-bottom:10px; display:flex; justify-content:center;"><i data-lucide="medal" style="width:40px; height:40px;"></i></div>
+                    <div style="font-size:32px; margin-bottom:10px; display:flex; justify-content:center;"><i class="@achIcon" style="font-size:40px;"></i></div>
                     <div style="font-weight:700; font-size:13px; margin-bottom:4px;">@achievement.Title</div>
                     <div style="font-size:11px; color:var(--text-2);">@achievement.Description</div>
                     @if (achievement.Unlocked)
                     {
-                        <div style="font-size:10px; color:var(--amber-dark); margin-top:8px; font-weight:700;">✓ UNLOCKED</div>
+                        <div style="font-size:10px; color:var(--amber-dark); margin-top:8px; font-weight:700; display:inline-flex; align-items:center; gap:3px;"><i class="ph-fill ph-check-circle" style="font-size:12px;"></i> UNLOCKED</div>
                     }
                 </div>
             }
@@ -309,12 +192,12 @@
 <div class="modal-overlay" id="redeemModal">
     <div class="modal-box">
         <div style="text-align:center; margin-bottom:24px;">
-            <div id="modalIcon" style="font-size:64px; margin-bottom:12px;">☕</div>
+            <div id="modalIcon" style="font-size:64px; margin-bottom:12px; display:flex; align-items:center; justify-content:center;"><i id="modalIconEl" class="ph-duotone ph-coffee" style="font-size:64px;color:var(--amber-dark);"></i></div>
             <h3 id="modalTitle" style="font-size:20px; font-weight:900;">Venue Name</h3>
             <p id="modalDesc" style="font-size:14px; color:var(--text-2);">Discount description goes here.</p>
-            <div id="modalLoc" style="font-size:12px; color:var(--text-3); margin-top:8px;">📍 Location Info</div>
+            <div id="modalLoc" style="font-size:12px; color:var(--text-3); margin-top:8px; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="ph-fill ph-map-pin" style="font-size:13px;"></i><span id="modalLocText">Location Info</span></div>
         </div>
-        <div style="background:var(--indigo-light); border:1.5px solid #C7D7FF; border-radius:14px; padding:20px; text-align:center; margin-bottom:24px;">
+        <div style="background:var(--indigo-light); border:1.5px solid var(--border); border-radius:14px; padding:20px; text-align:center; margin-bottom:24px;">
             <div style="font-size:13px; color:var(--text-2); margin-bottom:4px;">This will cost</div>
             <div id="modalCost" style="font-size:32px; font-weight:900; color:var(--indigo);">200 pts</div>
             <div style="font-size:12px; color:var(--text-2); margin-top:6px;">Your current balance: <strong>@Model.CurrentPoints pts</strong></div>
@@ -338,12 +221,14 @@
         document.getElementById(id).classList.remove('hidden');
     }
 
+    const _iconMap = { coffee: 'ph-coffee', books: 'ph-books', 'book-open': 'ph-book-open' };
     function openRedeemModal(name, icon, desc, cost, loc) {
         document.getElementById('modalTitle').textContent = name;
-        document.getElementById('modalIcon').textContent = icon;
+        const el = document.getElementById('modalIconEl');
+        el.className = 'ph-duotone ' + (_iconMap[icon] || 'ph-gift');
         document.getElementById('modalDesc').textContent = desc;
         document.getElementById('modalCost').textContent = cost + " pts";
-        document.getElementById('modalLoc').textContent = "📍 " + loc;
+        document.getElementById('modalLocText').textContent = loc;
         
         const modal = document.getElementById('redeemModal');
         modal.classList.add('open');
@@ -357,8 +242,10 @@
     }
 
     function confirmRedeem() {
-        showToast("🎉 QR Code sent to your university email!");
+        const venueName = document.getElementById('modalTitle')?.textContent || 'this venue';
+        const cost = document.getElementById('modalCost')?.textContent || '?';
         closeRedeemModal();
+        showToast('Redemption coming soon! ' + venueName + ' (' + cost + ') will launch after deployment.', 'warn');
     }
 
     // Close modal on escape

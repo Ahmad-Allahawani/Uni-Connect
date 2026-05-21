@@ -1,7 +1,11 @@
 @model IEnumerable<Uni_Connect.Models.Report>
 @{
     ViewData["Title"] = "Manage Reports";
-    Layout = "_DashboardLayout";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section Styles {
+<link href="~/css/admin.css" rel="stylesheet" />
 }
 
 <div class="dashboard-header">
@@ -9,7 +13,7 @@
         <h1 class="h2">Manage Reports</h1>
         <p class="text-2">Review flags and community moderation requests.</p>
     </div>
-    <a asp-action="AdminDashboard" class="btn btn-secondary"><i data-lucide="arrow-left"></i> Back to Dashboard</a>
+    <a asp-action="AdminDashboard" class="btn btn-secondary"><i class="ph ph-arrow-left" style="font-size:16px;"></i> Back to Dashboard</a>
 </div>
 
 <div class="card">
@@ -30,7 +34,7 @@
                 {
                     <tr>
                         <td colspan="6" style="text-align:center; padding: 40px; color: var(--text-3);">
-                            <i data-lucide="check-circle" style="width:48px; height:48px; margin-bottom:16px; opacity:0.5;"></i>
+                            <i class="ph-duotone ph-check-circle" style="font-size:48px; margin-bottom:16px; opacity:0.5;"></i>
                             <div>No active reports. Community is clean!</div>
                         </td>
                     </tr>
@@ -41,7 +45,7 @@
                         <td class="text-2">@report.CreatedAt.ToString("MMM dd, HH:mm")</td>
                         <td>
                             <div style="display:flex; align-items:center; gap:8px;">
-                                <div class="av av-xs"><img src="https://ui-avatars.com/api/?name=@report.Reporter.Name&background=E2E8F0&color=475569&size=24" alt="User"/></div>
+                                <div class="av av-xs"><img src="@AvatarHelper.Url(report.Reporter.Name, 24)" alt="User"/></div>
                                 <span>@report.Reporter.Name</span>
                             </div>
                         </td>
@@ -50,19 +54,31 @@
                         <td>
                             @if (report.IsResolved)
                             {
-                                <span class="badge" style="background:#ECFDF5; color:#059669;">Resolved</span>
+                                <span class="badge" style="background:var(--emerald-light); color:var(--emerald);">Resolved</span>
                             }
                             else
                             {
-                                <span class="badge" style="background:#FEF3C7; color:#B45309;">Pending</span>
+                                <span class="badge" style="background:var(--amber-light); color:var(--amber-dark);">Pending</span>
                             }
                         </td>
                         <td>
                             <div style="display:flex; gap:8px;">
-                                <button class="btn btn-sm btn-secondary" title="View Detail"><i data-lucide="eye"></i></button>
+                                @if (report.TargetType == "Post" && report.TargetID.HasValue)
+                                {
+                                    <a href="@Url.Action("SinglePost", "Dashboard", new { id = report.TargetID })" target="_blank" class="btn btn-sm btn-secondary" title="View Post"><i class="ph ph-eye" style="font-size:14px;"></i></a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-sm btn-secondary" title="Answer #@report.TargetID" disabled><i class="ph ph-eye" style="font-size:14px;"></i></button>
+                                }
                                 @if (!report.IsResolved)
                                 {
-                                    <button class="btn btn-sm btn-primary" title="Mark Resolved"><i data-lucide="check"></i></button>
+                                    <form method="post" asp-action="ResolveReport" asp-route-id="@report.ReportID" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-primary" title="Mark Resolved">
+                                            <i class="ph-bold ph-check" style="font-size:14px;"></i>
+                                        </button>
+                                    </form>
                                 }
                             </div>
                         </td>
@@ -73,9 +89,3 @@
     </div>
 </div>
 
-<style>
-    .data-table { width: 100%; border-collapse: collapse; }
-    .data-table th { text-align: left; padding: 16px; background: #F8FAFC; font-weight: 600; font-size: 14px; border-bottom: 1px solid #E2E8F0; }
-    .data-table td { padding: 16px; border-bottom: 1px solid #F1F5F9; font-size: 14px; }
-    .av-xs { width: 24px; height: 24px; border-radius: 50%; overflow: hidden; }
-</style>

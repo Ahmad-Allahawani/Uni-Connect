@@ -224,16 +224,31 @@
                             {
                                 var other = s.StudentID == me ? s.Helper : s.Student;
                                 var otherName = other?.Name ?? "Unknown";
-                                var initials = Uri.EscapeDataString(otherName);
+                                var isOnline = other?.IsOnline ?? false;
+                                var lastSeen = other?.LastSeenAt;
+                                string lastSeenText = "";
+                                if (!isOnline && lastSeen.HasValue) {
+                                    var diff = DateTime.UtcNow - lastSeen.Value;
+                                    if (diff.TotalMinutes < 60) lastSeenText = $"{(int)diff.TotalMinutes}m ago";
+                                    else if (diff.TotalHours < 24) lastSeenText = $"{(int)diff.TotalHours}h ago";
+                                    else lastSeenText = lastSeen.Value.ToString("MMM d");
+                                }
                                 <div class="chat-item" data-session-id="@s.PrivateSessionID"
                                      onclick="openChat(@s.PrivateSessionID, '@otherName', @(s.StudentID == me ? s.HelperID : s.StudentID))"
                                      style="display:flex;gap:12px;padding:12px;border-radius:var(--radius);cursor:pointer;margin-bottom:8px;border:1px solid transparent;">
-                                    <div class="av av-sm">
-                                        <img src="https://ui-avatars.com/api/?name=@initials&background=3D52A0&color=fff" alt="@otherName" />
+                                    <div style="position:relative;display:inline-block;flex-shrink:0;">
+                                        <div class="av av-sm">
+                                            <img src="@AvatarHelper.Url(otherName, 40)" alt="@otherName" />
+                                        </div>
+                                        @if (isOnline) {
+                                            <span style="position:absolute;bottom:0;right:0;width:10px;height:10px;background:#10B981;border:2px solid white;border-radius:50%;"></span>
+                                        }
                                     </div>
                                     <div style="flex:1;min-width:0;">
-                                        <div style="font-weight:700;font-size:13px;">@otherName</div>
-                                        <div style="font-size:12px;color:var(--text-2);">Click to open chat</div>
+                                        <div style="font-weight:700;font-size:13px;">@(otherName.Split(' ').First())</div>
+                                        <div style="font-size:11px;color:@(isOnline ? "#10B981" : "var(--text-3)");">
+                                            @(isOnline ? "Online now" : (string.IsNullOrEmpty(lastSeenText) ? "Offline" : $"Last seen {lastSeenText}"))
+                                        </div>
                                     </div>
                                 </div>
                             }
@@ -264,7 +279,14 @@
                             <!-- Scrollable messages area -->
                             <div id="chat-messages"></div>
 
+                            <!-- Image preview above input -->
+                            <div id="chatImagePreview" style="display:none; padding:8px 16px 0;"></div>
+
                             <div class="chat-input-bar">
+                                <label style="cursor:pointer;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:9px;border:1.5px solid var(--border);color:var(--text-2);transition:all .2s;flex-shrink:0;" title="Attach image">
+                                    <i class="ph ph-paperclip" style="font-size:18px;"></i>
+                                    <input type="file" id="chatImageInput" accept="image/jpeg,image/png,image/gif,image/webp" style="display:none;" onchange="handleChatImageSelect(this)" />
+                                </label>
                                 <input id="chat-input" type="text" onkeydown="if(event.key==='Enter')sendMsg()" placeholder="Type your message..." class="form-input" style="flex:1;" />
                                 <button class="btn btn-primary" onclick="sendMsg()">Send</button>
                             </div>
@@ -292,7 +314,7 @@
                         var initials = Uri.EscapeDataString(ownerName);
                         <div class="card" id="req-@r.RequestID" style="display:flex;gap:16px;align-items:flex-start;">
                             <div class="av av-lg">
-                                <img src="https://ui-avatars.com/api/?name=@initials&background=3D52A0&color=fff" alt="@ownerName" />
+                                <img src="@AvatarHelper.Url(ownerName, 60)" alt="@ownerName" />
                             </div>
                             <div style="flex:1;">
                                 <div style="margin-bottom:4px;">
@@ -307,8 +329,8 @@
                                 </div>
                             </div>
                             <div style="display:flex;gap:8px;">
-                                <button class="btn btn-primary btn-sm" onclick="acceptRequest(@r.RequestID)">Accept</button>
-                                <button class="btn btn-ghost btn-sm" style="color:var(--text-2);" onclick="declineRequest(@r.RequestID)">Decline</button>
+                                <button class="btn btn-primary btn-sm" onclick="acceptRequest(@r.RequestID, this)">Accept</button>
+                                <button class="btn btn-ghost btn-sm" style="color:var(--text-2);" onclick="declineRequest(@r.RequestID, this)">Decline</button>
                             </div>
                         </div>
                     }
@@ -334,7 +356,7 @@
                         var otherName = other?.Name ?? "Unknown";
                         <div class="card" style="display:flex;gap:16px;align-items:center;">
                             <div class="av av-sm">
-                                <img src="https://ui-avatars.com/api/?name=@Uri.EscapeDataString(otherName)&background=3D52A0&color=fff" alt="@otherName" />
+                                <img src="@AvatarHelper.Url(otherName, 40)" alt="@otherName" />
                             </div>
                             <div style="flex:1;">
                                 <div style="font-weight:700;">@otherName</div>
@@ -355,6 +377,33 @@
     const ME_ID   = @me;
     const ME_NAME = "@meName";
 </script>
+
+<!-- Hidden antiforgery for AJAX posts -->
+<form id="antiforgeryForm" style="display:none;">@Html.AntiForgeryToken()</form>
+
+<!-- ══ RATING MODAL ══════════════════════════════════════════════ -->
+<div id="ratingModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,.55); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:var(--surface); border-radius:20px; padding:36px 32px; max-width:380px; width:90%; box-shadow:0 20px 60px rgba(0,0,0,.25); text-align:center;">
+        <div style="width:56px;height:56px;background:var(--amber-light);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <i class="ph-fill ph-star" style="font-size:28px;color:var(--amber-dark);"></i>
+        </div>
+        <h3 style="font-size:20px;font-weight:900;margin-bottom:6px;">Rate this session</h3>
+        <p style="font-size:13px;color:var(--text-2);margin-bottom:24px;">How was your tutoring experience?</p>
+        <div id="starRow" style="display:flex;justify-content:center;gap:10px;margin-bottom:28px;">
+            @for (int s = 1; s <= 5; s++)
+            {
+                <button type="button" data-star="@s" onclick="pickStar(@s)"
+                        style="background:none;border:none;cursor:pointer;padding:4px;font-size:40px;color:#CBD5E1;transition:color .15s;line-height:1;">
+                    <i class="ph-fill ph-star"></i>
+                </button>
+            }
+        </div>
+        <div style="display:flex;gap:12px;">
+            <button class="btn btn-ghost btn-full" onclick="skipRating()">Skip</button>
+            <button id="submitRatingBtn" class="btn btn-primary btn-full" onclick="submitRating()" disabled>Submit</button>
+        </div>
+    </div>
+</div>
 
 <!-- SignalR -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
@@ -386,9 +435,9 @@
             .withAutomaticReconnect()
             .build();
 
-        connection.on("ReceiveMessage", (connectionId, senderId, message, time) => {
+        connection.on("ReceiveMessage", (connectionId, senderId, message, time, imageUrl) => {
             const side = senderId === ME_ID ? "me" : "them";
-            appendMessage(side, message, time);
+            appendMessage(side, message, time, imageUrl);
         });
 
         return connection.start();
@@ -410,10 +459,17 @@
         }
 
         // update header
-        document.getElementById('chat-name').textContent   = otherName;
-        document.getElementById('chat-avatar').src         =
-            `https://ui-avatars.com/api/?name=${encodeURIComponent(otherName)}&background=3D52A0&color=fff`;
-        document.getElementById('chat-avatar').alt         = otherName;
+        document.getElementById('chat-name').textContent = otherName;
+        const _avatarEl = document.getElementById('chat-avatar');
+        _avatarEl.alt = otherName;
+        _avatarEl.onerror = function() {
+            const init = (otherName || 'U').charAt(0).toUpperCase();
+            const pal = ['3D52A0','7C3AED','059669','D97706','0891B2','BE185D','C2410C','0F766E'];
+            const col = pal[Math.abs((otherName||'').split('').reduce((s,c)=>s+c.charCodeAt(0),0)) % pal.length];
+            this.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23${col}'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' fill='white' font-size='16' font-family='sans-serif' font-weight='bold'%3E${init}%3C/text%3E%3C/svg%3E`;
+            this.onerror = null;
+        };
+        _avatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(otherName)}&background=3D52A0&color=fff`;
         document.getElementById('chat-messages').innerHTML = '';
         document.getElementById('chat-empty').style.display = 'none';
         document.getElementById('chat-panel').style.display = 'flex';
@@ -439,24 +495,29 @@
     // LOAD HISTORY
     // ═══════════════════════════════════════════════
     async function loadHistory(sessionId) {
+        const msgs = document.getElementById('chat-messages');
+        msgs.innerHTML = '<div style="text-align:center;color:var(--text-3);font-size:13px;padding:20px;">Loading messages…</div>';
         try {
             const res = await fetch(`/api/messages/${sessionId}`);
             if (!res.ok) {
-                console.error("History fetch failed:", res.status, res.statusText);
+                msgs.innerHTML = '<div style="text-align:center;color:var(--text-3);font-size:13px;padding:20px;">Could not load history.</div>';
                 return;
             }
             const messages = await res.json();
-            console.log(`Loaded ${messages.length} messages for session ${sessionId}`);
-            messages.forEach(m => appendMessage(
-                m.senderID === ME_ID ? "me" : "them",
-                m.messageText,
-                m.time
-            ));
-            // scroll to bottom after all history is rendered
-            const msgs = document.getElementById('chat-messages');
-            msgs.scrollTop = msgs.scrollHeight;
+            msgs.innerHTML = '';
+            if (messages.length === 0) {
+                msgs.innerHTML = '<div style="text-align:center;color:var(--text-3);font-size:13px;padding:20px;">No messages yet. Say hello!</div>';
+            } else {
+                messages.forEach(m => appendMessage(
+                    m.senderID === ME_ID ? "me" : "them",
+                    m.messageText,
+                    m.time,
+                    m.imageUrl
+                ));
+                msgs.scrollTop = msgs.scrollHeight;
+            }
         } catch (err) {
-            console.error("loadHistory error:", err);
+            msgs.innerHTML = '<div style="text-align:center;color:var(--text-3);font-size:13px;padding:20px;">Could not load history.</div>';
         }
     }
 
@@ -466,29 +527,39 @@
     function sendMsg() {
         const inp = document.getElementById('chat-input');
         const msg = inp.value.trim();
-        if (!msg || !connection || !currentRoomId) return;
-        connection.invoke("SendMessage", currentRoomId, msg)
+        if ((!msg && !pendingImageUrl) || !connection || !currentRoomId) return;
+        connection.invoke("SendMessage", currentRoomId, msg || ' ', pendingImageUrl || null)
             .catch(err => showToast('❌ ' + err.message));
         inp.value = "";
+        clearPendingImage();
     }
 
     // ═══════════════════════════════════════════════
     // APPEND MESSAGE
     // ═══════════════════════════════════════════════
-    function appendMessage(side, content, time) {
+    function safeImgUrl(url) {
+        if (!url) return '';
+        if (!/^https?:\/\//i.test(url) && !url.startsWith('/')) return '';
+        return url.replace(/"/g, '&quot;');
+    }
+
+    function appendMessage(side, content, time, imageUrl) {
         const msgs = document.getElementById('chat-messages');
         const wrap = document.createElement('div');
+        const safe = safeImgUrl(imageUrl);
+        const imgHtml = safe
+            ? `<div style="margin-top:6px;"><a href="${safe}" target="_blank"><img src="${safe}" style="max-width:200px;max-height:200px;border-radius:8px;object-fit:cover;cursor:pointer;display:block;" /></a></div>`
+            : '';
+        const textHtml = content && content.trim() && content.trim() !== ' '
+            ? `<div class="msg ${side === 'me' ? 'msg-me' : 'msg-them'}">${escapeHtml(content)}${imgHtml}</div>`
+            : safe ? `<div class="msg ${side === 'me' ? 'msg-me' : 'msg-them'}" style="padding:6px;">${imgHtml}</div>` : '';
 
         if (side === "me") {
             wrap.style.cssText = "display:flex;flex-direction:column;align-items:flex-end;";
-            wrap.innerHTML = `
-                <div class="msg msg-me">${escapeHtml(content)}</div>
-                <div class="msg-time" style="text-align:right;">${time}</div>`;
+            wrap.innerHTML = `${textHtml}<div class="msg-time" style="text-align:right;">${time}</div>`;
         } else {
             wrap.style.cssText = "display:flex;flex-direction:column;align-items:flex-start;";
-            wrap.innerHTML = `
-                <div class="msg msg-them">${escapeHtml(content)}</div>
-                <div class="msg-time">${time}</div>`;
+            wrap.innerHTML = `${textHtml}<div class="msg-time">${time}</div>`;
         }
 
         msgs.appendChild(wrap);
@@ -498,44 +569,168 @@
     // ═══════════════════════════════════════════════
     // ACCEPT / DECLINE REQUEST
     // ═══════════════════════════════════════════════
-    async function acceptRequest(requestId) {
-        const res = await fetch(`/Session/AcceptRequest?requestId=${requestId}`, { method: 'POST' ,headers: { 'Content-Type': 'application/x-www-form-urlencoded' },body: `requestId=${requestId}` });
-        if (res.ok) {
-            @* document.getElementById(`req-${requestId}`)?.remove();
-            showToast('✅ Session accepted! Go to Active Sessions.'); *@
-            const data = await res.json();
-            window.location.href = data.redirectUrl;
-        } else {
-            showToast('❌ Could not accept request.');
+    async function acceptRequest(requestId, btn) {
+        if (btn) { btn.disabled = true; btn.textContent = 'Accepting…'; }
+        try {
+            const res = await fetch('/Session/AcceptRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': getToken()
+                },
+                body: 'requestId=' + encodeURIComponent(requestId)
+            });
+            if (res.ok) {
+                const data = await res.json();
+                window.location.href = data.redirectUrl;
+            } else {
+                showToast('❌ Could not accept request.');
+                if (btn) { btn.disabled = false; btn.textContent = 'Accept'; }
+            }
+        } catch {
+            showToast('❌ Network error. Try again.');
+            if (btn) { btn.disabled = false; btn.textContent = 'Accept'; }
         }
     }
 
-    async function declineRequest(requestId) {
-        const res = await fetch(`/Session/DeclineRequest?requestId=${requestId}`, { method: 'POST' });
-        if (res.ok) {
-            document.getElementById(`req-${requestId}`)?.remove();
-            showToast('Request declined.');
-        } else {
-            showToast('❌ Could not decline request.');
+    async function declineRequest(requestId, btn) {
+        if (btn) { btn.disabled = true; btn.textContent = 'Declining…'; }
+        try {
+            const res = await fetch('/Session/DeclineRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': getToken()
+                },
+                body: 'requestId=' + encodeURIComponent(requestId)
+            });
+            if (res.ok) {
+                document.getElementById(`req-${requestId}`)?.remove();
+                showToast('Request declined.');
+            } else {
+                showToast('❌ Could not decline request.');
+                if (btn) { btn.disabled = false; btn.textContent = 'Decline'; }
+            }
+        } catch {
+            showToast('❌ Network error. Try again.');
+            if (btn) { btn.disabled = false; btn.textContent = 'Decline'; }
         }
     }
 
     // ═══════════════════════════════════════════════
-    // CLOSE SESSION
+    // CLOSE SESSION + RATING
     // ═══════════════════════════════════════════════
+    function getToken() {
+        var el = document.querySelector('#antiforgeryForm input[name="__RequestVerificationToken"]');
+        return el ? el.value : '';
+    }
+
+    let _closedSessionId = null;
+    let _selectedStar    = 0;
+
     async function closeSession() {
         if (!currentSessionId) return;
-        const res = await fetch(`/Session/CloseSession?sessionId=${currentSessionId}`, { method: 'POST' });
+        const res = await fetch('/Session/CloseSession', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': getToken()
+            },
+            body: 'sessionId=' + encodeURIComponent(currentSessionId)
+        });
         if (res.ok) {
-            showToast('Session closed.');
-            setTimeout(() => location.reload(), 1000);
+            _closedSessionId = currentSessionId;
+            showRatingModal();
+        } else {
+            showToast('Could not close session. Please try again.', 'error');
         }
+    }
+
+    function showRatingModal() {
+        _selectedStar = 0;
+        document.querySelectorAll('#starRow button').forEach(b => b.style.color = '#CBD5E1');
+        document.getElementById('submitRatingBtn').disabled = true;
+        const m = document.getElementById('ratingModal');
+        m.style.display = 'flex';
+    }
+
+    function pickStar(n) {
+        _selectedStar = n;
+        document.querySelectorAll('#starRow button').forEach(b => {
+            b.style.color = parseInt(b.dataset.star) <= n ? 'var(--amber)' : '#CBD5E1';
+        });
+        document.getElementById('submitRatingBtn').disabled = false;
+    }
+
+    async function submitRating() {
+        if (!_selectedStar || !_closedSessionId) { skipRating(); return; }
+        try {
+            await fetch('/Session/RateSession', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': getToken()
+                },
+                body: `sessionId=${_closedSessionId}&rating=${_selectedStar}`
+            });
+        } catch { /* non-fatal */ }
+        skipRating();
+    }
+
+    function skipRating() {
+        document.getElementById('ratingModal').style.display = 'none';
+        showToast('Session ended.');
+        setTimeout(() => location.reload(), 800);
     }
 
     // ═══════════════════════════════════════════════
     // UTILS
     // ═══════════════════════════════════════════════
+    // ═══════════════════════════════════════════════
+    // IMAGE ATTACH
+    // ═══════════════════════════════════════════════
+    let pendingImageUrl = null;
+
+    async function handleChatImageSelect(input) {
+        const file = input.files[0];
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) { showToast('Image too large (max 5MB)'); return; }
+
+        const preview = document.getElementById('chatImagePreview');
+        preview.innerHTML = `<div style="display:inline-flex;align-items:center;gap:8px;background:var(--indigo-light);padding:6px 10px;border-radius:8px;font-size:12px;">
+            <img src="${URL.createObjectURL(file)}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;" />
+            <span>Uploading…</span>
+            <button onclick="clearPendingImage()" style="background:none;border:none;cursor:pointer;color:var(--text-2);font-size:14px;">✕</button>
+        </div>`;
+        preview.style.display = 'block';
+
+        const token = document.querySelector('#antiforgeryForm input[name="__RequestVerificationToken"]')?.value;
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+            const res = await fetch('/api/messages/upload-image', {
+                method: 'POST',
+                headers: token ? { 'RequestVerificationToken': token } : {},
+                body: formData
+            });
+            const data = await res.json();
+            pendingImageUrl = data.imageUrl;
+            preview.querySelector('span').textContent = 'Image ready to send';
+        } catch {
+            showToast('Image upload failed');
+            clearPendingImage();
+        }
+        input.value = '';
+    }
+
+    function clearPendingImage() {
+        pendingImageUrl = null;
+        const preview = document.getElementById('chatImagePreview');
+        if (preview) { preview.innerHTML = ''; preview.style.display = 'none'; }
+    }
+
     function escapeHtml(str) {
+        if (!str) return '';
         return str
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')

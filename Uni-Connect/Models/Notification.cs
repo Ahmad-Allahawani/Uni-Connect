@@ -11,8 +11,10 @@
         public DateTime CreatedAt { get; set; }
         public bool IsDeleted { get; set; } = false;
         public int? RelatedID { get; set; }
+        public int? ActorUserID { get; set; }
 
         // Navigation
         public User User { get; set; }
+        public User? Actor { get; set; }
     }
 }

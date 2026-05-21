@@ -5,196 +5,92 @@
 }
 
 @section Styles {
-<style>
-    .profile-wrapper { max-width: 1000px; margin: 0 auto; }
-    
-    .profile-cover {
-        height: 180px; border-radius: 16px; overflow: hidden;
-        position: relative; margin-bottom: 60px;
-        background: linear-gradient(135deg, var(--indigo-light) 0%, var(--violet-light) 100%);
-    }
-    .profile-cover-overlay {
-        position: absolute; inset: 0;
-        background: linear-gradient(180deg, transparent 40%, rgba(61,82,160,.2));
-    }
-    
-    .profile-avatar-wrap {
-        position: absolute; bottom: -50px; left: 24px;
-    }
-    .profile-avatar {
-        width: 120px; height: 120px; border-radius: 16px;
-        border: 4px solid var(--surface); overflow: hidden;
-        box-shadow: 0 4px 16px rgba(15,23,42,.15);
-    }
-    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    
-    .profile-header {
-        display: flex; align-items: flex-start;
-        justify-content: space-between; gap: 16px;
-        margin-bottom: 24px; flex-wrap: wrap;
-    }
-    
-    .profile-info h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
-    .profile-badges {
-        display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;
-    }
-    .profile-bio {
-        font-size: 14px; color: var(--text-2);
-        line-height: 1.6; max-width: 600px; margin-top: 8px;
-    }
-    
-    .profile-actions { display: flex; gap: 8px; }
-    
-    .profile-stats {
-        display: grid; grid-template-columns: repeat(5, 1fr);
-        gap: 12px; margin-bottom: 28px;
-    }
-    @@media (max-width: 768px) {
-        .profile-stats { grid-template-columns: repeat(3, 1fr); }
-    }
-    @@media (max-width: 480px) {
-        .profile-stats { grid-template-columns: repeat(2, 1fr); }
-    }
-    
-    .stat-item {
-        background: var(--surface); border: 1px solid var(--border);
-        border-radius: var(--radius); padding: 16px;
-        text-align: center;
-    }
-    .stat-num {
-        font-size: 20px; font-weight: 800;
-        margin-bottom: 4px;
-    }
-    .stat-label {
-        font-size: 11px; font-weight: 700;
-        color: var(--text-2); text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .progress-section {
-        background: var(--surface); border: 1px solid var(--border);
-        border-radius: var(--radius); padding: 20px;
-        margin-bottom: 28px; display: flex;
-        align-items: center; gap: 20px; flex-wrap: wrap;
-    }
-    .progress-content { flex: 1; min-width: 200px; }
-    .progress-label {
-        font-size: 13px; font-weight: 700;
-        color: var(--text); margin-bottom: 8px;
-        display: flex; justify-content: space-between;
-    }
-    .progress-bar {
-        height: 8px; background: var(--border);
-        border-radius: 99px; overflow: hidden;
-    }
-    .progress-fill {
-        height: 100%; background: linear-gradient(90deg, var(--indigo), var(--violet));
-        transition: width .3s ease;
-    }
-    .progress-text {
-        font-size: 12px; color: var(--text-2);
-        margin-top: 6px;
-    }
-    
-    .tabs {
-        display: flex; gap: 16px; border-bottom: 2px solid var(--border);
-        margin-bottom: 24px; flex-wrap: wrap;
-    }
-    .tab {
-        padding: 12px 0; background: none; border: none;
-        font-size: 14px; font-weight: 600; color: var(--text-2);
-        cursor: pointer; border-bottom: 3px solid transparent;
-        margin-bottom: -2px; transition: all .2s;
-    }
-    .tab:hover { color: var(--indigo); }
-    .tab.active {
-        color: var(--indigo); font-weight: 700;
-        border-bottom-color: var(--indigo);
-    }
-    
-    .activity-list { display: flex; flex-direction: column; gap: 14px; }
-    
-    .activity-card {
-        background: var(--surface); border: 1px solid var(--border);
-        border-radius: var(--radius); padding: 18px;
-        cursor: pointer; transition: all .2s;
-    }
-    .activity-card:hover {
-        box-shadow: var(--shadow-md); transform: translateY(-1px);
-    }
-    
-    .activity-meta {
-        display: flex; align-items: center; gap: 8px;
-        margin-bottom: 10px; flex-wrap: wrap;
-        font-size: 12px; color: var(--text-2);
-    }
-    
-    .activity-title {
-        font-size: 14px; font-weight: 700;
-        margin-bottom: 8px; line-height: 1.4; color: var(--text);
-    }
-    
-    .activity-stats {
-        display: flex; gap: 16px; font-size: 12px;
-        color: var(--text-2); font-weight: 600;
-    }
-</style>
+<link href="~/css/profile.css" rel="stylesheet" />
 }
 
 <div class="profile-wrapper">
+    @{
+        var questionCount = Model.Posts?.Count(p => !p.IsDeleted) ?? 0;
+        var answerCount   = Model.Answers?.Count(a => !a.IsDeleted) ?? 0;
+        var sessionCount  = ViewBag.SessionCount as int? ?? 0;
+        var avatarUrl     = !string.IsNullOrEmpty(Model.ProfileImageUrl)
+                            ? Model.ProfileImageUrl
+                            : AvatarHelper.Url(Model.Name, 120);
+        var ptsToTutor    = Math.Max(0, 1000 - Model.Points);
+        var tutorPct      = Math.Min((int)((Model.Points / 1000.0) * 100), 100);
+        var viewerIdStr   = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        bool isOwnProfile = viewerIdStr != null && int.Parse(viewerIdStr) == Model.UserID;
+        bool isTutor      = Model.Points >= 1000;
+    }
+
+    @if (!isOwnProfile)
+    {
+        <div style="background:var(--indigo-light); border:1px solid var(--indigo); border-radius:var(--radius); padding:10px 16px; margin-bottom:16px; font-size:13px; color:var(--indigo); font-weight:600; display:flex; align-items:center; gap:8px;">
+            <i class="ph-fill ph-user-circle" style="font-size:16px;"></i>
+            You are viewing <strong style="margin:0 4px;">@Model.Name</strong>'s profile
+            <a asp-action="Dashboard" asp-controller="Dashboard" style="margin-left:auto; color:var(--indigo); font-size:12px; font-weight:600; text-decoration:underline;">← Back to Feed</a>
+        </div>
+    }
+
     <!-- Profile Cover -->
     <div class="profile-cover">
         <div class="profile-cover-overlay"></div>
         <div class="profile-avatar-wrap">
-            <div class="profile-avatar">
-                <img src="https://ui-avatars.com/api/?name=@Model.Name&background=3D52A0&color=fff&size=120" alt="@Model.Name" />
+            <div class="profile-avatar" style="position:relative;">
+                <img src="@avatarUrl" alt="@Model.Name" id="profileAvatarImg" />
+                @if (isOwnProfile)
+                {
+                    <label for="quickPhotoInput"
+                           id="photoOverlay"
+                           style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);border-radius:16px;opacity:0;transition:opacity .2s;cursor:pointer;color:white;font-size:24px;">
+                        <i class="ph-bold ph-camera"></i>
+                        <input type="file" id="quickPhotoInput" accept="image/jpeg,image/png,image/gif,image/webp" style="display:none;" onchange="quickPhotoChange(this)" />
+                    </label>
+                }
             </div>
         </div>
     </div>
+    @if (isOwnProfile)
+    {
+        <style>.profile-avatar:hover #photoOverlay { opacity: 1; }</style>
+    }
 
     <!-- Profile Header -->
     <div class="profile-header">
         <div class="profile-info">
             <h1>@Model.Name</h1>
             <div class="profile-badges">
-                <span class="chip chip-indigo" style="display:inline-flex; align-items:center; gap:6px;"><i data-lucide="monitor" style="width:14px; height:14px;"></i> @Model.Faculty</span>
-                <span class="chip chip-violet" style="display:inline-flex; align-items:center; gap:6px;"><i data-lucide="graduation-cap" style="width:14px; height:14px;"></i> @Model.YearOfStudy</span>
-                <span class="chip chip-amber" style="display:inline-flex; align-items:center; gap:6px;"><i data-lucide="coins" style="width:14px; height:14px;"></i> @Model.Points pts</span>
+                <span class="chip chip-indigo" style="display:inline-flex;align-items:center;gap:6px;"><i class="ph-fill ph-buildings" style="font-size:13px;"></i> @Model.Faculty</span>
+                <span class="chip chip-violet" style="display:inline-flex;align-items:center;gap:6px;"><i class="ph-fill ph-graduation-cap" style="font-size:13px;"></i> @Model.YearOfStudy</span>
+                <span class="chip chip-amber" style="display:inline-flex;align-items:center;gap:6px;"><i class="ph-fill ph-lightning" style="font-size:13px;"></i> @Model.Points pts</span>
+                @if (isTutor)
+                {
+                    <span class="chip chip-emerald" style="display:inline-flex;align-items:center;gap:4px;"><i class="ph-fill ph-seal-check" style="font-size:13px;"></i> Verified Tutor</span>
+                }
             </div>
-            <p class="profile-bio">
-                Dedicated Philadelphia University student passionate about problem-solving and collaboration. Always happy to help fellow students! 🚀
-            </p>
         </div>
         <div class="profile-actions">
-            <a asp-action="Settings" class="btn btn-ghost btn-sm" style="display:inline-flex; align-items:center; gap:8px;"><i data-lucide="edit-3" style="width:16px; height:16px;"></i> Edit Profile</a>
+            @if (isOwnProfile)
+            {
+                <a asp-action="Settings" class="btn btn-ghost btn-sm" style="display:inline-flex;align-items:center;gap:8px;"><i class="ph ph-pencil-simple" style="font-size:16px;"></i> Edit Profile</a>
+            }
+            else
+            {
+                var diff2 = Model.LastSeenAt.HasValue ? DateTime.UtcNow - Model.LastSeenAt.Value : (TimeSpan?)null;
+                string lsText = diff2 == null ? "" :
+                    diff2.Value.TotalMinutes < 60 ? $"{(int)diff2.Value.TotalMinutes}m ago" :
+                    diff2.Value.TotalHours < 24   ? $"{(int)diff2.Value.TotalHours}h ago" :
+                    Model.LastSeenAt!.Value.ToString("MMM d");
+                <div style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:@(Model.IsOnline ? "#10B981" : "var(--text-2)");">
+                    <span style="width:8px;height:8px;border-radius:50%;background:@(Model.IsOnline ? "#10B981" : "var(--text-3)");display:inline-block;flex-shrink:0;"></span>
+                    @if (Model.IsOnline) { <text>Online now</text> }
+                    else if (!string.IsNullOrEmpty(lsText)) { <text>Last seen @lsText</text> }
+                </div>
+            }
         </div>
     </div>
 
-    <!-- Stats Grid -->
-    <div class="profile-stats">
-        <div class="stat-item">
-            <div class="stat-num" style="color: var(--indigo)">@Model.Points</div>
-            <div class="stat-label">🪙 Points</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num" style="color: var(--emerald)">47</div>
-            <div class="stat-label">💬 Answers</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num" style="color: var(--amber)">12</div>
-            <div class="stat-label">❓ Questions</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num" style="color: var(--violet)">8</div>
-            <div class="stat-label">🎓 Sessions</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num" style="color: var(--rose)">4.8</div>
-            <div class="stat-label">⭐ Rating</div>
-        </div>
-    </div>
-
-    <!-- Progress to Tutor -->
+    <!-- Tutor Progress — promoted above stats (F12) -->
     <div class="progress-section">
         <div class="progress-content">
             <div class="progress-label">
@@ -202,96 +98,185 @@
                 <span>@Model.Points / 1000 pts</span>
             </div>
             <div class="progress-bar">
-                <div class="progress-fill" style="width: @(Math.Min((Model.Points / 10), 100))%"></div>
+                <div class="progress-fill" style="width: @tutorPct%"></div>
             </div>
-            <div class="progress-text">@(1000 - Model.Points) pts to go! Level up to unlock tutor badge.</div>
+            <div class="progress-text">
+                @if (isTutor)
+                { <span style="color:var(--emerald); font-weight:700;">Verified Tutor unlocked!</span> }
+                else
+                { <text>@ptsToTutor pts to go to unlock tutor badge.</text> }
+            </div>
         </div>
-        <a asp-action="Points" class="btn btn-amber btn-sm">View Rewards →</a>
+        <a asp-action="Points" class="btn btn-amber btn-sm"><i class="ph-bold ph-arrow-right" style="font-size:14px;vertical-align:middle;margin-right:4px;"></i> View Rewards</a>
     </div>
 
-    <!-- Activity Tabs -->
-    <div class="tabs">
-        <button class="tab active" onclick="switchTab('answers',this)" style="display:inline-flex; align-items:center; gap:8px;"><i data-lucide="message-square" style="width:16px; height:16px;"></i> Recent Answers</button>
-        <button class="tab" onclick="switchTab('questions',this)" style="display:inline-flex; align-items:center; gap:8px;"><i data-lucide="help-circle" style="width:16px; height:16px;"></i> Your Questions</button>
-        <button class="tab" onclick="switchTab('sessions',this)" style="display:inline-flex; align-items:center; gap:8px;"><i data-lucide="graduation-cap" style="width:16px; height:16px;"></i> Sessions</button>
+    <!-- Stats Grid — CSS classes instead of inline colors (F2) -->
+    <div class="profile-stats">
+        <div class="stat-item">
+            <div class="stat-num stat-num--indigo">@Model.Points</div>
+            <div class="stat-label">Points</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num stat-num--emerald">@answerCount</div>
+            <div class="stat-label">Answers</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num stat-num--amber">@questionCount</div>
+            <div class="stat-label">Questions</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num stat-num--violet">@sessionCount</div>
+            <div class="stat-label">Sessions</div>
+        </div>
     </div>
 
-    <!-- Tab Content: Answers -->
+    <!-- Activity Tabs — unified ds-tab pattern (F7); Sessions hidden if 0 (F12) -->
+    <div class="ds-tabs">
+        <button class="ds-tab active" onclick="switchTab('answers',this)">
+            <i class="ph-bold ph-chat-circle" style="font-size:15px;"></i> Answers (@answerCount)
+        </button>
+        <button class="ds-tab" onclick="switchTab('questions',this)">
+            <i class="ph-bold ph-question" style="font-size:15px;"></i> Questions (@questionCount)
+        </button>
+        @if (sessionCount > 0)
+        {
+            <button class="ds-tab" onclick="switchTab('sessions',this)">
+                <i class="ph-bold ph-video-camera" style="font-size:15px;"></i> Sessions (@sessionCount)
+            </button>
+        }
+    </div>
+
+    <!-- Tab: Answers -->
     <div id="tab-answers">
         <div class="activity-list">
-            <div class="activity-card">
-                <div class="activity-meta">
-                    <span class="chip chip-emerald">✓ Best Answer</span>
-                    <span class="chip chip-violet">CS302</span>
-                    <span>+15 pts</span>
+            @if (Model.Answers != null && Model.Answers.Any(a => !a.IsDeleted))
+            {
+                foreach (var answer in Model.Answers.Where(a => !a.IsDeleted).OrderByDescending(a => a.CreatedAt).Take(10))
+                {
+                    <a href="@(answer.Post != null ? Url.Action("SinglePost", new { id = answer.PostID }) : "#")" style="text-decoration:none; color:inherit;">
+                        <div class="activity-card">
+                            <div class="activity-meta">
+                                @if (answer.IsAccepted) { <span class="chip chip-emerald">Best Answer</span> }
+                                @if (answer.Post?.Category != null) { <span class="chip chip-indigo">@answer.Post.Category.Name</span> }
+                                <span style="color:var(--text-2);">@answer.CreatedAt.ToString("MMM dd, yyyy")</span>
+                            </div>
+                            <div class="activity-title">@(answer.Post?.Title ?? "Question")</div>
+                            <div class="activity-stats">
+                                <span style="display:inline-flex;align-items:center;gap:4px;"><i class="ph ph-thumbs-up" style="font-size:13px;"></i> @answer.Upvotes upvotes</span>
+                            </div>
+                        </div>
+                    </a>
+                }
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-state-icon emerald"><i class="ph-duotone ph-chat-dots"></i></div>
+                    <h3 class="empty-state-title">No answers yet</h3>
+                    <p class="empty-state-text">Help your peers by answering questions and earn points!</p>
+                    <a asp-action="Dashboard" class="btn btn-primary">
+                        <i class="ph-bold ph-list-bullets" style="font-size:15px;"></i> Browse Questions
+                    </a>
                 </div>
-                <a href="#" style="text-decoration: none; color: var(--indigo); font-weight: 700;">
-                    <div class="activity-title">How does AVL tree rotation actually work?</div>
-                </a>
-                <div class="activity-stats">
-                    <span>👍 38 upvotes</span>
-                    <span>👁️ 124 views</span>
-                </div>
-            </div>
-            
-            <div class="activity-card">
-                <div class="activity-meta">
-                    <span class="chip chip-indigo">Top Answer</span>
-                    <span class="chip chip-violet">CS401</span>
-                    <span>+10 pts</span>
-                </div>
-                <a href="#" style="text-decoration: none; color: var(--indigo); font-weight: 700;">
-                    <div class="activity-title">Difference between Dijkstra and Bellman-Ford algorithms?</div>
-                </a>
-                <div class="activity-stats">
-                    <span>👍 22 upvotes</span>
-                    <span>👁️ 84 views</span>
-                </div>
-            </div>
+            }
         </div>
     </div>
 
-    <!-- Tab Content: Questions (Hidden) -->
+    <!-- Tab: Questions -->
     <div id="tab-questions" class="hidden">
         <div class="activity-list">
-            <div class="activity-card">
-                <div class="activity-meta">
-                    <span class="chip chip-emerald">✓ Solved</span>
-                    <span class="chip chip-indigo">CS302</span>
+            @if (Model.Posts != null && Model.Posts.Any(p => !p.IsDeleted))
+            {
+                foreach (var post in Model.Posts.Where(p => !p.IsDeleted).OrderByDescending(p => p.CreatedAt).Take(10))
+                {
+                    <a href="@Url.Action("SinglePost", new { id = post.PostID })" style="text-decoration:none; color:inherit;">
+                        <div class="activity-card">
+                            <div class="activity-meta">
+                                @if (post.Answers?.Any(a => a.IsAccepted && !a.IsDeleted) == true) { <span class="chip chip-emerald">Solved</span> }
+                                @if (post.Category != null) { <span class="chip chip-indigo">@post.Category.Name</span> }
+                                <span style="color:var(--text-2);">@post.CreatedAt.ToString("MMM dd, yyyy")</span>
+                            </div>
+                            <div class="activity-title">@post.Title</div>
+                            <div class="activity-stats">
+                                <span style="display:inline-flex;align-items:center;gap:4px;"><i class="ph ph-chat-dots" style="font-size:13px;"></i> @(post.Answers?.Count(a => !a.IsDeleted) ?? 0) answers</span>
+                                <span style="display:inline-flex;align-items:center;gap:4px;"><i class="ph ph-eye" style="font-size:13px;"></i> @post.ViewsCount views</span>
+                            </div>
+                        </div>
+                    </a>
+                }
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-state-icon"><i class="ph-duotone ph-question"></i></div>
+                    <h3 class="empty-state-title">No questions yet</h3>
+                    <p class="empty-state-text">Ask your first question in the community!</p>
+                    <a asp-action="CreatePost" class="btn btn-primary">
+                        <i class="ph-bold ph-pencil-simple" style="font-size:15px;"></i> Ask a Question
+                    </a>
                 </div>
-                <div class="activity-title">How do I optimize binary search in a rotated array?</div>
-                <div class="activity-stats">
-                    <span>💬 4 answers</span>
-                    <span>👁️ 56 views</span>
-                </div>
-            </div>
+            }
         </div>
     </div>
 
-    <!-- Tab Content: Sessions (Hidden) -->
-    <div id="tab-sessions" class="hidden">
-        <div style="text-align: center; padding: 40px 20px; background: var(--surface); border-radius: var(--radius);">
-            <div style="font-size: 28px; margin-bottom: 12px; display:flex; justify-content:center;"><i data-lucide="graduation-cap" style="width:48px; height:48px; color:var(--text-3);"></i></div>
-            <div style="font-size: 16px; font-weight: 700; margin-bottom: 6px;">No sessions yet</div>
-            <div style="font-size: 13px; color: var(--text-2);">Start your first tutoring session to help students and earn points!</div>
+    <!-- Tab: Sessions (only rendered if sessionCount > 0) -->
+    @if (sessionCount > 0)
+    {
+        <div id="tab-sessions" class="hidden">
+            <div class="empty-state">
+                <div class="empty-state-icon emerald"><i class="ph-duotone ph-graduation-cap"></i></div>
+                <h3 class="empty-state-title">@sessionCount session@(sessionCount == 1 ? "" : "s") total</h3>
+                <p class="empty-state-text">View your full session history in Private Sessions.</p>
+                <a asp-controller="Session" asp-action="ChatPage" class="btn btn-primary">
+                    <i class="ph-bold ph-arrow-right" style="font-size:14px;"></i> Go to Sessions
+                </a>
+            </div>
         </div>
-    </div>
+    }
 </div>
 
 <script>
     function switchTab(tabName, el) {
-        // Hide all tabs
         ['answers', 'questions', 'sessions'].forEach(t => {
             const tab = document.getElementById('tab-' + t);
             if (tab) tab.classList.add('hidden');
         });
-        
-        // Show selected tab
         const selected = document.getElementById('tab-' + tabName);
         if (selected) selected.classList.remove('hidden');
-        
-        // Update active tab button
-        document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.ds-tab').forEach(btn => btn.classList.remove('active'));
         if (el) el.classList.add('active');
     }
 </script>
+
+@if (isOwnProfile)
+{
+    <form id="afjForm" style="display:none;">@Html.AntiForgeryToken()</form>
+    <script>
+        async function quickPhotoChange(input) {
+            const file = input.files[0];
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) { showToast('Image too large (max 5MB)', 'error'); return; }
+
+            showToast('Uploading…');
+            const formData = new FormData();
+            formData.append('profileImage', file);
+            const tokenEl = document.querySelector('#afjForm input[name="__RequestVerificationToken"]');
+            if (tokenEl) formData.append('__RequestVerificationToken', tokenEl.value);
+
+            try {
+                const res = await fetch('/Dashboard/QuickUpdatePhoto', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('profileAvatarImg').src = data.imageUrl;
+                    document.querySelectorAll('.sidebar .av img, .nav-user .av img').forEach(img => img.src = data.imageUrl);
+                    showToast('Profile photo updated!', 'success');
+                } else {
+                    showToast(data.message || 'Upload failed', 'error');
+                }
+            } catch {
+                showToast('Upload failed', 'error');
+            }
+            input.value = '';
+        }
+    </script>
+}

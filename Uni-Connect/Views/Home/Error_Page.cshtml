@@ -1,1 +1,24 @@
-﻿
+@{
+    ViewData["Title"] = "Error — UniConnect";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<main class="main" style="display:flex;align-items:center;justify-content:center;min-height:60vh;">
+    <div style="text-align:center;max-width:480px;padding:40px 20px;">
+        <div style="margin-bottom:16px;"><i class="ph-duotone ph-warning" style="font-size:72px;color:var(--amber);"></i></div>
+        <h1 style="font-size:32px;font-weight:800;color:var(--text);margin-bottom:8px;">Something went wrong</h1>
+        <p style="font-size:15px;color:var(--text-2);line-height:1.6;margin-bottom:28px;">
+            An unexpected error occurred. Please try again, or return to the dashboard.
+        </p>
+        <div style="display:flex;gap:12px;justify-content:center;">
+            <a asp-controller="Dashboard" asp-action="Dashboard" class="btn btn-primary">
+                <i class="ph-bold ph-house" style="font-size:16px;vertical-align:middle;margin-right:6px;"></i>
+                Go to Dashboard
+            </a>
+            <button onclick="history.back()" class="btn btn-ghost">
+                <i class="ph ph-arrow-left" style="font-size:16px;vertical-align:middle;margin-right:6px;"></i>
+                Go Back
+            </button>
+        </div>
+    </div>
+</main>

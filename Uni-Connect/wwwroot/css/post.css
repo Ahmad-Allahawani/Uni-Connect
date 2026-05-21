@@ -1,0 +1,61 @@
+/* Single post page styles */
+
+.single-post-wrapper { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+/* Post header card */
+.post-card {
+    background: white; border-radius: 12px; padding: 24px;
+    margin-bottom: 20px; border: 1.5px solid var(--border);
+}
+
+/* Answer card */
+.answer-card {
+    padding: 16px; margin-bottom: 16px;
+    border-radius: 8px;
+}
+.answer-card-accepted {
+    border-left: 4px solid #065F46; background: #ECFDF5;
+}
+.answer-card-normal {
+    border-left: 4px solid var(--border); background: #F8FAFC;
+}
+
+.answer-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+}
+
+/* Session modal */
+.session-modal {
+    background: #F8FAFC; border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 16px; margin-bottom: 16px;
+}
+
+/* Accept button */
+.accept-btn {
+    background: none; border: 1.5px solid #065F46; border-radius: 6px;
+    cursor: pointer; font-size: 12px; color: #065F46; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px; white-space: nowrap;
+    transition: background .2s;
+}
+.accept-btn:hover { background: #ECFDF5; }
+
+/* Upvote button */
+.upvote-btn {
+    background: none; border: none; cursor: pointer; font-size: 13px;
+    color: var(--text-2); font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: color .2s;
+}
+.upvote-btn:hover { color: var(--indigo); }
+
+/* Answer form */
+.answer-form-card {
+    margin-top: 20px; background: white; border-radius: 12px;
+    padding: 20px; border: 1.5px solid var(--border);
+}
+
+@media (max-width: 640px) {
+    .single-post-wrapper { padding: 12px; }
+    .post-card { padding: 16px; }
+}

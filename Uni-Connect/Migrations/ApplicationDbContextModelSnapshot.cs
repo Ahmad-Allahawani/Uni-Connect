@@ -65,6 +65,24 @@ namespace Uni_Connect.Migrations
                     b.ToTable("Answers");
                 });
 
+            modelBuilder.Entity("Uni_Connect.Models.AnswerVote", b =>
+                {
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AnswerID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserID", "AnswerID");
+
+                    b.HasIndex("AnswerID");
+
+                    b.ToTable("AnswerVotes");
+                });
+
             modelBuilder.Entity("Uni_Connect.Models.Category", b =>
                 {
                     b.Property<int>("CategoryID")
@@ -98,6 +116,9 @@ namespace Uni_Connect.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageID"));
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -140,6 +161,9 @@ namespace Uni_Connect.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationID"));
 
+                    b.Property<int?>("ActorUserID")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -167,6 +191,8 @@ namespace Uni_Connect.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("NotificationID");
+
+                    b.HasIndex("ActorUserID");
 
                     b.HasIndex("UserID");
 
@@ -275,6 +301,42 @@ namespace Uni_Connect.Migrations
                     b.ToTable("PostTags");
                 });
 
+            modelBuilder.Entity("Uni_Connect.Models.PostView", b =>
+                {
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ViewedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserID", "PostID");
+
+                    b.HasIndex("PostID");
+
+                    b.ToTable("PostViews");
+                });
+
+            modelBuilder.Entity("Uni_Connect.Models.PostVote", b =>
+                {
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserID", "PostID");
+
+                    b.HasIndex("PostID");
+
+                    b.ToTable("PostVotes");
+                });
+
             modelBuilder.Entity("Uni_Connect.Models.PrivateSession", b =>
                 {
                     b.Property<int>("PrivateSessionID")
@@ -282,6 +344,9 @@ namespace Uni_Connect.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrivateSessionID"));
+
+                    b.Property<DateTime?>("ClosedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -294,6 +359,9 @@ namespace Uni_Connect.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("Rating")
+                        .HasColumnType("int");
 
                     b.Property<int>("RequestID")
                         .HasColumnType("int");
@@ -447,7 +515,13 @@ namespace Uni_Connect.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsOnline")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastLoginAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LastSeenAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -524,6 +598,25 @@ namespace Uni_Connect.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Uni_Connect.Models.AnswerVote", b =>
+                {
+                    b.HasOne("Uni_Connect.Models.Answer", "Answer")
+                        .WithMany()
+                        .HasForeignKey("AnswerID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Uni_Connect.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Answer");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Uni_Connect.Models.Message", b =>
                 {
                     b.HasOne("Uni_Connect.Models.User", "Sender")
@@ -549,11 +642,18 @@ namespace Uni_Connect.Migrations
 
             modelBuilder.Entity("Uni_Connect.Models.Notification", b =>
                 {
+                    b.HasOne("Uni_Connect.Models.User", "Actor")
+                        .WithMany()
+                        .HasForeignKey("ActorUserID")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("Uni_Connect.Models.User", "User")
                         .WithMany("Notifications")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Actor");
 
                     b.Navigation("User");
                 });
@@ -603,6 +703,44 @@ namespace Uni_Connect.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("Uni_Connect.Models.PostView", b =>
+                {
+                    b.HasOne("Uni_Connect.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Uni_Connect.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Uni_Connect.Models.PostVote", b =>
+                {
+                    b.HasOne("Uni_Connect.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Uni_Connect.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Uni_Connect.Models.PrivateSession", b =>

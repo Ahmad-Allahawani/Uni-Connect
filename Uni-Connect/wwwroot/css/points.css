@@ -1,0 +1,94 @@
+/* Points & Rewards page styles */
+
+.tabs {
+    display: flex; gap: 2px; border-bottom: 2px solid var(--border);
+    margin-bottom: 24px; overflow-x: auto;
+}
+.tabs::-webkit-scrollbar { height: 0; }
+
+.tab {
+    padding: 12px 20px; font-size: 14px; font-weight: 600;
+    color: var(--text-2); cursor: pointer;
+    border-bottom: 2px solid transparent; margin-bottom: -2px;
+    border-radius: 8px 8px 0 0; transition: all 0.2s;
+    white-space: nowrap; display: inline-flex; align-items: center; gap: 8px;
+    background: none; border-left: none; border-right: none; border-top: none;
+}
+.tab:hover { color: var(--indigo); background: var(--indigo-light); }
+.tab.active { color: var(--indigo); border-bottom-color: var(--indigo); }
+
+/* Hero card */
+.points-hero {
+    background: linear-gradient(135deg, var(--indigo), #5B73C7 50%, var(--violet));
+    border-radius: 20px; padding: 32px; color: #fff;
+    margin-bottom: 28px; display: flex;
+    align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 20px;
+    position: relative; overflow: hidden;
+}
+.points-hero-icon {
+    position: absolute; right: -20px; bottom: -20px;
+    font-size: 110px; opacity: .08; pointer-events: none;
+}
+
+/* Venues grid */
+.venues-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
+}
+.venue-card {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 14px; overflow: hidden; transition: all .25s;
+    cursor: pointer; display: flex; flex-direction: column;
+}
+.venue-card:hover:not(.locked) {
+    box-shadow: var(--shadow-md); transform: translateY(-3px); border-color: var(--indigo);
+}
+.venue-card.locked { opacity: .55; cursor: not-allowed; }
+.venue-img {
+    height: 120px; display: flex; align-items: center;
+    justify-content: center; font-size: 52px; position: relative;
+}
+.venue-off {
+    position: absolute; top: 10px; right: 10px;
+    background: var(--rose); color: #fff;
+    border-radius: 99px; padding: 4px 12px;
+    font-size: 11px; font-weight: 800;
+}
+.venue-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
+.venue-name { font-weight: 800; font-size: 16px; margin-bottom: 6px; }
+.venue-desc { font-size: 13px; color: var(--text-2); margin-bottom: 16px; line-height: 1.5; flex: 1; }
+.venue-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+.venue-pts { font-size: 14px; font-weight: 800; color: var(--amber); }
+
+/* Modal */
+.modal-overlay {
+    position: fixed; inset: 0; background: rgba(15,23,42,.55);
+    z-index: 1000; display: flex; align-items: center; justify-content: center;
+    padding: 20px; backdrop-filter: blur(6px);
+    opacity: 0; visibility: hidden; transition: all 0.25s;
+}
+.modal-overlay.open { opacity: 1; visibility: visible; }
+.modal-box {
+    background: #fff; border-radius: 20px; padding: 30px;
+    width: 100%; max-width: 460px;
+    box-shadow: 0 24px 64px rgba(61,82,160,.22);
+    transform: scale(0.9); transition: transform 0.25s;
+}
+.modal-overlay.open .modal-box { transform: scale(1); }
+
+@media (max-width: 640px) {
+    .points-hero { padding: 20px; }
+    .venues-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+    .points-hero { flex-direction: column; gap: 16px; padding: 20px; }
+    .venues-grid { grid-template-columns: 1fr 1fr; }
+    .modal-box { padding: 20px; margin: 12px; }
+}
+
+@media (max-width: 480px) {
+    .tab { padding: 10px 12px; font-size: 13px; }
+    .venues-grid { grid-template-columns: 1fr; }
+    .modal-box { padding: 16px; border-radius: 14px; }
+}

@@ -9,14 +9,14 @@
 
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-        <a asp-action="Dashboard" asp-controller="Dashboard"><i data-lucide="home"></i> Home</a>
+        <a asp-action="Dashboard" asp-controller="Dashboard"><i class="ph ph-house" style="font-size:14px;"></i> Home</a>
         <span class="breadcrumb-sep">›</span>
         <span>Ask a Question</span>
     </div>
 
     <!-- Page header (hidden on success step) -->
     <div class="page-header" id="page-header">
-        <h1 class="page-title"><i data-lucide="pen-tool"></i> Ask a Question</h1>
+        <h1 class="page-title"><i class="ph-duotone ph-pen-nib" style="font-size:28px;"></i> Ask a Question</h1>
         <p class="page-subtitle">
             Posting costs <strong class="cost-deducted">−10 pts</strong>.
             A great answer earns you <strong class="cost-earned">+5 to +15 pts</strong> back!
@@ -48,7 +48,7 @@
     <div class="fade-in" id="wz1">
         <div class="card search-card">
             <div class="search-card-header">
-                <div class="search-icon-box"><i data-lucide="search"></i></div>
+                <div class="search-icon-box"><i class="ph-duotone ph-magnifying-glass"></i></div>
                 <div>
                     <div class="search-prompt-title">Check if your question already exists</div>
                     <div class="search-prompt-desc">
@@ -64,18 +64,18 @@
                        placeholder="e.g. AVL tree rotation, trial balance, eigenvalues..." />
                 <button type="button" class="btn btn-ghost btn-sm"
                         onclick="step1Search(document.getElementById('s1-search').value)">
-                    <i data-lucide="search"></i> Search
+                    <i class="ph ph-magnifying-glass"></i> Search
                 </button>
             </div>
         </div>
 
         <div class="hidden" id="s1-results">
             <div class="search-results-label">
-                <span><i data-lucide="copy"></i> Similar questions found — check these first:</span>
+                <span><i class="ph ph-copy"></i> Similar questions found — check these first:</span>
             </div>
             <div id="s1-results-list"></div>
             <div class="search-answer-tip">
-                <span class="search-tip-icon"><i data-lucide="lightbulb"></i></span>
+                <span class="search-tip-icon"><i class="ph-fill ph-lightbulb"></i></span>
                 <p class="amber-tip-text">
                     Is your question answered above?
                     <a class="amber-tip-link" href="#">Click to view the full answer</a>
@@ -85,14 +85,14 @@
         </div>
 
         <div class="hidden search-no-results" id="s1-no-results">
-            <span class="search-no-results-icon"><i data-lucide="check-circle"></i></span>
+            <span class="search-no-results-icon"><i class="ph-fill ph-check-circle"></i></span>
             <p class="search-no-results-text">No similar questions found — yours is unique! Go ahead and post it.</p>
         </div>
 
         <div class="wizard-step-actions">
-            <a href="@Url.Action("Dashboard", "Dashboard")"><button type="button" class="btn btn-ghost">← Cancel</button></a>
+            <a href="@Url.Action("Dashboard", "Dashboard")"><button type="button" class="btn btn-ghost"><i class="ph-bold ph-arrow-left" style="font-size:14px;"></i> Cancel</button></a>
             <button type="button" class="btn btn-primary btn-lg" onclick="goToStep2()">
-                My question is different → <span class="btn-cost-label">(−10 pts)</span>
+                My question is different <i class="ph-bold ph-arrow-right" style="font-size:14px;"></i> <span class="btn-cost-label">(−10 pts)</span>
             </button>
         </div>
     </div>
@@ -123,10 +123,10 @@
                             <option value="IT Faculty">💻 Information Technology</option>
                             <option value="Engineering">⚙️ Engineering &amp; Technology</option>
                             <option value="Business">💼 Business &amp; Finance</option>
+                            <option value="Science">🔬 Faculty of Science</option>
+                            <option value="Pharmacy">💊 Faculty of Pharmacy</option>
                             <option value="Law">⚖️ Faculty of Law</option>
                             <option value="Arts">🎨 Arts &amp; Educational Sciences</option>
-                            <option value="Pharmacy">💊 Faculty of Pharmacy</option>
-                            <option value="Administrative">📊 Administrative Sciences</option>
                         </select>
                         <div class="form-error" id="err-faculty">⚠ Please select your faculty</div>
                     </div>
@@ -175,7 +175,7 @@
                     
                     <div id="image-upload-zone" onclick="document.getElementById('image-input').click()" 
                          style="border:2px dashed var(--border); border-radius:12px; padding:24px; text-align:center; cursor:pointer; background:rgba(248,250,252,0.5); transition:all .2s ease; display:flex; flex-direction:column; align-items:center; gap:8px;">
-                        <i data-lucide="image-plus" style="width:32px; height:32px; color:var(--text-3);"></i>
+                        <i class="ph-duotone ph-image-plus" style="font-size:32px; color:var(--text-3);"></i>
                         <span id="upload-status-text" style="font-size:13px; color:var(--text-2); font-weight:600;">Click to upload a diagram or screenshot</span>
                         <input type="file" id="image-input" name="ImageFile" accept="image/*" style="display:none;" onchange="previewSelectedImage(this)">
                     </div>
@@ -184,7 +184,7 @@
                         <img id="image-preview-img" src="" style="max-width:100%; max-height:200px; border-radius:8px; border:1.5px solid var(--border); box-shadow:var(--shadow-sm);">
                         <button type="button" onclick="removeSelectedImage()" 
                                 style="position:absolute; top:-10px; right:-10px; background:var(--rose); color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-sm);">
-                            <i data-lucide="x" style="width:14px; height:14px;"></i>
+                            <i class="ph-bold ph-x" style="font-size:14px;"></i>
                         </button>
                     </div>
                 </div>
@@ -194,8 +194,8 @@
             </div>
 
             <div class="wizard-step-actions">
-                <button type="button" class="btn btn-ghost" onclick="goToStep1()">← Back</button>
-                <button type="button" class="btn btn-primary btn-lg" id="btn-preview" onclick="goToStep3()">Preview Question →</button>
+                <button type="button" class="btn btn-ghost" onclick="goToStep1()"><i class="ph-bold ph-arrow-left" style="font-size:14px;"></i> Back</button>
+                <button type="button" class="btn btn-primary btn-lg" id="btn-preview" onclick="goToStep3()">Preview Question <i class="ph-bold ph-arrow-right" style="font-size:14px;"></i></button>
             </div>
         </form>
     </div>
@@ -203,7 +203,7 @@
     <!-- STEP 3 — PREVIEW & POST -->
     <div class="hidden" id="wz3">
         <div class="posting-cost-banner">
-            <span class="posting-cost-icon"><i data-lucide="coins"></i></span>
+            <span class="posting-cost-icon"><i class="ph-fill ph-coins"></i></span>
             <div>
                 <div class="posting-cost-title">This will cost 10 points</div>
                 <div class="amber-tip-text">
@@ -212,18 +212,17 @@
             </div>
         </div>
 
-        <div class="preview-section-label"><i data-lucide="eye"></i> Preview — this is how your question will look:</div>
+        <div class="preview-section-label"><i class="ph ph-eye"></i> Preview — this is how your question will look:</div>
 
         <div class="card preview-post-card">
             <div class="preview-post-meta">
-                <div class="av av-sm"><img alt="User" src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" /></div>
                 <span class="preview-author-name">You</span>
                 <span class="preview-post-time">· Just now</span>
                 <span class="chip chip-indigo preview-faculty-badge" id="prev-faculty-chip"></span>
                 <span class="chip chip-gray" id="prev-course-chip"></span>
             </div>
-            <div class="preview-post-title" id="prev-title">Your question title will appear here...</div>
-            <div class="preview-post-body" id="prev-body">Your question description will appear here...</div>
+            <div class="preview-post-title" id="prev-title" style="overflow-wrap:break-word;word-break:break-word;">Your question title will appear here...</div>
+            <div class="preview-post-body" id="prev-body" style="overflow-wrap:break-word;word-break:break-word;">Your question description will appear here...</div>
             
             <div id="prev-image-wrap" class="hidden" style="margin-top:16px;">
                 <img id="prev-image-display" src="" style="max-width:100%; border-radius:12px; border:1px solid var(--border);">
@@ -231,15 +230,15 @@
 
             <div class="preview-post-tags" id="prev-tags"></div>
             <div class="preview-post-stats">
-                <span><i data-lucide="thumbs-up"></i> 0</span>
-                <span><i data-lucide="message-square"></i> 0 answers</span>
-                <span><i data-lucide="eye"></i> 0 views</span>
+                <span><i class="ph ph-thumbs-up"></i> 0</span>
+                <span><i class="ph ph-chat-dots"></i> 0 answers</span>
+                <span><i class="ph ph-eye"></i> 0 views</span>
                 <span class="chip chip-gray preview-status-chip">Open</span>
             </div>
         </div>
 
         <div class="card checklist-card">
-            <div class="checklist-heading"><i data-lucide="check-circle-2"></i> Before you post — quick checklist:</div>
+            <div class="checklist-heading"><i class="ph-fill ph-check-circle"></i> Before you post — quick checklist:</div>
             <div class="checklist-items">
                 <label class="checklist-item">
                     <input class="checklist-checkbox" id="chk1" type="checkbox" />
@@ -261,9 +260,9 @@
         </div>
 
         <div class="wizard-step-actions">
-            <button type="button" class="btn btn-ghost" onclick="goToStep2()">← Edit Question</button>
+            <button type="button" class="btn btn-ghost" onclick="goToStep2()"><i class="ph-bold ph-arrow-left" style="font-size:14px;"></i> Edit Question</button>
             <button type="button" class="btn btn-primary btn-lg" id="btn-post" onclick="postQuestion()">
-                <i data-lucide="rocket"></i> Post Question <span class="btn-cost-label">(−10 pts)</span>
+                <i class="ph-bold ph-rocket" style="font-size:16px;"></i> Post Question <span class="btn-cost-label">(−10 pts)</span>
             </button>
         </div>
     </div>
@@ -271,7 +270,7 @@
     <!-- STEP 4 — SUCCESS -->
     <div class="hidden fade-in" id="wz4">
         <div class="card success-card-body">
-            <div class="success-icon-circle"><i data-lucide="party-popper" style="width:48px; height:48px;"></i></div>
+            <div class="success-icon-circle"><i class="ph-fill ph-confetti" style="font-size:48px;"></i></div>
             <h2 class="success-heading">Question posted!</h2>
             <p class="success-description">Your question is now live. The community will start answering soon.</p>
             <p class="success-points-summary">
@@ -279,11 +278,11 @@
             </p>
 
             <div class="earn-back-panel">
-                <div class="earn-back-heading"><i data-lucide="coins" style="margin-right:8px"></i>How to earn your points back:</div>
+                <div class="earn-back-heading"><i class="ph-fill ph-coins" style="font-size:16px;margin-right:8px"></i>How to earn your points back:</div>
                 <div class="earn-ways-list">
-                    <span><i class="fas fa-thumbs-up" style="margin-right:8px"></i>Every upvote on any of your answers = <strong>+10 pts</strong></span>
-                    <span><i class="fas fa-check-circle" style="margin-right:8px"></i>If your answer is marked Best Answer = <strong>+15 pts</strong></span>
-                    <span><i class="fas fa-graduation-cap" style="margin-right:8px"></i>Accept a tutoring session = <strong>+20 pts</strong></span>
+                    <span style="display:inline-flex;align-items:center;gap:8px;"><i class="ph ph-thumbs-up" style="font-size:14px;flex-shrink:0;"></i>Every upvote on any of your answers = <strong>+10 pts</strong></span>
+                    <span style="display:inline-flex;align-items:center;gap:8px;"><i class="ph-fill ph-seal-check" style="font-size:14px;flex-shrink:0;"></i>If your answer is marked Best Answer = <strong>+15 pts</strong></span>
+                    <span style="display:inline-flex;align-items:center;gap:8px;"><i class="ph-fill ph-graduation-cap" style="font-size:14px;flex-shrink:0;"></i>Accept a tutoring session = <strong>+20 pts</strong></span>
                 </div>
             </div>
 
@@ -386,7 +385,7 @@
                 el.onmouseout = () => { el.style.borderColor = 'var(--border)'; el.style.boxShadow = 'none'; el.style.transform = 'none'; };
                 el.innerHTML = `
                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-                        <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;background:${m.solved ? 'var(--emerald-light)' : '#EEF2FF'};color:${m.solved ? '#065F46' : 'var(--indigo)'}"><i class="${m.solved ? 'fas fa-check-circle' : 'fas fa-circle-question'}" style="font-size:10px"></i> ${m.solved ? 'Solved' : 'Open'}</span>
+                        <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;background:${m.solved ? 'var(--emerald-light)' : '#EEF2FF'};color:${m.solved ? '#065F46' : 'var(--indigo)'}">${m.solved ? '✓' : '?'} ${m.solved ? 'Solved' : 'Open'}</span>
                         <span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;background:var(--violet-light);color:#5B21B6">${escapeHtml(m.course)}</span>
                         <span style="font-size:11px;color:var(--text-2);margin-left:auto">${m.answers} answers · ${m.votes} votes</span>
                     </div>
@@ -524,7 +523,7 @@
         const file = input.files[0];
         if (file) {
             if (file.size > 5 * 1024 * 1024) {
-                showToast("❌ File is too large (max 5MB)", "error");
+                showToast("File too large. Maximum 5MB.", "error");
                 input.value = "";
                 return;
             }
@@ -612,22 +611,19 @@
                 if (successActions && result.postId) {
                     const viewBtn = document.createElement('a');
                     viewBtn.href = `/Dashboard/SinglePost/${result.postId}`;
-                    viewBtn.innerHTML = '<button type="button" class="btn btn-emerald btn-lg" style="margin-bottom:10px; display:inline-flex; align-items:center; gap:8px;"><i data-lucide="eye" style="width:20px; height:20px;"></i> View Your Question</button>';
+                    viewBtn.innerHTML = '<button type="button" class="btn btn-emerald btn-lg" style="margin-bottom:10px; display:inline-flex; align-items:center; gap:8px;"><i class="ph ph-eye" style="font-size:20px;"></i> View Your Question</button>';
                     successActions.insertBefore(viewBtn, successActions.firstChild);
-                    lucide.createIcons();
                 }
             } else {
-                showToast('❌ ' + (result.message || 'Error occurred'), 'error');
+                showToast(result.message || 'An error occurred.', 'error');
                 btn.disabled = false;
-                btn.innerHTML = '<i data-lucide="rocket"></i> Post Question <span class="btn-cost-label">(−10 pts)</span>';
-                lucide.createIcons();
+                btn.innerHTML = '<i class="ph-bold ph-rocket" style="font-size:16px;"></i> Post Question <span class="btn-cost-label">(−10 pts)</span>';
             }
         } catch (err) {
             console.error(err);
-            showToast('❌ Failed to post. Please check your connection.', 'error');
+            showToast('Failed to post. Check your connection.', 'error');
             btn.disabled = false;
-            btn.innerHTML = '<i data-lucide="rocket"></i> Post Question <span class="btn-cost-label">(−10 pts)</span>';
-            lucide.createIcons();
+            btn.innerHTML = '<i class="ph-bold ph-rocket" style="font-size:16px;"></i> Post Question <span class="btn-cost-label">(−10 pts)</span>';
         }
     }
 

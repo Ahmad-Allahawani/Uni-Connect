@@ -35,6 +35,7 @@ namespace Uni_Connect.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleUserDelete(int id)
         {
             var user = await _context.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.UserID == id);
@@ -53,6 +54,22 @@ namespace Uni_Connect.Controllers
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
             return View(reports);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResolveReport(int id)
+        {
+            var report = await _context.Reports
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(r => r.ReportID == id);
+
+            if (report != null)
+            {
+                report.IsResolved = true;
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("ManageReports");
         }
     }
 }

@@ -1,5 +1,9 @@
 # Uni-Connect
 
+![UniConnect Logo](logo/logo-color.svg)
+
+**A peer learning platform that connects students with mentors for collaborative education.**
+
 ## What we need to work on
 
 ### Home / Login

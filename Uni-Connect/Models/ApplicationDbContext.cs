@@ -19,6 +19,9 @@ namespace Uni_Connect.Models
         public DbSet<Report> Reports { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<PointsTransaction> PointsTransactions { get; set; }
+        public DbSet<PostVote> PostVotes { get; set; }
+        public DbSet<AnswerVote> AnswerVotes { get; set; }
+        public DbSet<PostView> PostViews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -110,6 +113,12 @@ namespace Uni_Connect.Models
                 .HasForeignKey(n => n.UserID)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.Actor)
+                .WithMany()
+                .HasForeignKey(n => n.ActorUserID)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<PointsTransaction>()
                 .HasOne(pt => pt.User)
                 .WithMany()
@@ -117,6 +126,18 @@ namespace Uni_Connect.Models
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<PointsTransaction>().HasQueryFilter(e => !e.IsDeleted);
+
+            modelBuilder.Entity<PostVote>().HasKey(pv => new { pv.UserID, pv.PostID });
+            modelBuilder.Entity<PostVote>().HasOne(pv => pv.User).WithMany().HasForeignKey(pv => pv.UserID).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<PostVote>().HasOne(pv => pv.Post).WithMany().HasForeignKey(pv => pv.PostID).OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<AnswerVote>().HasKey(av => new { av.UserID, av.AnswerID });
+            modelBuilder.Entity<AnswerVote>().HasOne(av => av.User).WithMany().HasForeignKey(av => av.UserID).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<AnswerVote>().HasOne(av => av.Answer).WithMany().HasForeignKey(av => av.AnswerID).OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<PostView>().HasKey(pv => new { pv.UserID, pv.PostID });
+            modelBuilder.Entity<PostView>().HasOne(pv => pv.User).WithMany().HasForeignKey(pv => pv.UserID).OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<PostView>().HasOne(pv => pv.Post).WithMany().HasForeignKey(pv => pv.PostID).OnDelete(DeleteBehavior.NoAction);
 
         }
     }
