@@ -27,9 +27,10 @@
 
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
     .form-grid { grid-template-columns: 1fr; }
     .settings-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .settings-container { max-width: 100%; }
 }
 
 @media (max-width: 480px) {

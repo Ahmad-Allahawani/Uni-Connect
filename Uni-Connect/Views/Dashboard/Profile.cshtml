@@ -33,11 +33,13 @@
     }
 
     <!-- Profile Cover -->
-    <div class="profile-cover">
-        <div class="profile-cover-overlay"></div>
+    <div class="profile-cover-wrap">
+        <div class="profile-cover">
+            <div class="profile-cover-overlay"></div>
+        </div>
         <div class="profile-avatar-wrap">
             <div class="profile-avatar" style="position:relative;">
-                <img src="@avatarUrl" alt="@Model.Name" id="profileAvatarImg" />
+                <img src="@avatarUrl" alt="@Model.Name" id="profileAvatarImg" onerror="this.src='@AvatarHelper.FallbackUrl(Model.Name, 120)'" />
                 @if (isOwnProfile)
                 {
                     <label for="quickPhotoInput"
@@ -72,7 +74,7 @@
         <div class="profile-actions">
             @if (isOwnProfile)
             {
-                <a asp-action="Settings" class="btn btn-ghost btn-sm" style="display:inline-flex;align-items:center;gap:8px;"><i class="ph ph-pencil-simple" style="font-size:16px;"></i> Edit Profile</a>
+                <a asp-action="Settings" class="btn btn-ghost btn-sm" style="display:inline-flex;align-items:center;gap:8px;"><i class="ph-duotone ph-pencil-simple" style="font-size:16px;"></i> Edit Profile</a>
             }
             else
             {
@@ -133,15 +135,15 @@
     <!-- Activity Tabs — unified ds-tab pattern (F7); Sessions hidden if 0 (F12) -->
     <div class="ds-tabs">
         <button class="ds-tab active" onclick="switchTab('answers',this)">
-            <i class="ph-bold ph-chat-circle" style="font-size:15px;"></i> Answers (@answerCount)
+            <i class="ph-fill ph-chat-circle" style="font-size:15px;"></i> Answers (@answerCount)
         </button>
         <button class="ds-tab" onclick="switchTab('questions',this)">
-            <i class="ph-bold ph-question" style="font-size:15px;"></i> Questions (@questionCount)
+            <i class="ph-duotone ph-question" style="font-size:15px;"></i> Questions (@questionCount)
         </button>
         @if (sessionCount > 0)
         {
             <button class="ds-tab" onclick="switchTab('sessions',this)">
-                <i class="ph-bold ph-video-camera" style="font-size:15px;"></i> Sessions (@sessionCount)
+                <i class="ph-fill ph-video-camera" style="font-size:15px;"></i> Sessions (@sessionCount)
             </button>
         }
     </div>
@@ -162,7 +164,7 @@
                             </div>
                             <div class="activity-title">@(answer.Post?.Title ?? "Question")</div>
                             <div class="activity-stats">
-                                <span style="display:inline-flex;align-items:center;gap:4px;"><i class="ph ph-thumbs-up" style="font-size:13px;"></i> @answer.Upvotes upvotes</span>
+                                <span style="display:inline-flex;align-items:center;gap:4px;"><i class="ph-duotone ph-thumbs-up" style="font-size:13px;"></i> @answer.Upvotes upvotes</span>
                             </div>
                         </div>
                     </a>
@@ -198,8 +200,8 @@
                             </div>
                             <div class="activity-title">@post.Title</div>
                             <div class="activity-stats">
-                                <span style="display:inline-flex;align-items:center;gap:4px;"><i class="ph ph-chat-dots" style="font-size:13px;"></i> @(post.Answers?.Count(a => !a.IsDeleted) ?? 0) answers</span>
-                                <span style="display:inline-flex;align-items:center;gap:4px;"><i class="ph ph-eye" style="font-size:13px;"></i> @post.ViewsCount views</span>
+                                <span style="display:inline-flex;align-items:center;gap:4px;"><i class="ph-duotone ph-chat-dots" style="font-size:13px;"></i> @(post.Answers?.Count(a => !a.IsDeleted) ?? 0) answers</span>
+                                <span style="display:inline-flex;align-items:center;gap:4px;"><i class="ph-duotone ph-eye" style="font-size:13px;"></i> @post.ViewsCount views</span>
                             </div>
                         </div>
                     </a>

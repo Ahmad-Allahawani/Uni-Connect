@@ -37,12 +37,12 @@
             <div class="card-title"><i class="ph-duotone ph-user-circle" style="font-size:20px;"></i> Profile Information</div>
             
             <div style="display:flex; align-items:center; gap:20px; margin-bottom:24px;">
-                <div class="av av-xl" style="border:4px solid var(--indigo-light)">
+                <div class="av av-xl av-gradient-ring">
                     <img id="profilePreview" src="@(string.IsNullOrEmpty(Model.ProfileImageUrl) ? AvatarHelper.Url(Model.Name, 80) : Model.ProfileImageUrl)" alt="Avatar"/>
                 </div>
                 <div>
                     <label class="btn btn-ghost btn-sm" style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;">
-                        <i class="ph ph-camera" style="font-size:16px;"></i> Change Photo
+                        <i class="ph-bold ph-camera" style="font-size:16px;"></i> Change Photo
                         <input type="file" name="profileImage" id="profileImageFile" accept="image/jpeg,image/png,image/gif,image/webp" style="display:none;" onchange="previewFile(this)" />
                     </label>
                     <div style="margin-top:6px;">
@@ -151,10 +151,13 @@
             </div>
             <button class="btn btn-rose btn-sm" onclick="confirmDelete()">Delete Account</button>
         </div>
-        <div id="deleteAccountMsg" style="display:none; margin-top:14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px; font-size:13px; color:var(--text-2); line-height:1.6;">
-            <strong style="color:var(--text);">To delete your account:</strong> email
-            <a href="mailto:admin@philadelphia.edu.jo" style="color:var(--indigo); font-weight:700;">admin@philadelphia.edu.jo</a>
-            with your university ID and subject "Account Deletion Request". Your account will be removed within 24 hours.
+        <div id="deleteAccountConfirm" style="display:none; margin-top:14px;">
+            <p style="font-size:13px; color:var(--text-2); margin-bottom:12px;">Your account will be deactivated. You can reactivate it any time by logging in again.</p>
+            <form asp-controller="Dashboard" asp-action="DeleteAccount" method="post" style="display:inline-flex;gap:8px;flex-wrap:wrap;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-rose btn-sm">Yes, delete my account</button>
+                <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('deleteAccountConfirm').style.display='none'">Cancel</button>
+            </form>
         </div>
     </div>
 </div>
@@ -172,9 +175,9 @@
     }
 
     function confirmDelete() {
-        if (confirm("Are you absolutely sure you want to delete your account? This cannot be undone.")) {
-            document.getElementById('deleteAccountMsg').style.display = 'block';
-            document.getElementById('deleteAccountMsg').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (confirm("Are you sure you want to deactivate your account? You can reactivate it any time by logging in again.")) {
+            document.getElementById('deleteAccountConfirm').style.display = 'block';
+            document.getElementById('deleteAccountConfirm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     }
 </script>

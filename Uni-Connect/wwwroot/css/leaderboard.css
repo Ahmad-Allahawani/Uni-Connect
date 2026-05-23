@@ -109,5 +109,9 @@
     .leaderboard-filters select { width: 100%; }
     .leaderboard-filters input[type="number"] { width: 100% !important; }
     .leaderboard-filters .btn { width: 100%; justify-content: center; }
+    .rank-banner { flex-direction: column; align-items: flex-start; }
     .rank-banner-points { display: none; }
+    .podium-wrap { flex-direction: column; align-items: center; gap: 12px; }
+    .podium-card { width: 100% !important; max-width: 220px; }
+    .podium-1st { order: -1; }
 }

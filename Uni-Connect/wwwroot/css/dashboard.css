@@ -79,7 +79,14 @@
     display: inline-flex; align-items: center; gap: 4px;
     font-size: 11px; font-weight: 700; color: var(--emerald);
 }
-.q-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.q-avatar {
+    width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+    box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px rgba(61,82,160,0.25);
+    transition: box-shadow .2s;
+}
+.q-card-enhanced:hover .q-avatar {
+    box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--indigo);
+}
 
 .q-title {
     font-size: 17px; font-weight: 700;
@@ -190,12 +197,12 @@
     .q-card-enhanced { padding: 14px; }
     .q-title { font-size: 14px; }
     .q-stats { gap: 10px; font-size: 12px; }
+    .q-thumb { display: none; }
 }
 
 @media (max-width: 480px) {
     .dashboard-header { margin-bottom: 20px; }
     .dashboard-title { font-size: 20px; }
     .tab-btn { font-size: 13px; padding: 10px 0; }
-    .q-thumb { display: none; }
     .empty-state { padding: 40px 16px; }
 }

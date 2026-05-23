@@ -178,7 +178,7 @@ namespace Uni_Connect.Controllers
             return Ok(new
             {
                 sessionId = session.PrivateSessionID,
-                redirectUrl = Url.Action("ChatPage", "Session")
+                redirectUrl = Url.Action("ChatPage", "Session", new { autoOpen = session.PrivateSessionID })
             });
         }
 
@@ -212,6 +212,8 @@ namespace Uni_Connect.Controllers
 
             var session = await _context.PrivateSessions
                 .Include(s => s.Request)
+                .Include(s => s.Student)
+                .Include(s => s.Helper)
                 .FirstOrDefaultAsync(s => s.PrivateSessionID == sessionId &&
                                           (s.StudentID == me || s.HelperID == me));
 
@@ -225,7 +227,6 @@ namespace Uni_Connect.Controllers
                 session.Request.Status = "Closed";
 
             // Clean up any other lingering pending requests between these two users
-            // (can happen if a request was never properly accepted before a session started)
             var lingering = await _context.Requests
                 .Where(r => !r.IsDeleted && r.Status == "Pending" &&
                             ((r.OwnerID == session.StudentID && r.RecipientID == session.HelperID) ||
@@ -235,6 +236,34 @@ namespace Uni_Connect.Controllers
                 req.Status = "Closed";
 
             await _context.SaveChangesAsync();
+
+            // Notify both participants
+            var duration = session.ClosedAt.HasValue
+                ? (int)(session.ClosedAt.Value - session.CreatedAt).TotalMinutes
+                : 0;
+            var durationText = duration > 0 ? $" ({duration} min)" : "";
+
+            var studentName = session.Student?.Name?.Split(' ').First() ?? "Student";
+            var helperName  = session.Helper?.Name?.Split(' ').First()  ?? "Helper";
+
+            try
+            {
+                await _notificationService.CreateAsync(
+                    session.StudentID,
+                    $"Your session with {helperName} has ended{durationText}. Tap to rate.",
+                    "Session",
+                    session.PrivateSessionID,
+                    actorUserId: session.HelperID
+                );
+                await _notificationService.CreateAsync(
+                    session.HelperID,
+                    $"Your session with {studentName} has ended{durationText}.",
+                    "Session",
+                    session.PrivateSessionID,
+                    actorUserId: session.StudentID
+                );
+            }
+            catch { /* notification failure must not block the close response */ }
 
             return Ok(new { sessionId = session.PrivateSessionID });
         }

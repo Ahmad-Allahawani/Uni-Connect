@@ -29,6 +29,7 @@
 .points-hero-icon {
     position: absolute; right: -20px; bottom: -20px;
     font-size: 110px; opacity: .08; pointer-events: none;
+    overflow: hidden;
 }
 
 /* Venues grid */
@@ -79,10 +80,14 @@
 @media (max-width: 640px) {
     .points-hero { padding: 20px; }
     .venues-grid { grid-template-columns: 1fr; }
+    /* How to earn: stack the two-column layout */
+    #tab-earn > div { grid-template-columns: 1fr !important; }
+    .tab { padding: 10px 14px; }
 }
 
 @media (max-width: 768px) {
-    .points-hero { flex-direction: column; gap: 16px; padding: 20px; }
+    .points-hero { flex-direction: column; align-items: flex-start; gap: 16px; padding: 20px; }
+    .points-hero > div:last-child { flex-direction: row; flex-wrap: wrap; }
     .venues-grid { grid-template-columns: 1fr 1fr; }
     .modal-box { padding: 20px; margin: 12px; }
 }

@@ -1570,4 +1570,17 @@ textarea {
     .success-card-body {
         padding: 28px 16px;
     }
+
+    /* Wizard bottom action bar: stack on mobile */
+    .wizard-step-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+    .wizard-step-actions .btn {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        min-height: 48px;
+        white-space: normal; /* allow text to wrap inside button */
+    }
 }

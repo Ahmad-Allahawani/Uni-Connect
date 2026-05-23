@@ -99,7 +99,7 @@
                 {
                     <button id="postUpvoteBtn" onclick="upvoteThisPost(@Model.PostID)" title="Upvote this question"
                             style="background:none;border:1.5px solid var(--border);border-radius:99px;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-2);display:inline-flex;align-items:center;gap:6px;padding:5px 12px;transition:all .2s;font-family:inherit;">
-                        <i class="ph ph-thumbs-up" id="postUpvoteIcon" style="font-size:15px;"></i>
+                        <i class="ph-duotone ph-thumbs-up" id="postUpvoteIcon" style="font-size:15px;"></i>
                         <span id="postUpvoteCount">@Model.Upvotes</span> upvotes
                     </button>
                 }
@@ -111,10 +111,10 @@
                     </span>
                 }
                 <span style="display:inline-flex; align-items:center; gap:5px;">
-                    <i class="ph ph-chat-dots" style="font-size:15px;"></i> @answerCount answer@(answerCount != 1 ? "s" : "")
+                    <i class="ph-duotone ph-chat-circle-dots" style="font-size:15px;"></i> @answerCount answer@(answerCount != 1 ? "s" : "")
                 </span>
                 <span style="display:inline-flex; align-items:center; gap:5px;">
-                    <i class="ph ph-eye" style="font-size:15px;"></i> @Model.ViewsCount views
+                    <i class="ph-duotone ph-eye" style="font-size:15px;"></i> @Model.ViewsCount views
                 </span>
                 @if (currentUserId.HasValue && !isPostOwner)
                 {
@@ -122,7 +122,7 @@
                             style="margin-left:auto; background:none; border:none; cursor:pointer; font-size:12px; color:var(--text-3); display:inline-flex; align-items:center; gap:4px; font-family:inherit; padding:4px 8px; border-radius:6px; transition:color .2s;"
                             onmouseover="this.style.color='var(--red,#EF4444)'" onmouseout="this.style.color='var(--text-3)'"
                             title="Report this post">
-                        <i class="ph ph-flag" style="font-size:14px;"></i> Report
+                        <i class="ph-duotone ph-flag-pennant" style="font-size:14px;"></i> Report
                     </button>
                 }
                 @if (isPostOwner)
@@ -134,7 +134,7 @@
                         <button type="submit" style="background:none; border:none; cursor:pointer; font-size:12px; color:var(--text-3); display:inline-flex; align-items:center; gap:4px; font-family:inherit; padding:4px 8px; border-radius:6px; transition:color .2s;"
                                 onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='var(--text-3)'"
                                 title="Delete this post">
-                            <i class="ph ph-trash" style="font-size:14px;"></i> Delete
+                            <i class="ph-duotone ph-trash-simple" style="font-size:14px;"></i> Delete
                         </button>
                     </form>
                 }
@@ -143,7 +143,7 @@
 
         <!-- Report Modal -->
         <div id="reportModal" style="display:none; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:18px;">
-            <p style="font-size:13px; font-weight:700; color:var(--text); margin:0 0 8px 0;"><i class="ph-bold ph-flag" style="color:#EF4444; margin-right:4px;"></i> Report Content</p>
+            <p style="font-size:13px; font-weight:700; color:var(--text); margin:0 0 8px 0;"><i class="ph-fill ph-flag-pennant" style="color:#EF4444; margin-right:4px;"></i> Report Content</p>
             <p style="font-size:12px; color:var(--text-2); margin:0 0 10px 0;">Describe why this content violates community guidelines.</p>
             <textarea id="reportReason" class="form-input form-textarea" rows="3" maxlength="500"
                       placeholder="e.g. Spam, inappropriate content, misinformation..."></textarea>
@@ -156,7 +156,7 @@
         <!-- ── ANSWERS ── -->
         <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
             <h2 style="font-size:18px; font-weight:800; color:var(--text); margin:0;">
-                <i class="ph-bold ph-chat-circle" style="font-size:18px; color:var(--indigo); vertical-align:middle; margin-right:6px;"></i>
+                <i class="ph-fill ph-chat-circle" style="font-size:18px; color:var(--indigo); vertical-align:middle; margin-right:6px;"></i>
                 @answerCount Answer@(answerCount != 1 ? "s" : "")
             </h2>
             @if (isSolved)
@@ -180,7 +180,7 @@
                             <button class="upvote-btn" data-answer-id="@answer.AnswerID"
                                     title="Upvote this answer"
                                     style="width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--text-2);">
-                                <i class="ph ph-thumbs-up" style="font-size:18px;pointer-events:none;"></i>
+                                <i class="ph-duotone ph-thumbs-up" style="font-size:18px;pointer-events:none;"></i>
                             </button>
                             <span class="upvote-count" data-upvote-count="@answer.AnswerID"
                                   style="font-size:16px; font-weight:800; color:var(--text); line-height:1;">@answer.Upvotes</span>
@@ -217,7 +217,7 @@
                                         <button type="submit" style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-3);display:inline-flex;align-items:center;gap:3px;font-family:inherit;padding:3px 6px;border-radius:4px;transition:color .2s;"
                                                 onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='var(--text-3)'"
                                                 title="Delete this answer">
-                                            <i class="ph ph-trash" style="font-size:12px;"></i>
+                                            <i class="ph-duotone ph-trash-simple" style="font-size:12px;"></i>
                                         </button>
                                     </form>
                                 }
@@ -227,7 +227,7 @@
                                             style="@(isPostOwner && !isAccepted ? "" : "margin-left:auto;") background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-3);display:inline-flex;align-items:center;gap:3px;font-family:inherit;padding:3px 6px;border-radius:4px;transition:color .2s;"
                                             onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='var(--text-3)'"
                                             title="Report this answer">
-                                        <i class="ph ph-flag" style="font-size:12px;"></i>
+                                        <i class="ph-duotone ph-flag-pennant" style="font-size:12px;"></i>
                                     </button>
                                 }
                             </div>
@@ -278,7 +278,7 @@
 
                     <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
                         <label style="display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--text-2); cursor:pointer;">
-                            <i class="ph ph-image" style="font-size:16px;"></i>
+                            <i class="ph-duotone ph-image" style="font-size:16px;"></i>
                             <span>Attach image</span>
                             <input type="file" name="ImageFile" accept="image/*" style="display:none;" />
                         </label>
@@ -334,7 +334,7 @@
                     btn.style.color       = voted ? 'var(--indigo)' : '';
                     btn.style.background  = voted ? 'var(--indigo-light)' : '';
                 }
-                if (icon) { icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph ph-thumbs-up'; }
+                if (icon) { icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph-duotone ph-thumbs-up'; }
             }
 
             document.addEventListener('DOMContentLoaded', async function() {
@@ -407,7 +407,7 @@
                 btn.style.borderColor = voted ? 'var(--indigo)' : '';
                 btn.style.color       = voted ? 'var(--indigo)' : '';
                 btn.style.cursor      = 'pointer';
-                if (icon) { icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph ph-thumbs-up'; }
+                if (icon) { icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph-duotone ph-thumbs-up'; }
                 btn.title = voted ? 'Click to remove upvote' : 'Upvote this answer';
             }
 

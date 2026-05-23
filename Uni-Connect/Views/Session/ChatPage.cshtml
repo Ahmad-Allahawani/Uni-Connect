@@ -171,6 +171,32 @@
         color: var(--text-2);
         margin-top: 3px;
     }
+
+    /* ── Mobile: collapse to single column ── */
+    @@media (max-width: 768px) {
+        .chat-wrap {
+            grid-template-columns: 1fr !important;
+            height: auto !important;
+        }
+        .chat-sidebar {
+            border-right: none !important;
+            border-bottom: 1px solid var(--border);
+            max-height: 200px;
+        }
+        .chat-main { min-height: 420px; }
+        #chat-messages { padding: 14px !important; }
+        .chat-input-bar { padding: 10px 12px !important; gap: 8px !important; }
+        .chat-panel-header { padding: 12px 14px !important; }
+        .msg { max-width: 85% !important; font-size: 13px !important; }
+    }
+
+    @@media (max-width: 480px) {
+        .tabs { gap: 0; overflow-x: auto; }
+        .tab { padding: 8px 12px; font-size: 13px; white-space: nowrap; flex-shrink: 0; }
+        .chat-sidebar { max-height: 160px; }
+        .chat-main { min-height: 360px; }
+        .chat-input-bar input { font-size: 16px; }
+    }
 </style>
 
 <main class="main">
@@ -548,7 +574,7 @@
         const wrap = document.createElement('div');
         const safe = safeImgUrl(imageUrl);
         const imgHtml = safe
-            ? `<div style="margin-top:6px;"><a href="${safe}" target="_blank"><img src="${safe}" style="max-width:200px;max-height:200px;border-radius:8px;object-fit:cover;cursor:pointer;display:block;" /></a></div>`
+            ? `<div style="margin-top:6px;"><img src="${safe}" onclick="openImgLightbox('${safe}')" style="max-width:200px;max-height:200px;border-radius:8px;object-fit:cover;cursor:zoom-in;display:block;" /></div>`
             : '';
         const textHtml = content && content.trim() && content.trim() !== ' '
             ? `<div class="msg ${side === 'me' ? 'msg-me' : 'msg-them'}">${escapeHtml(content)}${imgHtml}</div>`
@@ -744,4 +770,42 @@
         t.style.display = 'block';
         setTimeout(() => t.style.display = 'none', 3000);
     }
+
+    // ── Auto-open session from URL query param ───────────────────
+    (function autoOpenSession() {
+        const params = new URLSearchParams(window.location.search);
+        const autoId = parseInt(params.get('autoOpen'), 10);
+        if (!autoId) return;
+        const item = document.querySelector(`.chat-item[data-session-id="${autoId}"]`);
+        if (item) {
+            item.click();
+        }
+    })();
+
+    // ── Image Lightbox ───────────────────────────────────────────
+    function openImgLightbox(src) {
+        const lb = document.getElementById('img-lightbox');
+        document.getElementById('img-lightbox-img').src = src;
+        lb.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    function closeImgLightbox() {
+        document.getElementById('img-lightbox').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeImgLightbox();
+    });
 </script>
+
+<!-- Image Lightbox Overlay -->
+<div id="img-lightbox"
+     onclick="if(event.target===this)closeImgLightbox()"
+     style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.88);align-items:center;justify-content:center;">
+    <button onclick="closeImgLightbox()"
+            style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;color:#fff;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;"
+            onmouseover="this.style.background='rgba(255,255,255,0.3)'"
+            onmouseout="this.style.background='rgba(255,255,255,0.15)'">✕</button>
+    <img id="img-lightbox-img" src="" alt="Full size image"
+         style="max-width:90vw;max-height:90vh;border-radius:8px;object-fit:contain;box-shadow:0 24px 80px rgba(0,0,0,0.6);" />
+</div>
