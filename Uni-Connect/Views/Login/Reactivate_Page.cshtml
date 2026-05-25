@@ -1,11 +1,5 @@
-<<<<<<< HEAD
-﻿@{
-    Layout = null;
-=======
 @{
     Layout = null;
-    var name = TempData.Peek("ReactivateName")?.ToString() ?? "Student";
->>>>>>> 71ee2e5bea89dc860abe7029520086067f2b1b71
 }
 
 <!DOCTYPE html>
@@ -14,7 +8,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Reactivate Account — UniConnect</title>
-<<<<<<< HEAD
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
     <link rel="icon" type="image/svg+xml" href="~/images/logo/icon.svg" />
     <link href="~/css/login.css" rel="stylesheet" />
@@ -92,46 +85,3 @@
 
 </body>
 </html>
-=======
-    <link rel="icon" type="image/svg+xml" href="~/images/logo/icon.svg" />
-    <link href="~/css/login.css" rel="stylesheet" />
-</head>
-<body class="auth-bg">
-    <div style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;">
-        <div style="position:absolute;width:400px;height:400px;top:-100px;left:-80px;background:radial-gradient(circle,rgba(61,82,160,0.18) 0%,transparent 70%);border-radius:50%;filter:blur(60px);animation:orbFloat1 14s ease-in-out infinite;"></div>
-        <div style="position:absolute;width:300px;height:300px;bottom:0;right:0;background:radial-gradient(circle,rgba(112,145,230,0.15) 0%,transparent 70%);border-radius:50%;filter:blur(60px);animation:orbFloat2 18s ease-in-out infinite;"></div>
-    </div>
-    <nav class="auth-navbar" style="position:relative;z-index:10;">
-        <a asp-controller="Home" asp-action="Index" class="nav-logo" style="text-decoration:none;display:flex;align-items:center;gap:9px;">
-            <img src="/images/logo/icon.svg" width="32" height="32" alt="UniConnect" style="border-radius:9px;display:block;" />
-            <span style="font-weight:900;font-size:18px;letter-spacing:-0.04em;background:linear-gradient(90deg,#3D52A0,#7091E6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">UniConnect</span>
-        </a>
-    </nav>
-
-    <main class="auth-main" style="position:relative;z-index:1;">
-        <div class="auth-card" style="max-width:440px;">
-            <div style="text-align:center;margin-bottom:28px;">
-                <div style="width:64px;height:64px;background:var(--amber-light);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;">👋</div>
-                <h1 style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:8px;">Welcome back, @name!</h1>
-                <p style="color:var(--text-2);font-size:14px;line-height:1.6;">Your account was previously deactivated. Would you like to reactivate it and continue where you left off?</p>
-            </div>
-
-            <form asp-controller="Login" asp-action="Reactivate_Page" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="confirm" value="yes" />
-
-                <button type="submit" class="btn btn-primary btn-lg" style="width:100%;margin-bottom:12px;">
-                    ✅ Yes, Reactivate My Account
-                </button>
-            </form>
-
-            <a asp-controller="Login" asp-action="Login_Page">
-                <button type="button" class="btn btn-ghost btn-lg" style="width:100%;">
-                    No, go back to Sign In
-                </button>
-            </a>
-        </div>
-    </main>
-</body>
-</html>
->>>>>>> 71ee2e5bea89dc860abe7029520086067f2b1b71

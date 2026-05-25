@@ -1,29 +1,31 @@
 @model List<Uni_Connect.Models.Notification>
+
 @{
     ViewData["Title"] = "Notifications — UniConnect";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 
 @section Styles {
-<link href="~/css/notifications.css" rel="stylesheet" />
+    <link href="~/css/notifications.css" rel="stylesheet" />
+	<link href="~/css/notificationsettingsdelete.css" rel="stylesheet" />
 }
 
 <div class="notif-wrapper">
-
     <div class="notif-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px;">
         <div>
             <h1 class="notif-title" style="display:inline-flex; align-items:center; gap:10px;">
                 <span style="background:var(--indigo-light); color:var(--indigo); width:36px; height:36px; border-radius:10px; display:inline-flex; align-items:center; justify-content:center;">
-                    <i class="ph-fill ph-bell" style="font-size:20px;"></i>
+                    <i class="ph-bold ph-bell" style="font-size:20px;"></i>
                 </span>
                 Notifications
             </h1>
             <p class="notif-subtitle">Stay updated with your activity and discussions</p>
         </div>
+
         @if (Model?.Any() == true)
         {
             <button id="clearAllBtn" style="font-size:13px; color:var(--text-2); background:none; border:1px solid var(--border); border-radius:8px; padding:8px 14px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
-                <i class="ph-duotone ph-trash-simple" style="font-size:14px;"></i> Clear all
+                <i class="ph ph-trash" style="font-size:14px;"></i> Clear all
             </button>
         }
     </div>
@@ -31,29 +33,30 @@
     @if (Model?.Any() == true)
     {
         <form id="antiforgeryForm" style="display:none;">@Html.AntiForgeryToken()</form>
+
         <div class="notif-container">
             @foreach (var notif in Model.OrderByDescending(n => n.CreatedAt))
             {
                 var (phIcon, iconBg, iconColor) = notif.Type switch
                 {
-                    "Answer"          => ("chat-circle",   "var(--indigo-light)", "var(--indigo)"),
-                    "Upvote"          => ("arrow-fat-up",  "var(--amber-light)",  "var(--amber-dark)"),
-                    "BestAnswer"      => ("star",          "var(--emerald-light)","var(--emerald)"),
-                    "SessionRequest"  => ("calendar-plus", "var(--violet-light)", "var(--violet)"),
-                    "SessionAccepted" => ("seal-check",    "var(--emerald-light)","var(--emerald)"),
-                    "NewMessage"      => ("chats",         "var(--indigo-light)", "var(--indigo)"),
-                    _                 => ("bell",          "var(--bg)",           "var(--text-2)")
+                    "Answer" => ("chat-circle", "var(--indigo-light)", "var(--indigo)"),
+                    "Upvote" => ("arrow-fat-up", "var(--amber-light)", "var(--amber-dark)"),
+                    "BestAnswer" => ("star", "var(--emerald-light)", "var(--emerald)"),
+                    "SessionRequest" => ("calendar-plus", "var(--violet-light)", "var(--violet)"),
+                    "SessionAccepted" => ("seal-check", "var(--emerald-light)", "var(--emerald)"),
+                    "NewMessage" => ("chats", "var(--indigo-light)", "var(--indigo)"),
+                    _ => ("bell", "var(--bg)", "var(--text-2)")
                 };
 
                 var link = notif.Type switch
                 {
-                    "SessionRequest"  => Url.Action("ChatPage", "Session"),
+                    "SessionRequest" => Url.Action("ChatPage", "Session"),
                     "SessionAccepted" => Url.Action("ChatPage", "Session"),
-                    "NewMessage"      => Url.Action("ChatPage", "Session"),
-                    "Answer"          => notif.RelatedID.HasValue ? Url.Action("SinglePost", "Dashboard", new { id = notif.RelatedID }) : Url.Action("Dashboard", "Dashboard"),
-                    "Upvote"          => notif.RelatedID.HasValue ? Url.Action("SinglePost", "Dashboard", new { id = notif.RelatedID }) : Url.Action("Dashboard", "Dashboard"),
-                    "BestAnswer"      => notif.RelatedID.HasValue ? Url.Action("SinglePost", "Dashboard", new { id = notif.RelatedID }) : Url.Action("Dashboard", "Dashboard"),
-                    _                 => Url.Action("Dashboard", "Dashboard")
+                    "NewMessage" => Url.Action("ChatPage", "Session"),
+                    "Answer" => notif.RelatedID.HasValue ? Url.Action("SinglePost", "Dashboard", new { id = notif.RelatedID }) : Url.Action("Dashboard", "Dashboard"),
+                    "Upvote" => notif.RelatedID.HasValue ? Url.Action("SinglePost", "Dashboard", new { id = notif.RelatedID }) : Url.Action("Dashboard", "Dashboard"),
+                    "BestAnswer" => notif.RelatedID.HasValue ? Url.Action("SinglePost", "Dashboard", new { id = notif.RelatedID }) : Url.Action("Dashboard", "Dashboard"),
+                    _ => Url.Action("Dashboard", "Dashboard")
                 };
 
                 <a href="@link" style="text-decoration:none; color:inherit; display:block;">
@@ -63,7 +66,7 @@
                             <a href="@Url.Action("ViewProfile", "Dashboard", new { username = notif.Actor.Username })"
                                onclick="event.stopPropagation();"
                                style="flex-shrink:0; text-decoration:none;">
-                                <div class="av av-xs av-gradient-ring" style="width:32px;height:32px;">
+                                <div class="av av-xs" style="width:32px;height:32px;">
                                     <img src="@(!string.IsNullOrEmpty(notif.Actor.ProfileImageUrl) ? notif.Actor.ProfileImageUrl : AvatarHelper.Url(notif.Actor.Name, 32))"
                                          alt="@notif.Actor.Name" />
                                 </div>
@@ -76,7 +79,7 @@
                             <div class="notif-msg">@notif.Message</div>
                             <div class="notif-time">@notif.CreatedAt.ToString("MMMM d, yyyy · h:mm tt")</div>
                         </div>
-                        <i class="ph-bold ph-arrow-right" style="font-size:14px;color:var(--indigo);flex-shrink:0;opacity:0.5;"></i>
+                        <i class="ph ph-caret-right" style="font-size:16px;color:var(--text-3);flex-shrink:0;"></i>
                     </div>
                 </a>
             }
@@ -94,11 +97,56 @@
             </div>
         </div>
     }
+</div>
 
+<!-- ── Confirmation modal ── -->
+<div class="confirm-overlay" id="deleteModal" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+    <div class="confirm-modal">
+        <div class="modal-icon">
+            <i class="ph-fill ph-trash"></i>
+        </div>
+        <h3 id="deleteModalTitle">Clear all notifications?</h3>
+        <p>This will permanently remove all your notifications. This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn-cancel" id="cancelDeleteBtn">Cancel</button>
+            <button class="btn-danger" id="confirmDeleteBtn">Yes, clear all</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
     <script>
-        document.getElementById('clearAllBtn')?.addEventListener('click', async () => {
-            if (!confirm('Delete all notifications?')) return;
+        const modal       = document.getElementById('deleteModal');
+        const openBtn     = document.getElementById('clearAllBtn');
+        const cancelBtn   = document.getElementById('cancelDeleteBtn');
+        const confirmBtn  = document.getElementById('confirmDeleteBtn');
+
+        // Open modal
+        openBtn?.addEventListener('click', () => {
+            modal.classList.add('active');
+            cancelBtn.focus();
+        });
+
+        // Close on Cancel
+        cancelBtn.addEventListener('click', () => modal.classList.remove('active'));
+
+        // Close on backdrop click
+        modal.addEventListener('click', e => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') modal.classList.remove('active');
+        });
+
+        // Confirm delete
+        confirmBtn.addEventListener('click', async () => {
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Clearing…';
+
             const token = document.querySelector('#antiforgeryForm input[name="__RequestVerificationToken"]')?.value ?? '';
+
             const res = await fetch('/api/notifications/delete-all', {
                 method: 'POST',
                 headers: {
@@ -106,11 +154,15 @@
                     'RequestVerificationToken': token
                 }
             });
+
             if (res.ok) {
                 window.location.reload();
             } else {
+                modal.classList.remove('active');
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'Yes, clear all';
                 showToast('Failed to delete notifications.', 'error');
             }
         });
     </script>
-</div>
+}

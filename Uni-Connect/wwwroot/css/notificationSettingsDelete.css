@@ -1,0 +1,103 @@
+﻿/* ── Delete-confirmation modal (mirrors delete-account style) ── */
+.confirm-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+    .confirm-overlay.active {
+        display: flex;
+    }
+
+.confirm-modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 28px 28px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+    animation: modalIn .18s ease;
+}
+
+@@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: scale(.95) translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.confirm-modal .modal-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: #fef2f2;
+    color: #dc2626;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 4px;
+}
+
+.confirm-modal h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-1);
+    margin: 0;
+}
+
+.confirm-modal p {
+    font-size: 14px;
+    color: var(--text-2);
+    margin: 0;
+    line-height: 1.55;
+}
+
+.confirm-modal .modal-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+    .confirm-modal .modal-actions button {
+        flex: 1;
+        padding: 10px 0;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: opacity .15s;
+    }
+
+        .confirm-modal .modal-actions button:hover {
+            opacity: .85;
+        }
+
+.confirm-modal .btn-cancel {
+    background: var(--surface-2, #f3f4f6);
+    color: var(--text-1);
+    border: 1px solid var(--border) !important;
+}
+
+.confirm-modal .btn-danger {
+    background: #dc2626;
+    color: #fff;
+}
