@@ -2,9 +2,13 @@
 
 .profile-wrapper { max-width: 1000px; margin: 0 auto; }
 
+.profile-cover-wrap {
+    position: relative;
+    margin-bottom: 60px;
+}
 .profile-cover {
     height: 180px; border-radius: 16px;
-    position: relative; margin-bottom: 60px;
+    position: relative;
     background: linear-gradient(135deg, var(--indigo-light) 0%, var(--violet-light) 100%);
 }
 .profile-cover-overlay {
@@ -37,7 +41,7 @@
     line-height: 1.6; max-width: 600px; margin-top: 8px;
 }
 
-.profile-actions { display: flex; gap: 8px; }
+.profile-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 .profile-stats {
     display: grid; grid-template-columns: repeat(4, 1fr);
@@ -118,9 +122,14 @@
 }
 
 @media (max-width: 640px) {
-    .profile-cover { height: 130px; margin-bottom: 50px; }
+    .profile-cover { height: 130px; }
+    .profile-cover-wrap { margin-bottom: 50px; }
     .profile-avatar { width: 90px; height: 90px; }
     .profile-info h1 { font-size: 22px; }
+    .profile-actions { flex-wrap: wrap; gap: 6px; }
+    .profile-stats { grid-template-columns: repeat(2, 1fr); }
+    .progress-section { flex-direction: column; gap: 12px; }
+    .progress-content { min-width: unset; width: 100%; }
 }
 
 @media (max-width: 768px) {
@@ -129,7 +138,8 @@
 }
 
 @media (max-width: 480px) {
-    .profile-cover { height: 110px; margin-bottom: 48px; }
+    .profile-cover { height: 110px; }
+    .profile-cover-wrap { margin-bottom: 48px; }
     .profile-avatar { width: 76px !important; height: 76px !important; overflow: hidden; }
     .profile-avatar img { display: block; width: 100% !important; height: 100% !important; object-fit: cover; }
     .profile-avatar-wrap { bottom: -38px; left: 14px; }

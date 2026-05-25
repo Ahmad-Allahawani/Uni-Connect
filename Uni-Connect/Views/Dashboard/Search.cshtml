@@ -77,13 +77,13 @@
 
                 <div class="result-stats">
                     <span style="display:inline-flex; align-items:center; gap:4px;">
-                        <i class="ph ph-thumbs-up" style="font-size:13px;"></i> @post.Upvotes
+                        <i class="ph-duotone ph-thumbs-up" style="font-size:13px;"></i> @post.Upvotes
                     </span>
                     <span style="display:inline-flex; align-items:center; gap:4px;">
-                        <i class="ph ph-chat-dots" style="font-size:13px;"></i> @(post.Answers?.Count(a => !a.IsDeleted) ?? 0) answers
+                        <i class="ph-duotone ph-chat-dots" style="font-size:13px;"></i> @(post.Answers?.Count(a => !a.IsDeleted) ?? 0) answers
                     </span>
                     <span style="display:inline-flex; align-items:center; gap:4px;">
-                        <i class="ph ph-eye" style="font-size:13px;"></i> @post.ViewsCount views
+                        <i class="ph-duotone ph-eye" style="font-size:13px;"></i> @post.ViewsCount views
                     </span>
                 </div>
             </a>
@@ -98,7 +98,7 @@
                 No questions match "<strong>@query</strong>". Try different keywords or browse all questions.
             </p>
             <a asp-action="Dashboard" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px;">
-                <i class="ph ph-list-bullets" style="font-size:16px;"></i> Browse All Questions
+                <i class="ph-duotone ph-list-bullets" style="font-size:16px;"></i> Browse All Questions
             </a>
             <div style="margin-top:20px;">
                 <p style="font-size:13px;color:var(--text-2);margin-bottom:12px;">

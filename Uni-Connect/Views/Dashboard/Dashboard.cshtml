@@ -17,8 +17,9 @@
 
     <!-- Composer Card -->
     <a asp-action="CreatePost" asp-controller="Dashboard" class="composer-card">
-        <div class="av av-sm" style="flex-shrink:0;">
-            <img src="@AvatarHelper.Url(Model.Name, 44)" alt="" />
+        <div class="av-wrap" style="flex-shrink:0;">
+            <div class="av av-sm av-gradient-ring"><img src="@AvatarHelper.Url(Model.Name, 44)" alt="" /></div>
+            <span class="av-dot"></span>
         </div>
         <span class="composer-prompt">What's your academic question today?</span>
         <span class="composer-icon" aria-hidden="true">
@@ -28,9 +29,9 @@
 
     <!-- Tabs -->
     <div class="tab-container">
-        <button class="tab-btn active" onclick="filterTab('trending', this)"><i class="ph-fill ph-fire" style="font-size:15px;"></i> Trending</button>
-        <button class="tab-btn" onclick="filterTab('all', this)"><i class="ph ph-list-bullets" style="font-size:15px;"></i> All Questions</button>
-        <button class="tab-btn" onclick="filterTab('faculty', this)"><i class="ph ph-users-three" style="font-size:15px;"></i> My Faculty</button>
+        <button class="tab-btn active" onclick="filterTab('trending', this)"><i class="ph-fill ph-fire" style="font-size:15px;color:#F59E0B;"></i> Trending</button>
+        <button class="tab-btn" onclick="filterTab('all', this)"><i class="ph-duotone ph-list-bullets" style="font-size:15px;"></i> All Questions</button>
+        <button class="tab-btn" onclick="filterTab('faculty', this)"><i class="ph-duotone ph-users-three" style="font-size:15px;"></i> My Faculty</button>
     </div>
 
     <!-- Questions Feed -->
@@ -111,16 +112,16 @@
                             <button class="q-upvote-btn" id="upvote-btn-@post.PostID"
                                     onclick="event.stopPropagation(); upvotePost(@post.PostID)"
                                     title="Upvote this question" type="button">
-                                <i class="ph ph-thumbs-up" id="upvote-icon-@post.PostID"></i>
+                                <i class="ph-duotone ph-thumbs-up" id="upvote-icon-@post.PostID"></i>
                                 <span id="upvote-count-@post.PostID">@post.Upvotes</span>
                             </button>
 
                             <span class="q-stat-item">
-                                <i class="ph ph-chat-circle" style="font-size:13px;"></i>
+                                <i class="ph-duotone ph-chat-circle" style="font-size:13px;"></i>
                                 <b>@answerCount</b> answer@(answerCount != 1 ? "s" : "")
                             </span>
                             <span class="q-stat-item">
-                                <i class="ph ph-eye" style="font-size:13px;"></i>
+                                <i class="ph-duotone ph-eye" style="font-size:13px;"></i>
                                 <b>@post.ViewsCount</b> views
                             </span>
 
@@ -179,11 +180,13 @@
             return;
         }
         if (type === 'faculty') {
-            const lower = userFaculty.toLowerCase();
+            const lower = userFaculty.trim().toLowerCase();
             let visible = 0;
             cards.forEach(c => {
-                const fac = (c.dataset.faculty || '').toLowerCase();
-                const show = fac.includes(lower) || lower.includes(fac.split(' ')[0]);
+                const fac = (c.dataset.faculty || '').trim().toLowerCase();
+                const show = !lower
+                    ? true
+                    : fac === lower || fac.includes(lower) || lower.includes(fac);
                 c.style.display = show ? '' : 'none';
                 if (show) visible++;
             });
@@ -257,7 +260,7 @@
         const count = document.getElementById('upvote-count-' + postId);
 
         if (btn)  { btn.classList.toggle('voted', voted); }
-        if (icon) { icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph ph-thumbs-up'; }
+        if (icon) { icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph-duotone ph-thumbs-up'; }
         if (count && newCount !== null) count.textContent = newCount;
     }
 </script>

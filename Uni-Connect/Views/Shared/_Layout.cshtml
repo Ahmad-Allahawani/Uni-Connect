@@ -9,8 +9,12 @@
     <!-- FONTS & ICONS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons (primary) -->
     <script src="https://unpkg.com/@@phosphor-icons/web@@2.1.1" defer></script>
+    <!-- Lucide Icons (CDN — ultra-clean SVG strokes) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
     
     <!-- CSS -->
     <link href="~/css/Home.css" rel="stylesheet" />
@@ -21,24 +25,148 @@
             --indigo: #3D52A0; --indigo-dark: #2d3f7a; --indigo-light: #EEF2FF;
             --violet: #7091E6; --violet-light: #EDE9FE;
             --amber: #F59E0B; --amber-light: #FEF3C7;
+            --emerald: #10B981; --emerald-light: #D1FAE5;
+            --rose: #F43F5E; --rose-light: #FFE4E6;
             --bg: #F8F9FF; --surface: #fff; --border: #E2E8F0;
-            --text: #0F172A; --text-2: #64748B;
+            --text: #0F172A; --text-2: #64748B; --text-3: #94A3B8;
             --radius: 12px;
         }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
 
-        .footer {
-            background: #0F172A;
-            color: var(--text-2);
-            padding: 48px;
-            text-align: center
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+
+        /* ── NAV ── */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+            height: 66px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px;
+            transition: background .35s, box-shadow .35s, border-color .35s;
         }
-        .ftr-lnk { color: var(--text-2); text-decoration: none; font-size: 14px; font-weight: 600; transition: color .2s; }
-        .ftr-lnk:hover { color: #fff; }
-        
-        .nav-logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--indigo), var(--violet)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; }
+        /* Transparent on dark hero */
+        .nav { background: transparent; border-bottom: 1px solid transparent; }
+        /* After scroll: glass pill */
+        .nav.scrolled {
+            background: rgba(255,255,255,0.92);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(226,232,240,0.6);
+            box-shadow: 0 1px 0 rgba(255,255,255,0.8), 0 4px 24px rgba(15,23,42,0.06);
+        }
+        .nav-wordmark {
+            font-weight: 900; font-size: 19px; letter-spacing: -0.04em;
+            background: linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: background .35s;
+        }
+        .nav.scrolled .nav-wordmark {
+            background: linear-gradient(90deg, #3D52A0 0%, #7091E6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-links { display: flex; align-items: center; gap: 2px; }
+        .nav-link {
+            padding: 7px 13px; border-radius: 9px;
+            font-size: 13.5px; font-weight: 600;
+            color: rgba(255,255,255,0.75); text-decoration: none;
+            transition: background .15s, color .15s;
+        }
+        .nav-link:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .nav.scrolled .nav-link { color: #475569; }
+        .nav.scrolled .nav-link:hover { background: #EEF2FF; color: #3D52A0; }
+        .nav-actions { display: flex; align-items: center; gap: 8px; }
+        .nav-logo { display: flex; align-items: center; gap: 9px; }
+        .nav-logo-icon { width: 32px; height: 32px; border-radius: 9px; }
+        .nav.scrolled .nav-logo-wrap { background: rgba(61,82,160,0.08) !important; border-color: rgba(61,82,160,0.15) !important; }
+
+        /* Mobile hamburger */
+        .nav-hamburger {
+            display: none; flex-direction: column; gap: 5px;
+            background: none; border: none; cursor: pointer; padding: 6px;
+        }
+        .nav-hamburger span {
+            display: block; width: 22px; height: 2px;
+            background: rgba(255,255,255,0.8); border-radius: 2px;
+            transition: background .2s;
+        }
+        .nav.scrolled .nav-hamburger span { background: #3D52A0; }
+
+        /* Mobile overlay */
+        .nav-mobile-overlay {
+            position: fixed; inset: 0; z-index: 300;
+            background: rgba(13,17,23,0.95);
+            -webkit-backdrop-filter: blur(24px);
+            backdrop-filter: blur(24px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity .3s ease;
+        }
+        .nav-mobile-overlay.open { opacity: 1; pointer-events: all; }
+        .nav-mobile-close {
+            position: absolute; top: 20px; right: 24px;
+            background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
+            border-radius: 50%; width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; cursor: pointer;
+        }
+        .nav-mobile-links { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .nav-mobile-link {
+            font-size: 24px; font-weight: 700; color: rgba(255,255,255,.75);
+            text-decoration: none; padding: 10px 24px; border-radius: 12px;
+            transition: color .2s, background .2s;
+        }
+        .nav-mobile-link:hover { color: #fff; background: rgba(255,255,255,.06); }
+        .nav-mobile-cta { color: #A5B4FC !important; }
+
+        @@media (max-width: 768px) {
+            .nav { padding: 0 20px; }
+            .nav-links { display: none; }
+            .nav-hamburger { display: flex; }
+        }
+
+        /* ── FOOTER ── */
+        .footer-premium {
+            background: #080D18;
+            color: #64748B;
+            padding: 72px 48px 0;
+        }
+        .footer-inner {
+            max-width: 1100px; margin: 0 auto;
+            display: grid; grid-template-columns: 320px 1fr;
+            gap: 60px; padding-bottom: 52px;
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+        .footer-socials { display: flex; gap: 10px; margin-top: 20px; }
+        .footer-social-btn {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+            display: flex; align-items: center; justify-content: center;
+            color: #64748B; text-decoration: none;
+            transition: background .2s, color .2s, border-color .2s;
+        }
+        .footer-social-btn:hover { background: rgba(61,82,160,.25); color: #A5B4FC; border-color: rgba(61,82,160,.4); }
+        .footer-cols { display: flex; gap: 40px; }
+        .footer-col { display: flex; flex-direction: column; gap: 10px; }
+        .footer-col-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: #475569; margin-bottom: 4px; }
+        .ftr-lnk { color: #475569; text-decoration: none; font-size: 13.5px; font-weight: 500; transition: color .15s; display: block; }
+        .ftr-lnk:hover { color: #CBD5E1; }
+        .footer-bottom {
+            max-width: 1100px; margin: 0 auto;
+            padding: 22px 0;
+            display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+            font-size: 12.5px; color: #334155;
+        }
+        @@media (max-width: 900px) {
+            .footer-inner { grid-template-columns: 1fr; gap: 40px; }
+            .footer-cols { flex-wrap: wrap; gap: 28px; }
+            .footer-premium { padding: 52px 24px 0; }
+        }
+
+        /* ── BODY OFFSET for fixed nav ── */
+        body { padding-top: 66px; }
+        /* Hero should fill viewport including nav area */
+        .hero-dark { margin-top: -66px !important; padding-top: 150px !important; }
     </style>
     @await RenderSectionAsync("Styles", required: false)
 </head>
@@ -56,12 +184,12 @@
         })();
     </script>
     <!-- NAV -->
-    <nav class="nav">
-        <a asp-controller="Home" asp-action="Index" class="nav-logo" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; font-weight:900; font-size:20px;">
-            <div class="nav-logo-icon" style="padding:0;overflow:hidden;background:none;border:none;width:36px;height:36px;flex-shrink:0;">
-                <img src="/images/logo/icon.svg" width="36" height="36" alt="UniConnect" style="display:block;border-radius:10px;" />
+    <nav class="nav" id="mainNav">
+        <a asp-controller="Home" asp-action="Index" class="nav-logo" style="text-decoration:none;display:flex;align-items:center;gap:9px;">
+            <div style="padding:2px;overflow:hidden;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);width:36px;height:36px;flex-shrink:0;border-radius:11px;display:flex;align-items:center;justify-content:center;transition:background .35s,border-color .35s;" class="nav-logo-wrap">
+                <img src="/images/logo/icon.svg" width="30" height="30" alt="UniConnect" style="display:block;border-radius:8px;" />
             </div>
-            UniConnect
+            <span class="nav-wordmark">UniConnect</span>
         </a>
         <div class="nav-links">
             <a href="/#how" class="nav-link">How it works</a>
@@ -72,39 +200,130 @@
         <div class="nav-actions">
             @if (User.Identity.IsAuthenticated)
             {
-                <a asp-controller="Dashboard" asp-action="Dashboard"><button class="btn btn-primary btn-sm">My Dashboard <i class="ph-bold ph-arrow-right" style="font-size:13px;vertical-align:middle;"></i></button></a>
-                <a asp-controller="Login" asp-action="Logout" class="ftr-lnk" style="margin-left:15px">Sign Out</a>
+                <a asp-controller="Dashboard" asp-action="Dashboard">
+                    <button class="btn btn-primary btn-sm" style="display:inline-flex;align-items:center;gap:6px;">
+                        My Dashboard
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </button>
+                </a>
+                <a asp-controller="Login" asp-action="Logout" class="nav-link" style="margin-left:4px">Sign Out</a>
             }
             else
             {
                 <a asp-controller="Login" asp-action="Login_Page"><button class="btn btn-ghost btn-sm">Sign In</button></a>
-                <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-primary btn-sm" style="display:inline-flex;align-items:center;gap:6px;">Join Free <i class="ph-bold ph-rocket" style="font-size:14px;"></i></button></a>
+                <a asp-controller="Login" asp-action="Register_Page">
+                    <button class="btn btn-primary btn-sm" style="display:inline-flex;align-items:center;gap:6px;">
+                        Join Free
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </button>
+                </a>
             }
         </div>
+        <!-- Mobile hamburger -->
+        <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" style="display:none;">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
+    <!-- Mobile menu overlay -->
+    <div class="nav-mobile-overlay" id="navMobileOverlay">
+        <button class="nav-mobile-close" id="navMobileClose" aria-label="Close menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+        <div class="nav-mobile-links">
+            <a href="/#how" class="nav-mobile-link">How it works</a>
+            <a href="/#features" class="nav-mobile-link">Features</a>
+            <a href="/#rewards" class="nav-mobile-link">Points</a>
+            <a href="/#venues" class="nav-mobile-link">Campus Rewards</a>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Dashboard" asp-action="Dashboard" class="nav-mobile-link nav-mobile-cta">My Dashboard</a>
+            }
+            else
+            {
+                <a asp-controller="Login" asp-action="Login_Page" class="nav-mobile-link">Sign In</a>
+                <a asp-controller="Login" asp-action="Register_Page" class="nav-mobile-link nav-mobile-cta">Join Free →</a>
+            }
+        </div>
+    </div>
+    <script>
+    (function(){
+        var ham = document.getElementById('navHamburger');
+        var overlay = document.getElementById('navMobileOverlay');
+        var closeBtn = document.getElementById('navMobileClose');
+        if(!ham) return;
+        function open(){ overlay.classList.add('open'); document.body.style.overflow='hidden'; }
+        function close(){ overlay.classList.remove('open'); document.body.style.overflow=''; }
+        ham.addEventListener('click', open);
+        closeBtn.addEventListener('click', close);
+        overlay.querySelectorAll('.nav-mobile-link').forEach(function(l){ l.addEventListener('click', close); });
+    })();
+    // Nav scroll: add 'scrolled' class after 40px
+    (function(){
+        var nav = document.getElementById('mainNav');
+        if(!nav) return;
+        function upd(){ nav.classList.toggle('scrolled', window.scrollY > 40); }
+        window.addEventListener('scroll', upd, {passive:true});
+        upd();
+    })();
+    </script>
 
     <main role="main">
         @RenderBody()
     </main>
 
-    <footer class="footer">
-        <div style="max-width:900px;margin:0 auto">
-            <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px">
-                <div style="width:36px;height:36px;flex-shrink:0;"><img src="/images/logo/icon.svg" width="36" height="36" alt="UniConnect" style="display:block;border-radius:10px;" /></div>
-                <span style="font-weight:900;font-size:18px;color:#CBD5E1">UniConnect</span>
+    <footer class="footer footer-premium">
+        <div class="footer-inner">
+            <!-- Brand -->
+            <div class="footer-brand">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                    <div style="width:40px;height:40px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:3px;">
+                        <img src="/images/logo/icon.svg" width="34" height="34" alt="UniConnect" style="border-radius:8px;display:block;" />
+                    </div>
+                    <span style="font-weight:900;font-size:20px;color:#E2E8F0;letter-spacing:-0.03em;">UniConnect</span>
+                </div>
+                <p style="font-size:13.5px;color:#64748B;line-height:1.7;max-width:260px;">Philadelphia University's peer-learning platform. Help each other, earn points, redeem real rewards.</p>
+                <!-- Social badges -->
+                <div class="footer-socials">
+                    <a href="#" class="footer-social-btn" aria-label="GitHub">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    </a>
+                    <a href="#" class="footer-social-btn" aria-label="LinkedIn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    </a>
+                    <a href="mailto:ahmadalatrash726@gmail.com" class="footer-social-btn" aria-label="Email">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    </a>
+                </div>
             </div>
-            <p style="font-size:14px;margin-bottom:18px">Philadelphia University Peer Learning Platform</p>
-            <div style="display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin-bottom:24px">
-                <a asp-controller="Login" asp-action="Login_Page" class="ftr-lnk">Sign In</a>
-                <a asp-controller="Login" asp-action="Register_Page" class="ftr-lnk">Register</a>
-                <a href="dashboard.html" class="ftr-lnk">Dashboard</a>
-                <a href="leaderboard.html" class="ftr-lnk">Leaderboard</a>
-                <a href="points.html" class="ftr-lnk">Rewards</a>
+            <!-- Links -->
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <div class="footer-col-title">Platform</div>
+                    <a asp-controller="Login" asp-action="Login_Page" class="ftr-lnk">Sign In</a>
+                    <a asp-controller="Login" asp-action="Register_Page" class="ftr-lnk">Register</a>
+                    <a asp-controller="Dashboard" asp-action="Dashboard" class="ftr-lnk">Dashboard</a>
+                    <a href="/#features" class="ftr-lnk">Features</a>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-col-title">Rewards</div>
+                    <a href="/#rewards" class="ftr-lnk">Points System</a>
+                    <a href="/#venues" class="ftr-lnk">Campus Venues</a>
+                    <a href="/#how" class="ftr-lnk">How It Works</a>
+                    <a href="/#faq" class="ftr-lnk">FAQ</a>
+                </div>
+                <div class="footer-col">
+                    <div class="footer-col-title">University</div>
+                    <a href="https://www.philadelphia.edu.jo" class="ftr-lnk" target="_blank" rel="noopener">Philadelphia University</a>
+                    <a href="/#who" class="ftr-lnk">For Students</a>
+                    <a href="/#testimonials" class="ftr-lnk">Student Stories</a>
+                </div>
             </div>
-            <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:22px;font-size:13px;line-height:1.8">
-                Built by <strong style="color:#94A3B8">Ahmad Allahwani · Ahmad Al-Atrash · Mustafa Maqousi · Abdul-Razzaq Qara</strong><br>
-                Philadelphia University · Graduation Project 2026
-            </div>
+        </div>
+        <!-- Bottom bar -->
+        <div class="footer-bottom">
+            <span>Built by <strong style="color:#94A3B8">Ahmad Allahwani · Ahmad Al-Atrash · Mustafa Maqousi · Abdul-Razzaq Qara</strong></span>
+            <span style="color:#334155;">·</span>
+            <span>Philadelphia University · Graduation Project 2026</span>
         </div>
     </footer>
 

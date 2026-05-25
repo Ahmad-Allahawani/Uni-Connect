@@ -70,3 +70,18 @@ mark {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius);
 }
+
+@media (max-width: 640px) {
+    .search-hero { padding: 18px 16px; }
+    .search-hero h1 { font-size: 18px; margin-bottom: 12px; }
+    .search-bar { flex-direction: column; gap: 8px; }
+    .result-card { padding: 14px; }
+    .result-title { font-size: 14px; }
+    .result-stats { gap: 10px; flex-wrap: wrap; }
+}
+
+@media (max-width: 480px) {
+    .search-wrapper { max-width: 100%; }
+    .result-meta { gap: 6px; }
+    .empty-search { padding: 40px 16px; }
+}

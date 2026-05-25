@@ -20,12 +20,12 @@
     <nav class="navbar">
         <div style="display: flex; align-items: center; gap: 16px; flex: 1;">
             <button class="nav-hamburger" id="sidebarToggle" aria-label="Open menu" style="display:none; border:none; background:none; cursor:pointer; padding:6px; border-radius:8px; color:var(--text-2); transition:background .2s;" onmouseover="this.style.background='var(--bg)'" onmouseout="this.style.background='none'">
-                <i class="ph ph-list" style="font-size:22px;" aria-hidden="true"></i>
+                <i class="ph-bold ph-list" style="font-size:22px;" aria-hidden="true"></i>
             </button>
             <a asp-controller="Home" asp-action="Index" style="text-decoration:none;">
                 <div class="nav-logo">
-                    <div class="nav-logo-icon" style="padding:0;overflow:hidden;background:none;border:none;width:36px;height:36px;">
-                        <img src="/images/logo/icon.svg" width="36" height="36" alt="UniConnect" style="display:block;border-radius:10px;" />
+                    <div class="nav-logo-icon" style="padding:2px;overflow:hidden;background:var(--indigo-light);border:1px solid rgba(61,82,160,0.15);width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;">
+                        <img src="/images/logo/icon.svg" width="32" height="32" alt="UniConnect" style="display:block;border-radius:8px;" />
                     </div>
                     <span><span class="logo-uni">Uni</span><span class="logo-conn">Connect</span></span>
                 </div>
@@ -36,34 +36,37 @@
                        autocomplete="off"
                        style="padding-right:42px; width:100%;" />
                 <button type="submit" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-2); display:flex; align-items:center;">
-                    <i class="ph ph-magnifying-glass" style="font-size:18px;"></i>
+                    <i class="ph-bold ph-magnifying-glass" style="font-size:18px;"></i>
                 </button>
             </form>
         </div>
-        <!-- EFFECT 6: Live clock -->
-        <div class="nav-live-info" style="font-size:11px;color:var(--text-2);font-weight:500;display:flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;white-space:nowrap;">
+        <!-- University label -->
+        <div class="nav-live-info" style="font-size:11px;color:var(--text-2);font-weight:500;display:flex;align-items:center;gap:8px;white-space:nowrap;">
           <span style="opacity:0.5;">Philadelphia University</span>
-          <span id="live-clock" style="font-family:monospace;letter-spacing:0.05em;"></span>
         </div>
         <div class="nav-actions">
             <a asp-controller="Dashboard" asp-action="Notifications" style="text-decoration:none; color:inherit;" aria-label="Notifications">
                 <div class="nav-bell" id="notifBell" role="img" aria-hidden="true">
-                    <i class="ph ph-bell" style="font-size:20px;"></i>
+                    <i class="ph-duotone ph-bell" style="font-size:20px;"></i>
                     <span class="nav-bell-badge" id="notifBadge" style="display:none">0</span>
                 </div>
             </a>
             <div style="position: relative;">
                 <button class="nav-user" id="navUserBtn" aria-label="Open user menu" aria-haspopup="true" aria-expanded="false" style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; border: none; background: none; cursor: pointer; border-radius: 8px; transition: background .2s;" onmouseover="this.style.background='var(--indigo-light)'" onmouseout="this.style.background='none'">
                     @{ var _navImg = User.FindFirst("ProfileImageUrl")?.Value; }
-                    <div class="av av-sm"><img src="@(string.IsNullOrEmpty(_navImg) ? AvatarHelper.Url(User.FindFirst(ClaimTypes.Name)?.Value, 44) : _navImg)" alt="User avatar" /></div>
+                    <div class="av-wrap">
+                        @{ var _navName = User.FindFirst(ClaimTypes.Name)?.Value; }
+                        <div class="av av-sm av-gradient-ring"><img src="@(string.IsNullOrEmpty(_navImg) ? AvatarHelper.Url(_navName, 44) : _navImg)" onerror="this.src='@AvatarHelper.FallbackUrl(_navName, 44)'" alt="User avatar" /></div>
+                        <span class="av-dot"></span>
+                    </div>
                     <span class="nav-user-name" style="font-size:13px; font-weight:600; color:var(--text); display:none;">@(User.FindFirst(ClaimTypes.Name)?.Value?.Split(' ').First() ?? "")</span>
                 </button>
                 <div class="nav-user-dropdown" id="navUserDropdown">
                     <a asp-controller="Dashboard" asp-action="Profile" class="nav-dropdown-item" style="text-decoration:none;"><i class="ph-fill ph-user-circle" style="font-size:16px;color:var(--indigo);"></i> My Profile</a>
-                    <a asp-controller="Dashboard" asp-action="Settings" class="nav-dropdown-item" style="text-decoration:none;"><i class="ph ph-gear" style="font-size:16px;color:var(--text-2);"></i> Settings</a>
+                    <a asp-controller="Dashboard" asp-action="Settings" class="nav-dropdown-item" style="text-decoration:none;"><i class="ph-duotone ph-gear" style="font-size:16px;color:var(--text-2);"></i> Settings</a>
                     <hr style="margin:0; border:none; border-top:1px solid var(--border);">
                     <form method="post" asp-controller="Login" asp-action="Logout" style="display:inline;">
-                        <button type="submit" class="nav-dropdown-item logout" style="text-decoration:none; background:none; border:none; cursor:pointer; padding:12px 16px; width:100%; text-align:left;"><i class="ph ph-sign-out" style="font-size:16px;"></i> Sign Out</button>
+                        <button type="submit" class="nav-dropdown-item logout" style="text-decoration:none; background:none; border:none; cursor:pointer; padding:12px 16px; width:100%; text-align:left;"><i class="ph-fill ph-sign-out" style="font-size:16px;"></i> Sign Out</button>
                     </form>
                 </div>
             </div>
@@ -79,7 +82,11 @@
         <aside class="sidebar" id="sidebar">
             <a asp-controller="Dashboard" asp-action="Profile" class="sidebar-user" style="text-decoration:none;">
                 @{ var _sideImg = User.FindFirst("ProfileImageUrl")?.Value; }
-                <div class="av av-md" style="border:2px solid var(--indigo-light);"><img src="@(string.IsNullOrEmpty(_sideImg) ? AvatarHelper.Url(User.FindFirst(ClaimTypes.Name)?.Value, 60) : _sideImg)" alt="User" /></div>
+                <div class="av-wrap">
+                    @{ var _sideName = User.FindFirst(ClaimTypes.Name)?.Value; }
+                    <div class="av av-md av-gradient-ring"><img src="@(string.IsNullOrEmpty(_sideImg) ? AvatarHelper.Url(_sideName, 60) : _sideImg)" onerror="this.src='@AvatarHelper.FallbackUrl(_sideName, 60)'" alt="User" /></div>
+                    <span class="av-dot av-dot-lg"></span>
+                </div>
                 <div>
                     <div class="sidebar-user-name">@(User.FindFirst(ClaimTypes.Name)?.Value ?? "Student")</div>
                     <div class="sidebar-user-pts"><i class="ph-fill ph-lightning" style="font-size:13px; vertical-align: middle; margin-right: 3px;"></i> <span id="sidebarPoints">-</span> pts</div>
@@ -88,27 +95,27 @@
 
             <nav class="sidebar-nav">
                 <a asp-controller="Dashboard" asp-action="Dashboard" class="nav-item" id="navDashboard">
-                    <i class="ph-bold ph-squares-four ni-dashboard" style="font-size:18px;"></i> Home Feed
+                    <span class="nav-icon-pill"><i class="ph-duotone ph-squares-four ni-dashboard" style="font-size:18px;"></i></span> Home Feed
                 </a>
                 <a asp-controller="Session" asp-action="ChatPage" class="nav-item" id="navChat">
-                    <i class="ph-bold ph-chats ni-chat" style="font-size:18px;"></i> Private Sessions
+                    <span class="nav-icon-pill"><i class="ph-duotone ph-chats ni-chat" style="font-size:18px;"></i></span> Private Sessions
                     <span class="nav-badge" id="msgBadge" style="display:none">0</span>
                 </a>
                 <a asp-controller="Dashboard" asp-action="Leaderboard" class="nav-item" id="navLeaderboard">
-                    <i class="ph-bold ph-trophy ni-trophy" style="font-size:18px;"></i> Leaderboard
+                    <span class="nav-icon-pill"><i class="ph-duotone ph-trophy ni-trophy" style="font-size:18px;"></i></span> Leaderboard
                 </a>
                 <a asp-controller="Dashboard" asp-action="Notifications" class="nav-item" id="navNotifications">
-                    <i class="ph-bold ph-bell ni-bell" style="font-size:18px;"></i> Notifications
+                    <span class="nav-icon-pill"><i class="ph-duotone ph-bell ni-bell" style="font-size:18px;"></i></span> Notifications
                     <span class="nav-badge" id="sidebarNotifBadge" style="display:none">0</span>
                 </a>
                 <a asp-controller="Dashboard" asp-action="Profile" class="nav-item" id="navProfile">
-                    <i class="ph-bold ph-user-circle ni-profile" style="font-size:18px;"></i> My Profile
+                    <span class="nav-icon-pill"><i class="ph-duotone ph-user-circle ni-profile" style="font-size:18px;"></i></span> My Profile
                 </a>
                 <a asp-controller="Dashboard" asp-action="Points" class="nav-item" id="navPoints">
-                    <i class="ph-bold ph-lightning ni-points" style="font-size:18px;"></i> Points & Rewards
+                    <span class="nav-icon-pill"><i class="ph-duotone ph-lightning ni-points" style="font-size:18px;"></i></span> Points & Rewards
                 </a>
                 <a asp-controller="Dashboard" asp-action="Settings" class="nav-item" id="navSettings">
-                    <i class="ph-bold ph-gear ni-settings" style="font-size:18px;"></i> Settings
+                    <span class="nav-icon-pill"><i class="ph-duotone ph-gear ni-settings" style="font-size:18px;"></i></span> Settings
                 </a>
             </nav>
 
@@ -129,7 +136,7 @@
             </div>
 
             <form method="post" asp-controller="Login" asp-action="Logout" style="display: contents;">
-                <button type="submit" class="sidebar-logout" style="border: none; background: none; cursor: pointer; padding: 12px 18px; width: 100%; text-align: left; font-size: 13.5px; color: var(--rose); transition: all 0.2s; display: flex; align-items: center; gap: 10px; font-weight:600;"><i class="ph ph-sign-out" style="font-size:17px;"></i> Sign Out</button>
+                <button type="submit" class="sidebar-logout" style="border: none; background: none; cursor: pointer; padding: 12px 18px; width: 100%; text-align: left; font-size: 13.5px; color: var(--rose); transition: all 0.2s; display: flex; align-items: center; gap: 10px; font-weight:600;"><i class="ph-fill ph-sign-out" style="font-size:17px;"></i> Sign Out</button>
             </form>
         </aside>
 
@@ -225,9 +232,18 @@
 
                 // Navbar bell badge — total unread
                 const badge = document.getElementById('notifBadge');
+                const bell  = document.getElementById('notifBell');
                 if (badge) {
                     badge.textContent = data.length;
                     badge.style.display = data.length > 0 ? 'inline-block' : 'none';
+                }
+                if (bell) {
+                    if (data.length > 0) {
+                        bell.classList.add('has-notif');
+                        setTimeout(() => bell.classList.remove('has-notif'), 800);
+                    } else {
+                        bell.classList.remove('has-notif');
+                    }
                 }
 
                 // Sidebar Notifications badge — exclude messages
@@ -321,35 +337,35 @@
       window.lenis = lenis;
     })();
     </script>
-    <!-- EFFECT 6: Live clock JS -->
-    <script>
-    (function(){
-      var clock = document.getElementById('live-clock');
-      if(!clock) return;
-      function tick(){
-        var now = new Date();
-        clock.textContent = now.toLocaleTimeString('en-US', {
-          hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false
-        });
-      }
-      tick();
-      setInterval(tick, 1000);
-    })();
-    </script>
     <script>
         // Fallback for broken uploaded profile images — fires if an img fails to load
         document.addEventListener('DOMContentLoaded', function () {
-            const pal = ['3D52A0','7C3AED','059669','D97706','0891B2','BE185D','C2410C','0F766E'];
+            const pal = [
+                ['3D52A0','7091E6'], ['7C3AED','A78BFA'], ['059669','34D399'],
+                ['D97706','FBBF24'], ['0891B2','22D3EE'], ['BE185D','F472B6'],
+                ['C2410C','FB923C'], ['0F766E','2DD4BF']
+            ];
             function svgAvatar(name) {
                 const n = name || 'U';
                 const init = n.charAt(0).toUpperCase();
                 const sum = n.split('').reduce(function(s,c){return s+c.charCodeAt(0);},0);
-                const col = pal[Math.abs(sum) % pal.length];
-                return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23" + col + "'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' fill='white' font-size='16' font-family='sans-serif' font-weight='bold'%3E" + init + "%3C/text%3E%3C/svg%3E";
+                const pair = pal[Math.abs(sum) % pal.length];
+                const id = 'g' + Math.abs(sum);
+                return "data:image/svg+xml," + encodeURIComponent(
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">' +
+                    '<defs><linearGradient id="' + id + '" x1="0%" y1="0%" x2="100%" y2="100%">' +
+                    '<stop offset="0%" stop-color="#' + pair[0] + '"/>' +
+                    '<stop offset="100%" stop-color="#' + pair[1] + '"/>' +
+                    '</linearGradient></defs>' +
+                    '<circle cx="32" cy="32" r="32" fill="url(#' + id + ')"/>' +
+                    '<text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" fill="white" font-size="24" font-family="Outfit,system-ui,sans-serif" font-weight="700">' + init + '</text>' +
+                    '</svg>'
+                );
             }
-            document.querySelectorAll('.av img').forEach(function(img) {
+            // Apply fallback to all avatar images (DiceBear might fail offline)
+        document.querySelectorAll('.av img, .q-avatar, .rank-avatar, .result-avatar, .how-lb-av, .hero-av').forEach(function(img) {
                 img.addEventListener('error', function () {
-                    this.src = svgAvatar(this.alt);
+                    this.src = svgAvatar(this.alt || this.getAttribute('data-name') || 'U');
                     this.onerror = null;
                 });
             });

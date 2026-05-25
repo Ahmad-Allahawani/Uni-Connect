@@ -58,4 +58,13 @@
 @media (max-width: 640px) {
     .single-post-wrapper { padding: 12px; }
     .post-card { padding: 16px; }
+    .answer-header { flex-wrap: wrap; gap: 8px; }
+    .answer-form-card { padding: 14px; }
+}
+
+@media (max-width: 480px) {
+    .single-post-wrapper { padding: 8px; }
+    .post-card { padding: 12px; }
+    .session-modal { padding: 12px; }
+    .answer-card { padding: 12px; }
 }

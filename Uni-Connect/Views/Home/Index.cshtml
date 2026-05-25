@@ -1,169 +1,750 @@
 @{
     ViewData["Title"] = "UniConnect — Philadelphia University Peer Learning Platform";
-
 }
 
+<!-- HERO — dark gradient, CSS orbs, split layout -->
+<section class="hero hero-dark">
+    <!-- Animated CSS orbs -->
+    <div class="orb orb-1" aria-hidden="true"></div>
+    <div class="orb orb-2" aria-hidden="true"></div>
+    <div class="orb orb-3" aria-hidden="true"></div>
+    <!-- Dot-grid overlay -->
+    <div class="hero-dotgrid" aria-hidden="true"></div>
 
-<!-- HERO -->
-<section class="hero">
-    <canvas id="hero-canvas" aria-hidden="true"></canvas>
-    <canvas id="ambient-canvas" aria-hidden="true"></canvas>
-    <div class="hero-badge"><i class="ph-fill ph-graduation-cap" style="font-size:14px;vertical-align:middle;margin-right:6px;"></i> Exclusive to Philadelphia University Students</div>
-    <h1 class="hero-title">
-        Help Each Other.<br>
-        <span class="grad">Earn Real Rewards.</span>
-    </h1>
-    <p class="hero-sub">The peer-learning platform built only for Philadelphia University students. Ask questions, share knowledge, earn points — then spend them at the university cafeteria, library, bookshop and more.</p>
-    <div class="hero-btns">
-        <a asp-controller="Login" asp-action="Register_Page"><button class="btn btn-primary btn-lg">Get Started Free</button></a>
-        <a href="#how"><button class="btn btn-ghost btn-lg">See How It Works <i class="ph-bold ph-caret-down" style="font-size:14px;vertical-align:middle;margin-left:4px;"></i></button></a>
+    <div class="hero-split">
+        <!-- LEFT: copy -->
+        <div class="hero-copy">
+            <div class="hero-badge">
+                <i class="ph-duotone ph-graduation-cap" style="font-size:14px;flex-shrink:0;"></i>
+                Exclusive to Philadelphia University Students
+            </div>
+            <h1 class="hero-title">
+                Ask. Help.<br>
+                <span class="grad">Get Rewarded.</span>
+            </h1>
+            <p class="hero-sub">The peer-learning platform built only for Philadelphia University students. Ask questions, share knowledge, earn points — then spend them at the university cafeteria, library, bookshop and more.</p>
+            <div class="hero-btns">
+                <a asp-controller="Login" asp-action="Register_Page">
+                    <button class="btn btn-hero-primary btn-lg">
+                        Get Started
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </button>
+                </a>
+                <a href="#how">
+                    <button class="btn btn-hero-ghost btn-lg">
+                        How It Works
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                </a>
+            </div>
+            <!-- Trust row: real avatar stack -->
+            <div class="hero-trust-row">
+                <div class="hero-avatar-stack">
+                    <img src="https://api.dicebear.com/9.x/notionists/svg?seed=Ahmad&backgroundColor=b6e3f4,c0aede" class="hero-av" alt="Student" />
+                    <img src="https://api.dicebear.com/9.x/notionists/svg?seed=Sami&backgroundColor=d1d4f9,ffd5dc" class="hero-av" alt="Student" />
+                    <img src="https://api.dicebear.com/9.x/notionists/svg?seed=Lina&backgroundColor=ffdfbf,c0aede" class="hero-av" alt="Student" />
+                    <img src="https://api.dicebear.com/9.x/notionists/svg?seed=Omar&backgroundColor=b6e3f4,d1d4f9" class="hero-av" alt="Student" />
+                    <div class="hero-av hero-av-more">+1k</div>
+                </div>
+                <span class="hero-trust-txt"><strong style="color:#fff;">1,284+</strong> students already learning together</span>
+            </div>
+            <!-- Stat pills -->
+            <div class="hero-stats-row" style="display:flex;gap:32px;flex-wrap:wrap;margin-top:28px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:36px;height:36px;border-radius:10px;background:rgba(67,97,238,0.12);display:flex;align-items:center;justify-content:center;">
+                        <i class="ph-duotone ph-users" style="font-size:16px;color:#7091E6;"></i>
+                    </div>
+                    <div>
+                        <div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#fff;">1,284+</div>
+                        <div style="font-size:11px;color:rgba(255,255,255,0.35);font-weight:600;">students</div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:36px;height:36px;border-radius:10px;background:rgba(67,97,238,0.12);display:flex;align-items:center;justify-content:center;">
+                        <i class="ph-duotone ph-chat-circle" style="font-size:16px;color:#7091E6;"></i>
+                    </div>
+                    <div>
+                        <div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#fff;">342+</div>
+                        <div style="font-size:11px;color:rgba(255,255,255,0.35);font-weight:600;">questions</div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:36px;height:36px;border-radius:10px;background:rgba(67,97,238,0.12);display:flex;align-items:center;justify-content:center;">
+                        <i class="ph-duotone ph-map-pin" style="font-size:16px;color:#7091E6;"></i>
+                    </div>
+                    <div>
+                        <div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#fff;">7</div>
+                        <div style="font-size:11px;color:rgba(255,255,255,0.35);font-weight:600;">venues</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: browser mockup with sidebar + feed + floating cards -->
+        <div class="hero-mockup-wrap" id="heroMockupWrap">
+            <div class="hero-browser" style="position:relative;">
+                <!-- Browser chrome -->
+                <div class="browser-bar">
+                    <span class="browser-dot" style="background:#FF5F57"></span>
+                    <span class="browser-dot" style="background:#FEBC2E"></span>
+                    <span class="browser-dot" style="background:#28C840"></span>
+                    <span class="browser-url">uniconnect.philau.edu</span>
+                </div>
+                <!-- Browser body: sidebar + feed -->
+                <div style="display:flex;min-height:340px;">
+                    <!-- Mini sidebar -->
+                    <div style="width:130px;flex-shrink:0;background:rgba(10,15,35,0.9);border-right:1px solid rgba(255,255,255,0.07);padding:14px 10px;display:flex;flex-direction:column;gap:4px;">
+                        <div style="font-size:9px;font-weight:800;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;padding:0 6px;">Menu</div>
+                        <div style="display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:8px;background:rgba(67,97,238,0.18);border:1px solid rgba(67,97,238,0.25);">
+                            <i class="ph-duotone ph-house" style="font-size:13px;color:#A5B4FC;"></i>
+                            <span style="font-size:11px;font-weight:700;color:#A5B4FC;">Home Feed</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:8px;">
+                            <i class="ph-duotone ph-chalkboard-teacher" style="font-size:13px;color:rgba(255,255,255,0.4);"></i>
+                            <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.4);">Sessions</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:8px;">
+                            <i class="ph-duotone ph-trophy" style="font-size:13px;color:rgba(255,255,255,0.4);"></i>
+                            <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.4);">Leaderboard</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:8px;">
+                            <i class="ph-duotone ph-user" style="font-size:13px;color:rgba(255,255,255,0.4);"></i>
+                            <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.4);">Profile</span>
+                        </div>
+                        <!-- Next reward progress card -->
+                        <div style="margin-top:auto;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:10px 8px;">
+                            <div style="font-size:9px;font-weight:800;color:#F59E0B;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Next Reward</div>
+                            <div style="font-size:10px;color:rgba(255,255,255,0.6);margin-bottom:6px;">160 pts away</div>
+                            <div style="background:rgba(255,255,255,0.1);border-radius:99px;height:4px;overflow:hidden;">
+                                <div style="width:84%;height:100%;background:linear-gradient(90deg,#F59E0B,#FCD34D);border-radius:99px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Feed area -->
+                    <div class="browser-content" style="flex:1;padding:14px 14px;gap:8px;">
+                        <div style="font-size:10px;font-weight:800;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;">Latest Questions</div>
+                        <!-- Card 1: solved, green border -->
+                        <div class="mock-feed-item" style="border-color:rgba(16,185,129,0.3);">
+                            <div class="mock-feed-avatar"><img src="https://api.dicebear.com/9.x/notionists/svg?seed=KhaledAli&backgroundColor=b6e3f4,c0aede&size=32" alt="Khaled"></div>
+                            <div class="mock-feed-body">
+                                <div class="mock-feed-title">How does AVL tree rotation work?</div>
+                                <div class="mock-feed-meta"><span class="mock-tag">Data Structures</span> <span style="color:rgba(255,255,255,.4);font-size:11px;">2 hr ago</span></div>
+                            </div>
+                            <span class="mock-solved">Solved</span>
+                        </div>
+                        <!-- Card 2 -->
+                        <div class="mock-feed-item">
+                            <div class="mock-feed-avatar" style="background:rgba(112,145,230,.3)"><img src="https://api.dicebear.com/9.x/notionists/svg?seed=LinaHatem&backgroundColor=d1d4f9,ffd5dc&size=32" alt="Lina"></div>
+                            <div class="mock-feed-body">
+                                <div class="mock-feed-title">Explain Dijkstra with code example</div>
+                                <div class="mock-feed-meta"><span class="mock-tag">Algorithms</span> <span style="color:rgba(255,255,255,.4);font-size:11px;">5 hr ago</span></div>
+                            </div>
+                            <span class="mock-badge-cnt">7</span>
+                        </div>
+                        <!-- Card 3 -->
+                        <div class="mock-feed-item">
+                            <div class="mock-feed-avatar" style="background:rgba(245,158,11,.25)"><img src="https://api.dicebear.com/9.x/notionists/svg?seed=SamiTariq&backgroundColor=ffdfbf,c0aede&size=32" alt="Sami"></div>
+                            <div class="mock-feed-body">
+                                <div class="mock-feed-title">SQL JOIN types explained simply</div>
+                                <div class="mock-feed-meta"><span class="mock-tag">Databases</span> <span style="color:rgba(255,255,255,.4);font-size:11px;">1 day ago</span></div>
+                            </div>
+                            <span class="mock-badge-cnt">12</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Floating notification cards: 3 total -->
+            <div class="float-card float-pts">
+                <div style="width:36px;height:36px;border-radius:10px;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="ph-duotone ph-star" style="font-size:18px;color:#F59E0B;"></i>
+                </div>
+                <div><div style="font-size:13px;font-weight:800;color:#fff">+15 pts Best Answer!</div><div style="font-size:11px;color:rgba(255,255,255,.55)">Your answer was selected</div></div>
+            </div>
+            <div class="float-card float-badge">
+                <div style="width:36px;height:36px;border-radius:10px;background:rgba(16,185,129,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="ph-duotone ph-seal-check" style="font-size:18px;color:#10B981;"></i>
+                </div>
+                <div><div style="font-size:13px;font-weight:800;color:#fff">Cafeteria 10% OFF Redeemed!</div><div style="font-size:11px;color:rgba(255,255,255,.55)">200 pts used · enjoy!</div></div>
+            </div>
+            <div class="float-card float-rank">
+                <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,rgba(67,97,238,0.3),rgba(112,145,230,0.2));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="ph-duotone ph-medal" style="font-size:18px;color:#A5B4FC;"></i>
+                </div>
+                <div><div style="font-size:13px;font-weight:800;color:#fff">#4 in IT Faculty</div><div style="font-size:11px;color:rgba(255,255,255,.55)">Climbing the leaderboard!</div></div>
+            </div>
+        </div>
     </div>
 
-    <div class="hero-stats">
-        <div style="text-align:center"><div class="stat-num">1,284+</div><div class="stat-lbl">Active Students</div></div>
-        <div style="text-align:center"><div class="stat-num">342+</div><div class="stat-lbl">Questions Answered</div></div>
-        <div style="text-align:center"><div class="stat-num">1,890+</div><div class="stat-lbl">Helpful Answers</div></div>
-        <div style="text-align:center"><div class="stat-num">7</div><div class="stat-lbl">Campus Venues</div></div>
-    </div>
+    <!-- Wave SVG at bottom of hero -->
+    <svg style="position:absolute;bottom:-2px;left:0;width:100%;z-index:3" viewBox="0 0 1440 80" fill="none" preserveAspectRatio="none"><path d="M0 32C240 64 480 80 720 64C960 48 1200 16 1440 32V80H0V32Z" fill="#F6F8FA"/></svg>
+</section>
 
-    <!-- Mock UI preview -->
-    <div class="hero-mockup">
-        <div class="mock">
-            <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
-                <div class="av av-sm"><img src="https://i.pravatar.cc/38?img=11" alt="Ahmad"></div>
-                <div><div style="font-weight:700;font-size:13px">Ahmad K.</div><div style="font-size:11px;color:var(--text-2)">2 hours ago</div></div>
-                <span style="margin-left:auto;background:var(--emerald-light);color:var(--emerald);padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700"><i class="ph-fill ph-check-circle" style="font-size:11px;vertical-align:middle;margin-right:3px;"></i> Solved</span>
+<!-- WHO IS THIS FOR -->
+<section class="section who-section" id="who">
+    <div style="max-width:1100px;margin:0 auto">
+        <div class="center">
+            <div class="section-tag">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Who It's For
             </div>
-            <div style="font-size:14px;font-weight:800;margin-bottom:10px;line-height:1.4">How does AVL tree rotation actually work?</div>
-            <div style="display:flex;gap:12px;font-size:12px;color:var(--text-2)"><span><i class="ph-bold ph-thumbs-up" style="font-size:12px;vertical-align:middle;"></i> 42</span><span><i class="ph ph-chat-circle" style="font-size:12px;vertical-align:middle;"></i> 7 answers</span><span><i class="ph ph-eye" style="font-size:12px;vertical-align:middle;"></i> 124 views</span></div>
+            <h2 class="section-title">Built for every student</h2>
+            <p class="section-sub">Whether you need help or want to share knowledge, UniConnect works for you.</p>
         </div>
-        <div class="mock">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-                <div style="width:44px;height:44px;background:var(--amber-light);border-radius:12px;display:flex;align-items:center;justify-content:center;"><i class="ph-fill ph-coin" style="font-size:28px;color:var(--amber);"></i></div>
-                <div><div style="font-size:14px;font-weight:800;color:var(--amber)">+15 pts earned!</div><div style="font-size:12px;color:var(--text-2)">Best Answer selected</div></div>
+        <div class="who-grid">
+            <div class="who-card step">
+                <div class="step-inner">
+                    <div class="who-ico" style="background:var(--indigo-light)">
+                        <i class="ph-duotone ph-student" style="font-size:32px;color:#3D52A0;line-height:1;"></i>
+                    </div>
+                    <div class="who-label">Struggling Students</div>
+                    <div class="who-desc">Get answers to tough questions from peers who already aced the same courses. Available 24/7 — no waiting for office hours.</div>
+                    <div class="who-tag">Ask questions · Save 10 pts</div>
+                </div>
             </div>
-            <div style="background:var(--border);border-radius:99px;height:8px;overflow:hidden;margin-bottom:7px"><div style="width:84%;height:100%;background:linear-gradient(90deg,var(--indigo),var(--violet));border-radius:99px"></div></div>
-            <div style="font-size:12px;color:var(--text-2)">840 / 1000 pts — 160 to Verified Tutor</div>
-        </div>
-        <div class="mock" style="background:var(--amber-light)">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:13px">
-                <i class="ph-duotone ph-coffee" style="font-size:36px;color:var(--amber-dark);"></i>
-                <div><div style="font-weight:800;font-size:14px">Cafeteria Discount</div><div style="font-size:12px;color:var(--text-2)">10% off your next meal</div></div>
-                <span style="background:var(--rose);color:#fff;border-radius:99px;padding:3px 10px;font-size:11px;font-weight:800;margin-left:auto">10% OFF</span>
+            <div class="who-card step">
+                <div class="step-inner">
+                    <div class="who-ico" style="background:var(--emerald-light)">
+                        <i class="ph-duotone ph-seal-check" style="font-size:32px;color:#10B981;line-height:1;"></i>
+                    </div>
+                    <div class="who-label">Top Performers</div>
+                    <div class="who-desc">Share your knowledge, earn points for every upvote and best answer, and unlock the Verified Tutor badge when you hit 1,000 pts.</div>
+                    <div class="who-tag" style="color:var(--emerald);background:var(--emerald-light)">Answer &amp; earn · +15 pts</div>
+                </div>
             </div>
-            <div style="background:var(--amber);color:#fff;padding:9px;border-radius:10px;text-align:center;font-weight:800;font-size:13px">Redeem — 200 pts <i class="ph-fill ph-coin" style="font-size:13px;vertical-align:middle;margin-left:2px;color:inherit;"></i></div>
-        </div>
-        <div class="mock">
-            <div style="font-size:13px;font-weight:800;margin-bottom:11px;color:var(--text-2)"><i class="ph-bold ph-trophy" style="font-size:13px;vertical-align:middle;margin-right:4px;"></i> Leaderboard — This Month</div>
-            <div style="display:flex;flex-direction:column;gap:9px">
-                <div style="display:flex;align-items:center;gap:9px"><i class="ph-fill ph-medal" style="font-size:17px;color:var(--amber);"></i><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=65" alt="Sami"></div><span style="font-size:13px;font-weight:700;flex:1">Sami T. ✓</span><span style="font-weight:900;font-size:13px;color:var(--amber)">1,240</span></div>
-                <div style="display:flex;align-items:center;gap:9px"><i class="ph-fill ph-medal" style="font-size:17px;color:var(--text-3);"></i><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=20" alt="Mona"></div><span style="font-size:13px;font-weight:700;flex:1">Mona A.</span><span style="font-weight:900;font-size:13px;color:var(--amber)">1,080</span></div>
-                <div style="display:flex;align-items:center;gap:9px"><i class="ph-fill ph-medal" style="font-size:17px;color:#CD7F32;"></i><div class="av" style="width:28px;height:28px"><img src="https://i.pravatar.cc/28?img=47" alt="Rania"></div><span style="font-size:13px;font-weight:700;flex:1">Rania K.</span><span style="font-weight:900;font-size:13px;color:var(--amber)">960</span></div>
+            <div class="who-card step">
+                <div class="step-inner">
+                    <div class="who-ico" style="background:var(--amber-light)">
+                        <i class="ph-duotone ph-chalkboard-teacher" style="font-size:32px;color:#F59E0B;line-height:1;"></i>
+                    </div>
+                    <div class="who-label">Private Tutors</div>
+                    <div class="who-desc">Accept one-on-one tutoring requests from classmates. Get rated for quality sessions and earn the most points on the platform.</div>
+                    <div class="who-tag" style="color:var(--amber);background:var(--amber-light)">Tutor sessions · +20 pts</div>
+                </div>
+            </div>
+            <div class="who-card step">
+                <div class="step-inner">
+                    <div class="who-ico" style="background:var(--violet-light)">
+                        <i class="ph-duotone ph-trophy" style="font-size:32px;color:#7091E6;line-height:1;"></i>
+                    </div>
+                    <div class="who-label">Competitive Learners</div>
+                    <div class="who-desc">Climb the faculty leaderboard every month. Earn special recognition, exclusive rewards, and a permanent badge on your profile.</div>
+                    <div class="who-tag" style="color:var(--violet);background:var(--violet-light)">Leaderboard &amp; badges</div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="section" id="how" data-num="01">
+<!-- HOW IT WORKS — Bold numbered timeline, no JS dependency -->
+<section class="section how-section" id="how" style="background:var(--bg)">
     <div style="max-width:1100px;margin:0 auto">
         <div class="center">
-            <div class="section-tag"><i class="ph-bold ph-lightning" style="font-size:13px;vertical-align:middle;margin-right:4px;"></i> Simple Process</div>
+            <div class="section-tag">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Simple Process
+            </div>
             <h2 class="section-title">How UniConnect works</h2>
-            <p class="section-sub">Six steps — from creating your account to redeeming real discounts at campus venues.</p>
+            <p class="section-sub">Six steps — from creating your account to redeeming real rewards on campus.</p>
         </div>
-        <div class="steps-grid">
-            <div class="step"><span class="step-ico"><i class="ph-duotone ph-envelope" style="font-size:24px;color:var(--indigo);"></i></span><div class="step-num">01</div><div class="step-title">Register with university email</div><div class="step-desc">Sign up using your official Philadelphia University email. Only enrolled students can join — verified against the university registry. You receive <strong>+50 welcome points</strong> instantly.</div></div>
-            <div class="step"><span class="step-ico"><i class="ph-duotone ph-hand-waving" style="font-size:24px;color:var(--indigo);"></i></span><div class="step-num">02</div><div class="step-title">Ask questions or help others</div><div class="step-desc">Post academic questions (costs 10 pts) and answer others to earn points back. Better answers get more upvotes. Best Answer earns +15 pts bonus automatically.</div></div>
-            <div class="step"><span class="step-ico"><i class="ph-fill ph-coin" style="font-size:24px;color:var(--amber);"></i></span><div class="step-num">03</div><div class="step-title">Earn points for every contribution</div><div class="step-desc">Every helpful action earns points — upvotes, best answers, private tutoring sessions, daily logins. Reach 1,000 pts to unlock <strong>Verified Tutor</strong> badge.</div></div>
-            <div class="step"><span class="step-ico"><i class="ph-bold ph-chat-circle-dots" style="font-size:24px;color:var(--indigo);"></i></span><div class="step-num">04</div><div class="step-title">Request private tutoring sessions</div><div class="step-desc">Need deeper help? Request a one-on-one private chat session with a verified tutor. Rate your session to help others in the future.</div></div>
-            <div class="step"><span class="step-ico"><i class="ph-fill ph-trophy" style="font-size:24px;color:var(--amber);"></i></span><div class="step-num">05</div><div class="step-title">Climb the faculty leaderboard</div><div class="step-desc">Monthly rankings for each faculty. Top contributors earn special recognition and unlock exclusive rewards. Compete with classmates in a friendly academic environment.</div></div>
-            <div class="step" style="background:linear-gradient(135deg,var(--indigo-light),var(--indigo-light));border-color:var(--border)"><span class="step-ico"><i class="ph-duotone ph-gift" style="font-size:24px;color:var(--indigo);"></i></span><div class="step-num">06</div><div class="step-title">Redeem at campus venues</div><div class="step-desc">Exchange points for <strong>real discounts</strong> at the university cafeteria, library, bookshop, print centre and more. A QR code is sent to your university email — scan it at the venue.</div></div>
+
+        <div class="how-new-layout">
+            <!-- Left: persistent platform preview card -->
+            <div class="how-preview-panel">
+                <div class="how-preview-card">
+                    <div class="how-preview-header">
+                        <div class="how-preview-dots">
+                            <span style="background:#FF5F57"></span>
+                            <span style="background:#FEBC2E"></span>
+                            <span style="background:#28C840"></span>
+                        </div>
+                        <span class="how-preview-url">uniconnect.philau.edu</span>
+                    </div>
+                    <!-- Points progress -->
+                    <div class="how-preview-pts-block">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                            <div style="width:38px;height:38px;background:linear-gradient(135deg,#F59E0B,#FCD34D);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>
+                            </div>
+                            <div>
+                                <div style="font-size:18px;font-weight:900;color:#F59E0B;line-height:1">840 pts</div>
+                                <div style="font-size:11px;color:var(--text-2)">160 to Verified Tutor</div>
+                            </div>
+                        </div>
+                        <div style="background:var(--border);border-radius:99px;height:6px;overflow:hidden;margin-bottom:16px">
+                            <div style="width:84%;height:100%;background:linear-gradient(90deg,var(--indigo),var(--violet));border-radius:99px;"></div>
+                        </div>
+                        <!-- Activity rows -->
+                        <div class="how-activity-row">
+                            <div class="how-activity-ico" style="background:var(--indigo-light)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#3D52A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            </div>
+                            <span style="font-size:12px;font-weight:600;flex:1">Answer posted</span>
+                            <span class="how-pts-badge how-earn">+5</span>
+                        </div>
+                        <div class="how-activity-row">
+                            <div class="how-activity-ico" style="background:var(--violet-light)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7091E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"/></svg>
+                            </div>
+                            <span style="font-size:12px;font-weight:600;flex:1">Got upvoted</span>
+                            <span class="how-pts-badge how-earn">+10</span>
+                        </div>
+                        <div class="how-activity-row">
+                            <div class="how-activity-ico" style="background:var(--emerald-light)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
+                            </div>
+                            <span style="font-size:12px;font-weight:600;flex:1">Best answer</span>
+                            <span class="how-pts-badge how-earn">+15</span>
+                        </div>
+                    </div>
+                    <!-- Venue redemption row -->
+                    <div class="how-redeem-row">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                        <span style="font-size:12px;font-weight:700;color:#F59E0B">Cafeteria 10% OFF — Redeem 200 pts</span>
+                    </div>
+                </div>
+                <!-- Leaderboard float card -->
+                <div class="how-float-leaderboard">
+                    <div style="font-size:11px;font-weight:800;color:var(--text-2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                        Top This Month
+                    </div>
+                    <div class="how-lb-row"><span class="how-lb-rank" style="color:#F59E0B">1</span><img src="https://api.dicebear.com/9.x/notionists/svg?seed=Sami&backgroundColor=d1d4f9" class="how-lb-av" alt="Sami"><span class="how-lb-name">Sami T. <span style="color:#10B981;font-size:10px">✓</span></span><span class="how-lb-pts">1,240</span></div>
+                    <div class="how-lb-row"><span class="how-lb-rank" style="color:var(--text-3)">2</span><img src="https://api.dicebear.com/9.x/notionists/svg?seed=Mona&backgroundColor=ffdfbf" class="how-lb-av" alt="Mona"><span class="how-lb-name">Mona A.</span><span class="how-lb-pts">1,080</span></div>
+                    <div class="how-lb-row"><span class="how-lb-rank" style="color:#CD7F32">3</span><img src="https://api.dicebear.com/9.x/notionists/svg?seed=Ahmad&backgroundColor=b6e3f4" class="how-lb-av" alt="Ahmad"><span class="how-lb-name">Ahmad K.</span><span class="how-lb-pts">960</span></div>
+                </div>
+            </div>
+
+            <!-- Right: numbered steps timeline -->
+            <div class="how-timeline">
+                <div class="how-tl-step step">
+                    <div class="how-tl-left">
+                        <div class="how-tl-num" style="background:linear-gradient(135deg,var(--indigo),var(--violet));color:#fff;">01</div>
+                        <div class="how-tl-line"></div>
+                    </div>
+                    <div class="how-tl-body">
+                        <div class="how-tl-icon-wrap" style="background:var(--indigo-light);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3D52A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        </div>
+                        <div>
+                            <div class="how-tl-title">Register with your university email</div>
+                            <div class="how-tl-desc">Sign up using your official Philadelphia University email. Verified against the registry. Receive <strong>+50 welcome points</strong> instantly on approval.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="how-tl-step step">
+                    <div class="how-tl-left">
+                        <div class="how-tl-num">02</div>
+                        <div class="how-tl-line"></div>
+                    </div>
+                    <div class="how-tl-body">
+                        <div class="how-tl-icon-wrap" style="background:var(--violet-light);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7091E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </div>
+                        <div>
+                            <div class="how-tl-title">Ask questions or answer others</div>
+                            <div class="how-tl-desc">Post academic questions (costs 10 pts) or help classmates by answering — earn back more than you spend. Better answers get upvoted.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="how-tl-step step">
+                    <div class="how-tl-left">
+                        <div class="how-tl-num" style="background:linear-gradient(135deg,#F59E0B,#FCD34D);color:#fff;">03</div>
+                        <div class="how-tl-line"></div>
+                    </div>
+                    <div class="how-tl-body">
+                        <div class="how-tl-icon-wrap" style="background:var(--amber-light);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>
+                        </div>
+                        <div>
+                            <div class="how-tl-title">Earn points for every contribution</div>
+                            <div class="how-tl-desc">Upvotes, best answers, tutoring sessions, daily logins — every action builds your score. Hit 1,000 pts to become a <strong>Verified Tutor</strong>.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="how-tl-step step">
+                    <div class="how-tl-left">
+                        <div class="how-tl-num">04</div>
+                        <div class="how-tl-line"></div>
+                    </div>
+                    <div class="how-tl-body">
+                        <div class="how-tl-icon-wrap" style="background:var(--violet-light);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7091E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <div>
+                            <div class="how-tl-title">Get matched with a private tutor</div>
+                            <div class="how-tl-desc">Need deeper help? Request a one-on-one private chat session with any Verified Tutor. Rate the session afterward for community transparency.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="how-tl-step step">
+                    <div class="how-tl-left">
+                        <div class="how-tl-num">05</div>
+                        <div class="how-tl-line"></div>
+                    </div>
+                    <div class="how-tl-body">
+                        <div class="how-tl-icon-wrap" style="background:var(--rose-light);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                        </div>
+                        <div>
+                            <div class="how-tl-title">Climb the faculty leaderboard</div>
+                            <div class="how-tl-desc">Monthly rankings per faculty. Top 3 contributors earn recognition badges and exclusive rewards. Friendly competition drives real learning.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="how-tl-step how-tl-last step">
+                    <div class="how-tl-left">
+                        <div class="how-tl-num" style="background:linear-gradient(135deg,var(--indigo),var(--violet));color:#fff;">06</div>
+                    </div>
+                    <div class="how-tl-body">
+                        <div class="how-tl-icon-wrap" style="background:var(--emerald-light);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                        </div>
+                        <div>
+                            <div class="how-tl-title">Redeem at campus venues — for real</div>
+                            <div class="how-tl-desc">Exchange points for <strong>actual discounts</strong> at the cafeteria, library, bookshop, print centre, canteen, gym and more. A unique QR code is emailed to you — just scan it at the venue.</div>
+                            <a asp-controller="Login" asp-action="Register_Page" class="how-tl-cta">Start earning points →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
 <!-- FEATURES -->
-<section class="section features-bg" id="features" data-num="02">
+<section class="section features-bg" id="features">
     <canvas id="features-canvas" aria-hidden="true"></canvas>
     <div style="max-width:1100px;margin:0 auto">
         <div class="center">
-            <div class="section-tag"><i class="ph-bold ph-star" style="font-size:13px;vertical-align:middle;margin-right:4px;"></i> Platform Features</div>
+            <div class="section-tag">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Platform Features
+            </div>
             <h2 class="section-title">Built for university life</h2>
             <p class="section-sub">Every feature designed around how students actually study, ask for help, and collaborate.</p>
         </div>
         <div class="features-grid">
-            <div class="feat"><div class="feat-ico" style="background:var(--indigo-light)"><i class="ph-bold ph-magnifying-glass" style="font-size:22px;color:var(--indigo);"></i></div><div class="feat-title">Smart Question Feed</div><div class="feat-desc">Browse questions by faculty, course, or topic. Live search finds existing answers before you post — saving your 10 pts asking cost.</div></div>
-            <div class="feat"><div class="feat-ico" style="background:var(--emerald-light)"><i class="ph-fill ph-check-circle" style="font-size:22px;color:var(--emerald);"></i></div><div class="feat-title">Best Answer System</div><div class="feat-desc">Question owners mark the most helpful answer. Best answers are pinned at the top and earn the contributor an automatic +15 pt reward.</div></div>
-            <div class="feat"><div class="feat-ico" style="background:var(--violet-light)"><i class="ph-bold ph-chats" style="font-size:22px;color:var(--violet);"></i></div><div class="feat-title">Private Tutoring Chat</div><div class="feat-desc">One-on-one real-time chat with verified tutors. Sessions are private and rated by both parties for transparency and quality.</div></div>
-            <div class="feat"><div class="feat-ico" style="background:var(--amber-light)"><i class="ph-fill ph-coin" style="font-size:22px;color:var(--amber);"></i></div><div class="feat-title">Points & Campus Rewards</div><div class="feat-desc">Earn points helping others and spend them at real campus locations — cafeteria, library, bookshop, print centre, gym and more.</div></div>
-            <div class="feat"><div class="feat-ico" style="background:var(--rose-light)"><i class="ph-fill ph-trophy" style="font-size:22px;color:var(--rose);"></i></div><div class="feat-title">Faculty Leaderboard</div><div class="feat-desc">Monthly rankings per faculty. Top 3 contributors earn special recognition badges and exclusive rewards for their academic community.</div></div>
-            <div class="feat"><div class="feat-ico" style="background:var(--indigo-light)"><i class="ph-fill ph-shield-check" style="font-size:22px;color:var(--indigo);"></i></div><div class="feat-title">AI-Assisted Moderation</div><div class="feat-desc">Content reviewed by AI and human admins. Report inappropriate posts anytime — admins review within 24 hours to keep the platform safe.</div></div>
+            <div class="feat"><div class="feat-inner">
+                <div class="feat-ico" style="background:var(--indigo-light)">
+                    <i class="ph-duotone ph-magnifying-glass" style="font-size:30px;color:#3D52A0;line-height:1;"></i>
+                </div>
+                <div class="feat-title">Smart Question Feed</div>
+                <div class="feat-desc">Browse questions by faculty, course, or topic. Live search finds existing answers before you post — saving your 10 pts asking cost.</div>
+            </div></div>
+            <div class="feat"><div class="feat-inner">
+                <div class="feat-ico" style="background:var(--emerald-light)">
+                    <i class="ph-duotone ph-check-circle" style="font-size:30px;color:#10B981;line-height:1;"></i>
+                </div>
+                <div class="feat-title">Best Answer System</div>
+                <div class="feat-desc">Question owners mark the most helpful answer. Best answers are pinned at the top and earn the contributor an automatic +15 pt reward.</div>
+            </div></div>
+            <div class="feat"><div class="feat-inner">
+                <div class="feat-ico" style="background:var(--violet-light)">
+                    <i class="ph-duotone ph-chat-dots" style="font-size:30px;color:#7091E6;line-height:1;"></i>
+                </div>
+                <div class="feat-title">Private Tutoring Chat</div>
+                <div class="feat-desc">One-on-one real-time chat with verified tutors. Sessions are private and rated by both parties for transparency and quality.</div>
+            </div></div>
+            <div class="feat"><div class="feat-inner">
+                <div class="feat-ico" style="background:var(--amber-light)">
+                    <i class="ph-duotone ph-coins" style="font-size:30px;color:#F59E0B;line-height:1;"></i>
+                </div>
+                <div class="feat-title">Points &amp; Campus Rewards</div>
+                <div class="feat-desc">Earn points helping others and spend them at real campus locations — cafeteria, library, bookshop, print centre, gym and more.</div>
+            </div></div>
+            <div class="feat"><div class="feat-inner">
+                <div class="feat-ico" style="background:var(--rose-light)">
+                    <i class="ph-duotone ph-ranking" style="font-size:30px;color:#F43F5E;line-height:1;"></i>
+                </div>
+                <div class="feat-title">Faculty Leaderboard</div>
+                <div class="feat-desc">Monthly rankings per faculty. Top 3 contributors earn special recognition badges and exclusive rewards for their academic community.</div>
+            </div></div>
+            <div class="feat"><div class="feat-inner">
+                <div class="feat-ico" style="background:var(--indigo-light)">
+                    <i class="ph-duotone ph-shield-check" style="font-size:30px;color:#3D52A0;line-height:1;"></i>
+                </div>
+                <div class="feat-title">AI-Assisted Moderation</div>
+                <div class="feat-desc">Content reviewed by AI and human admins. Report inappropriate posts anytime — admins review within 24 hours to keep the platform safe.</div>
+            </div></div>
         </div>
     </div>
 </section>
 
-<!-- POINTS SYSTEM -->
+<!-- WAVE: light → dark -->
+<div class="wave-divider wave-light-to-dark" aria-hidden="true">
+    <svg viewBox="0 0 1440 56" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0 0L60 9.3C120 19 240 37 360 42C480 47 600 40 720 32.7C840 26 960 19 1080 18.7C1200 19 1320 26 1380 29.3L1440 33V56H1380C1320 56 1200 56 1080 56C960 56 840 56 720 56C600 56 480 56 360 56C240 56 120 56 60 56H0V0Z" fill="#1a2550"/>
+    </svg>
+</div>
+
+<!-- POINTS SYSTEM — dark bg -->
 <section class="pts-bg" id="rewards">
+    <div class="orb orb-pts-1" aria-hidden="true"></div>
+    <div class="orb orb-pts-2" aria-hidden="true"></div>
     <div class="pts-2col">
         <div>
-            <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:7px 18px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px"><i class="ph-fill ph-coin" style="font-size:13px;vertical-align:middle;margin-right:4px;color:var(--amber);"></i> The Points System</div>
+            <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:7px 18px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>
+                The Points System
+            </div>
             <h2 style="font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-1px;line-height:1.15;color:#fff;margin-bottom:14px">Earn real rewards for helping others</h2>
             <p style="font-size:16px;color:rgba(255,255,255,.75);line-height:1.75;margin-bottom:24px">Every contribution earns points. Spend them on real discounts across the university campus — because helping classmates should have real benefits.</p>
             <div style="display:flex;flex-direction:column;gap:10px">
-                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><i class="ph-fill ph-lock" style="font-size:20px;color:rgba(255,255,255,.85);"></i><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">University emails only — 100% verified students</span></div>
-                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><i class="ph-duotone ph-envelope" style="font-size:20px;color:rgba(255,255,255,.85);"></i><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">QR codes sent directly to your university email</span></div>
-                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px"><i class="ph-duotone ph-gift" style="font-size:20px;color:rgba(255,255,255,.85);"></i><span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">Completely free — no credit card ever needed</span></div>
+                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">University emails only — 100% verified students</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    <span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">QR codes sent directly to your university email</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.1);border-radius:12px;padding:12px 16px">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="20 12 20 22 4 22 4 12"/><rect width="22" height="5" x="1" y="7"/><line x1="12" x2="12" y1="22" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                    <span style="font-size:14px;color:rgba(255,255,255,.85);font-weight:600">Completely free — no credit card ever needed</span>
+                </div>
             </div>
         </div>
         <div>
             <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.09em;margin-bottom:14px">HOW POINTS WORK:</div>
             <div class="pts-grid">
-                <div class="pts-item"><div class="pts-ico"><i class="ph-bold ph-chat-circle" style="font-size:20px;color:var(--indigo);"></i></div><div><div style="font-weight:700;font-size:13px">Post an Answer</div><div style="font-size:11px;opacity:.7">Help a classmate</div></div><div class="pts-val earn">+5</div></div>
-                <div class="pts-item"><div class="pts-ico"><i class="ph-fill ph-thumbs-up" style="font-size:20px;color:var(--violet);"></i></div><div><div style="font-weight:700;font-size:13px">Get Upvoted</div><div style="font-size:11px;opacity:.7">Per upvote received</div></div><div class="pts-val earn">+10</div></div>
-                <div class="pts-item"><div class="pts-ico"><i class="ph-fill ph-seal-check" style="font-size:20px;color:var(--emerald);"></i></div><div><div style="font-weight:700;font-size:13px">Best Answer</div><div style="font-size:11px;opacity:.7">Marked as best</div></div><div class="pts-val earn">+15</div></div>
-                <div class="pts-item"><div class="pts-ico"><i class="ph-fill ph-graduation-cap" style="font-size:20px;color:var(--amber);"></i></div><div><div style="font-weight:700;font-size:13px">Tutor Session</div><div style="font-size:11px;opacity:.7">Accept a request</div></div><div class="pts-val earn">+20</div></div>
-                <div class="pts-item"><div class="pts-ico"><i class="ph-fill ph-star" style="font-size:20px;color:var(--amber);"></i></div><div><div style="font-weight:700;font-size:13px">5-Star Rating</div><div style="font-size:11px;opacity:.7">Perfect session</div></div><div class="pts-val earn">+15</div></div>
-                <div class="pts-item"><div class="pts-ico"><i class="ph-duotone ph-calendar-check" style="font-size:20px;color:var(--indigo);"></i></div><div><div style="font-weight:700;font-size:13px">Daily Login</div><div style="font-size:11px;opacity:.7">Log in every day</div></div><div class="pts-val earn">+2</div></div>
-                <div class="pts-item"><div class="pts-ico"><i class="ph-bold ph-question" style="font-size:20px;color:var(--rose);"></i></div><div><div style="font-weight:700;font-size:13px">Post Question</div><div style="font-size:11px;opacity:.7">Costs points</div></div><div class="pts-val cost">−10</div></div>
-                <div class="pts-item"><div class="pts-ico"><i class="ph-bold ph-chat-circle-dots" style="font-size:20px;color:var(--rose);"></i></div><div><div style="font-weight:700;font-size:13px">Request Session</div><div style="font-size:11px;opacity:.7">Costs per request</div></div><div class="pts-val cost">−5</div></div>
+                <div class="pts-item">
+                    <div class="pts-ico"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                    <div><div style="font-weight:700;font-size:13px">Post an Answer</div><div style="font-size:11px;opacity:.7">Help a classmate</div></div>
+                    <div class="pts-val earn">+5</div>
+                </div>
+                <div class="pts-item">
+                    <div class="pts-ico"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"/></svg></div>
+                    <div><div style="font-weight:700;font-size:13px">Get Upvoted</div><div style="font-size:11px;opacity:.7">Per upvote received</div></div>
+                    <div class="pts-val earn">+10</div>
+                </div>
+                <div class="pts-item">
+                    <div class="pts-ico"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+                    <div><div style="font-weight:700;font-size:13px">Best Answer</div><div style="font-size:11px;opacity:.7">Marked as best</div></div>
+                    <div class="pts-val earn">+15</div>
+                </div>
+                <div class="pts-item">
+                    <div class="pts-ico"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+                    <div><div style="font-weight:700;font-size:13px">Tutor Session</div><div style="font-size:11px;opacity:.7">Accept a request</div></div>
+                    <div class="pts-val earn">+20</div>
+                </div>
+                <div class="pts-item">
+                    <div class="pts-ico"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+                    <div><div style="font-weight:700;font-size:13px">5-Star Rating</div><div style="font-size:11px;opacity:.7">Perfect session</div></div>
+                    <div class="pts-val earn">+15</div>
+                </div>
+                <div class="pts-item">
+                    <div class="pts-ico"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></svg></div>
+                    <div><div style="font-weight:700;font-size:13px">Daily Login</div><div style="font-size:11px;opacity:.7">Log in every day</div></div>
+                    <div class="pts-val earn">+2</div>
+                </div>
+                <div class="pts-item">
+                    <div class="pts-ico"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></div>
+                    <div><div style="font-weight:700;font-size:13px">Post Question</div><div style="font-size:11px;opacity:.7">Costs points</div></div>
+                    <div class="pts-val cost">−10</div>
+                </div>
+                <div class="pts-item">
+                    <div class="pts-ico"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z"/><path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1"/></svg></div>
+                    <div><div style="font-weight:700;font-size:13px">Request Session</div><div style="font-size:11px;opacity:.7">Costs per request</div></div>
+                    <div class="pts-val cost">−5</div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- CAMPUS VENUES -->
-<section class="section" id="venues" data-num="04">
+<!-- WAVE: dark → light -->
+<div class="wave-divider wave-dark-to-light-2" aria-hidden="true">
+    <svg viewBox="0 0 1440 56" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0 56L60 46.7C120 37 240 19 360 14C480 9 600 16 720 23.3C840 30 960 37 1080 37.3C1200 37 1320 30 1380 26.7L1440 23V0H1380C1320 0 1200 0 1080 0C960 0 840 0 720 0C600 0 480 0 360 0C240 0 120 0 60 0H0V56Z" fill="#F4F6FF"/>
+    </svg>
+</div>
+
+<!-- CAMPUS VENUES — horizontal carousel -->
+<section class="section" id="venues" style="background:#F4F6FF">
     <div style="max-width:1100px;margin:0 auto">
         <div class="center">
-            <div class="section-tag"><i class="ph-bold ph-buildings" style="font-size:13px;vertical-align:middle;margin-right:4px;"></i> Campus Partner Venues</div>
+            <div class="section-tag">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><path d="M6 22V12H2l10-10 10 10h-4v10H6z"/><path d="M10 22V18h4v4"/></svg>
+                Campus Partner Venues
+            </div>
             <h2 class="section-title">Spend your points on campus</h2>
             <p class="section-sub">Exchange earned points for real discounts at university partner venues. New venues added every semester!</p>
         </div>
-        <div class="venues-grid">
-            <div class="venue"><div class="venue-img" style="background:var(--amber-light)"><i class="ph-duotone ph-coffee" style="font-size:36px;color:var(--amber-dark);"></i><div class="venue-off">10% OFF</div></div><div class="venue-body"><div class="venue-name">University Cafeteria</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 200 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Main Building, Ground Floor</div></div></div>
-            <div class="venue"><div class="venue-img" style="background:var(--indigo-light)"><i class="ph-duotone ph-books" style="font-size:36px;color:var(--indigo);"></i><div class="venue-off">5 JD OFF</div></div><div class="venue-body"><div class="venue-name">University Library</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 400 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Library Building, Level 2</div></div></div>
-            <div class="venue"><div class="venue-img" style="background:var(--emerald-light)"><i class="ph-duotone ph-book-open" style="font-size:36px;color:var(--emerald);"></i><div class="venue-off">15% OFF</div></div><div class="venue-body"><div class="venue-name">Campus Bookshop</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 350 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Student Centre, Level 1</div></div></div>
-            <div class="venue"><div class="venue-img" style="background:var(--rose-light)"><i class="ph-duotone ph-printer" style="font-size:36px;color:var(--rose);"></i><div class="venue-off">20 Pages Free</div></div><div class="venue-body"><div class="venue-name">Print & Copy Centre</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 150 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> IT Building, Room 102</div></div></div>
-            <div class="venue"><div class="venue-img" style="background:var(--violet-light)"><i class="ph-duotone ph-cup" style="font-size:36px;color:var(--violet);"></i><div class="venue-off">Free Drink</div></div><div class="venue-body"><div class="venue-name">Student Canteen</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 180 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Engineering Building</div></div></div>
-            <div class="venue"><div class="venue-img" style="background:var(--violet-light)"><i class="ph-duotone ph-person-simple-run" style="font-size:36px;color:var(--violet);"></i><div class="venue-off">1 Week Free</div></div><div class="venue-body"><div class="venue-name">Sports & Gym Centre</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 500 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Sports Complex</div></div></div>
-            <div class="venue"><div class="venue-img" style="background:var(--amber-light)"><i class="ph-duotone ph-desktop" style="font-size:36px;color:var(--indigo);"></i><div class="venue-off">2hr Free</div></div><div class="venue-body"><div class="venue-name">Computer Lab Booking</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 100 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> IT Building, Lab 3</div></div></div>
-            <div class="venue" style="background:var(--indigo-light);border-color:var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:210px;text-align:center"><div style="margin-bottom:12px"><i class="ph-duotone ph-plus-circle" style="font-size:40px;color:var(--indigo);"></i></div><div style="font-weight:800;font-size:15px;color:var(--indigo);margin-bottom:6px">More Coming Soon</div><div style="font-size:13px;color:var(--text-2);padding:0 16px">New venues added every semester</div></div>
+        <div class="venues-carousel-wrap">
+            <button class="venue-arrow venue-arrow-left" id="venueLeft" aria-label="Scroll left"><i class="ph-bold ph-caret-left"></i></button>
+            <div class="venues-carousel" id="venuesCarousel">
+                <div class="venue"><div class="venue-img" style="background:var(--amber-light)"><i class="ph-duotone ph-coffee" style="font-size:36px;color:var(--amber-dark);"></i><div class="venue-off">10% OFF</div></div><div class="venue-body"><div class="venue-name">University Cafeteria</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 200 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Main Building, Ground Floor</div></div></div>
+                <div class="venue"><div class="venue-img" style="background:var(--indigo-light)"><i class="ph-duotone ph-books" style="font-size:36px;color:var(--indigo);"></i><div class="venue-off">5 JD OFF</div></div><div class="venue-body"><div class="venue-name">University Library</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 400 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Library Building, Level 2</div></div></div>
+                <div class="venue"><div class="venue-img" style="background:var(--emerald-light)"><i class="ph-duotone ph-book-open" style="font-size:36px;color:var(--emerald);"></i><div class="venue-off">15% OFF</div></div><div class="venue-body"><div class="venue-name">Campus Bookshop</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 350 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Student Centre, Level 1</div></div></div>
+                <div class="venue"><div class="venue-img" style="background:var(--rose-light)"><i class="ph-duotone ph-printer" style="font-size:36px;color:var(--rose);"></i><div class="venue-off">20 Pages Free</div></div><div class="venue-body"><div class="venue-name">Print &amp; Copy Centre</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 150 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> IT Building, Room 102</div></div></div>
+                <div class="venue"><div class="venue-img" style="background:var(--violet-light)"><i class="ph-duotone ph-cup" style="font-size:36px;color:var(--violet);"></i><div class="venue-off">Free Drink</div></div><div class="venue-body"><div class="venue-name">Student Canteen</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 180 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Engineering Building</div></div></div>
+                <div class="venue"><div class="venue-img" style="background:var(--violet-light)"><i class="ph-duotone ph-person-simple-run" style="font-size:36px;color:var(--violet);"></i><div class="venue-off">1 Week Free</div></div><div class="venue-body"><div class="venue-name">Sports &amp; Gym Centre</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 500 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> Sports Complex</div></div></div>
+                <div class="venue"><div class="venue-img" style="background:var(--amber-light)"><i class="ph-duotone ph-desktop" style="font-size:36px;color:var(--indigo);"></i><div class="venue-off">2hr Free</div></div><div class="venue-body"><div class="venue-name">Computer Lab Booking</div><div class="venue-pts"><i class="ph-fill ph-coin" style="font-size:13px;color:var(--amber);vertical-align:middle;margin-right:3px;"></i> 100 pts to redeem</div><div class="venue-loc"><i class="ph ph-map-pin" style="font-size:13px;vertical-align:middle;margin-right:3px;"></i> IT Building, Lab 3</div></div></div>
+                <div class="venue venue-more"><div style="font-size:38px;color:var(--indigo);margin-bottom:12px"><i class="ph-duotone ph-plus-circle"></i></div><div style="font-weight:800;font-size:15px;color:var(--indigo);margin-bottom:6px">More Coming Soon</div><div style="font-size:13px;color:var(--text-2)">New venues every semester</div></div>
+            </div>
+            <button class="venue-arrow venue-arrow-right" id="venueRight" aria-label="Scroll right"><i class="ph-bold ph-caret-right"></i></button>
         </div>
     </div>
 </section>
 
-<!-- TESTIMONIALS -->
-<section class="section features-bg" data-num="05">
-    <div style="max-width:1100px;margin:0 auto">
-        <div class="center">
-            <div class="section-tag"><i class="ph-bold ph-quotes" style="font-size:14px;vertical-align:middle;margin-right:4px;"></i> Student Stories</div>
-            <h2 class="section-title">What students are saying</h2>
+<!-- TESTIMONIALS — Premium dark glass carousel -->
+<section id="testimonials" style="background:linear-gradient(160deg,#0B1220 0%,#111827 50%,#0B1220 100%);padding:clamp(64px,8vw,100px) clamp(20px,5vw,48px);position:relative;overflow:hidden;">
+    <!-- Ambient glows -->
+    <div aria-hidden="true" style="position:absolute;width:500px;height:500px;top:-120px;right:-100px;background:radial-gradient(circle,rgba(67,97,238,0.1) 0%,transparent 70%);border-radius:50%;pointer-events:none;"></div>
+    <div aria-hidden="true" style="position:absolute;width:350px;height:350px;bottom:-80px;left:-60px;background:radial-gradient(circle,rgba(245,158,11,0.07) 0%,transparent 70%);border-radius:50%;pointer-events:none;"></div>
+
+    <div style="max-width:820px;margin:0 auto;position:relative;z-index:1;">
+        <!-- Header -->
+        <div style="text-align:center;margin-bottom:48px;">
+            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:99px;padding:6px 16px;font-size:12px;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;">
+                <i class="ph-duotone ph-chat-circle-dots" style="font-size:13px;"></i> Student Stories
+            </div>
+            <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,4vw,40px);font-weight:700;color:#fff;letter-spacing:-0.03em;line-height:1.15;margin:0;">What students are saying</h2>
         </div>
-        <div class="testi-grid">
-            <div class="testi"><div class="testi-q">"</div><div class="testi-txt">UniConnect saved me the night before my algorithms final. I asked about Dijkstra at midnight and got a perfect answer with code examples in 20 minutes!</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=11" alt="Ahmad"></div><div><div style="font-weight:800;font-size:14px">Ahmad K.</div><div style="font-size:12px;color:var(--text-2)">IT Faculty · Year 3</div></div><div style="margin-left:auto;display:flex;gap:2px;color:var(--amber);"><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i></div></div></div>
-            <div class="testi"><div class="testi-q">"</div><div class="testi-txt">I earned 1,200+ points answering CS questions and have redeemed library credit twice. Helping classmates and getting real rewards — this platform is genius!</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=65" alt="Sami"></div><div><div style="font-weight:800;font-size:14px">Sami T. ✓</div><div style="font-size:12px;color:var(--text-2)">Verified Tutor · IT Faculty</div></div><div style="margin-left:auto;display:flex;gap:2px;color:var(--amber);"><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i></div></div></div>
-            <div class="testi"><div class="testi-q">"</div><div class="testi-txt">I used 200 points for a cafeteria discount — 10% off my lunch! The system motivates me to actually participate and help classmates every day.</div><div style="display:flex;align-items:center;gap:11px"><div class="av av-md"><img src="https://i.pravatar.cc/46?img=47" alt="Lina"></div><div><div style="font-weight:800;font-size:14px">Lina H.</div><div style="font-size:12px;color:var(--text-2)">Engineering · Year 2</div></div><div style="margin-left:auto;display:flex;gap:2px;color:var(--amber);"><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i><i class="ph-fill ph-star" style="font-size:14px;"></i></div></div></div>
+
+        <!-- Carousel -->
+        <div id="testiCarousel" style="position:relative;">
+            <!-- Slide 1 -->
+            <div class="testi-slide" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:28px;padding:clamp(32px,5vw,52px);text-align:center;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);">
+                <div style="display:flex;justify-content:center;gap:3px;margin-bottom:22px;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <p style="font-size:clamp(17px,2.2vw,22px);color:rgba(255,255,255,0.92);line-height:1.75;font-style:italic;max-width:640px;margin:0 auto 28px;letter-spacing:-0.01em;">"UniConnect saved me the night before my algorithms final. I asked about Dijkstra at midnight and got a perfect answer with code examples in 20 minutes. Absolute lifesaver."</p>
+                <div style="width:36px;height:2px;background:linear-gradient(90deg,#4361EE,#7091E6);border-radius:99px;margin:0 auto 24px;"></div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+                    <img src="https://api.dicebear.com/9.x/notionists/svg?seed=AhmadK&backgroundColor=b6e3f4,c0aede&size=48" style="width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);" alt="Ahmad K." />
+                    <div style="text-align:left;"><div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#fff;">Ahmad K.</div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;">IT Faculty · Year 3</div></div>
+                </div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="testi-slide" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:28px;padding:clamp(32px,5vw,52px);text-align:center;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;">
+                <div style="display:flex;justify-content:center;gap:3px;margin-bottom:22px;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <p style="font-size:clamp(17px,2.2vw,22px);color:rgba(255,255,255,0.92);line-height:1.75;font-style:italic;max-width:640px;margin:0 auto 28px;letter-spacing:-0.01em;">"I earned 1,200+ points answering CS questions and redeemed library credit twice. Helping classmates and getting real rewards — this platform changed how I study."</p>
+                <div style="width:36px;height:2px;background:linear-gradient(90deg,#4361EE,#7091E6);border-radius:99px;margin:0 auto 24px;"></div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+                    <img src="https://api.dicebear.com/9.x/notionists/svg?seed=SamiTariq&backgroundColor=ffdfbf,c0aede&size=48" style="width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);" alt="Sami T." />
+                    <div style="text-align:left;"><div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#fff;">Sami T.</div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;">Verified Tutor · IT Faculty</div></div>
+                </div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="testi-slide" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:28px;padding:clamp(32px,5vw,52px);text-align:center;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;">
+                <div style="display:flex;justify-content:center;gap:3px;margin-bottom:22px;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <p style="font-size:clamp(17px,2.2vw,22px);color:rgba(255,255,255,0.92);line-height:1.75;font-style:italic;max-width:640px;margin:0 auto 28px;letter-spacing:-0.01em;">"I used 200 points for a cafeteria discount — 10% off my lunch every day. The gamification motivates me to actually help classmates. I love it."</p>
+                <div style="width:36px;height:2px;background:linear-gradient(90deg,#4361EE,#7091E6);border-radius:99px;margin:0 auto 24px;"></div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+                    <img src="https://api.dicebear.com/9.x/notionists/svg?seed=LinaHatem&backgroundColor=d1d4f9,ffd5dc&size=48" style="width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);" alt="Lina H." />
+                    <div style="text-align:left;"><div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#fff;">Lina H.</div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;">Engineering · Year 2</div></div>
+                </div>
+            </div>
+            <!-- Slide 4 -->
+            <div class="testi-slide" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:28px;padding:clamp(32px,5vw,52px);text-align:center;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;">
+                <div style="display:flex;justify-content:center;gap:3px;margin-bottom:22px;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <p style="font-size:clamp(17px,2.2vw,22px);color:rgba(255,255,255,0.92);line-height:1.75;font-style:italic;max-width:640px;margin:0 auto 28px;letter-spacing:-0.01em;">"The private tutoring sessions are incredible. Got matched with a stats tutor in 5 minutes. Worth every point I spent. My exam score jumped 20%."</p>
+                <div style="width:36px;height:2px;background:linear-gradient(90deg,#4361EE,#7091E6);border-radius:99px;margin:0 auto 24px;"></div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+                    <img src="https://api.dicebear.com/9.x/notionists/svg?seed=MonaAli&backgroundColor=ffdfbf,d1d4f9&size=48" style="width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);" alt="Mona A." />
+                    <div style="text-align:left;"><div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#fff;">Mona A.</div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;">Business · Year 3</div></div>
+                </div>
+            </div>
+            <!-- Slide 5 -->
+            <div class="testi-slide" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:28px;padding:clamp(32px,5vw,52px);text-align:center;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:none;">
+                <div style="display:flex;justify-content:center;gap:3px;margin-bottom:22px;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFB627"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <p style="font-size:clamp(17px,2.2vw,22px);color:rgba(255,255,255,0.92);line-height:1.75;font-style:italic;max-width:640px;margin:0 auto 28px;letter-spacing:-0.01em;">"I went from being too shy to ask questions to top 10 on the leaderboard in my faculty. UniConnect gave me confidence and real skills."</p>
+                <div style="width:36px;height:2px;background:linear-gradient(90deg,#4361EE,#7091E6);border-radius:99px;margin:0 auto 24px;"></div>
+                <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+                    <img src="https://api.dicebear.com/9.x/notionists/svg?seed=RaniaKh&backgroundColor=d1d4f9,ffdfbf&size=48" style="width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);" alt="Rania K." />
+                    <div style="text-align:left;"><div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#fff;">Rania K.</div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px;">Science · Year 2</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation: arrows + dots -->
+        <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:28px;">
+            <button id="testiPrev" style="width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;" aria-label="Previous review">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div id="testiDots" style="display:flex;gap:6px;align-items:center;"></div>
+            <button id="testiNext" style="width:40px;height:40px;border-radius:50%;border:none;background:rgba(67,97,238,0.6);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;" aria-label="Next review">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="section faq-section" id="faq">
+    <div style="max-width:760px;margin:0 auto">
+        <div class="center">
+            <div class="section-tag">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                FAQ
+            </div>
+            <h2 class="section-title">Frequently asked questions</h2>
+        </div>
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-q" aria-expanded="false">
+                    Who can join UniConnect?
+                    <i class="ph-bold ph-caret-down faq-icon"></i>
+                </button>
+                <div class="faq-a">UniConnect is exclusively for enrolled students at Philadelphia University. You register with your official university email, which is verified against the university registry. No one outside the university can create an account.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-q" aria-expanded="false">
+                    How do I earn points?
+                    <i class="ph-bold ph-caret-down faq-icon"></i>
+                </button>
+                <div class="faq-a">You earn points by helping classmates — posting answers (+5), getting upvotes (+10 each), having your answer marked as Best Answer (+15), accepting tutor sessions (+20), getting 5-star ratings (+15), and daily logins (+2). You spend points posting questions (−10) or requesting tutoring sessions (−5).</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-q" aria-expanded="false">
+                    How do campus reward redemptions work?
+                    <i class="ph-bold ph-caret-down faq-icon"></i>
+                </button>
+                <div class="faq-a">When you redeem points for a campus venue discount, a unique QR code is generated and sent to your university email. Take that QR code to the venue, show it at the counter, and the discount is applied instantly. Each code is single-use.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-q" aria-expanded="false">
+                    What is the Verified Tutor badge?
+                    <i class="ph-bold ph-caret-down faq-icon"></i>
+                </button>
+                <div class="faq-a">When you accumulate 1,000 points through helping others, you automatically unlock the Verified Tutor badge. This badge is displayed on your profile and makes you eligible to accept private one-on-one tutoring session requests from other students, earning even more points.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-q" aria-expanded="false">
+                    Is UniConnect completely free?
+                    <i class="ph-bold ph-caret-down faq-icon"></i>
+                </button>
+                <div class="faq-a">Yes — 100% free, forever. No credit card, no subscription, no hidden charges. The platform is a graduation project built specifically for Philadelphia University students to benefit from peer learning and campus rewards.</div>
+            </div>
         </div>
     </div>
 </section>
@@ -188,7 +769,7 @@
 </section>
 
 @section Scripts {
-<!-- EFFECT 2: GSAP scroll reveal + hero word split -->
+<!-- GSAP scroll reveal -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
@@ -196,325 +777,269 @@
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   gsap.registerPlugin(ScrollTrigger);
 
-  // Hero heading word-split reveal
-  var heroTitle = document.querySelector('.hero-title');
-  if(heroTitle){
-    var html = heroTitle.innerHTML;
-    // Split text nodes only, preserve inner HTML tags (like .grad span)
-    heroTitle.style.opacity = '1';
-    gsap.from(heroTitle, { y: 40, opacity: 0, duration: 0.9, ease: 'power3.out', delay: 0.1 });
-  }
-
-  // Section headings slide up
   gsap.utils.toArray('.section-title').forEach(function(el){
-    gsap.from(el, {
-      scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' },
-      y: 40, opacity: 0, duration: 0.7, ease: 'power2.out'
-    });
+    gsap.fromTo(el,
+      { y: 24, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.65, ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 95%', toggleActions: 'play none none none' }
+      }
+    );
   });
 
-  // Cards stagger (GSAP overrides IntersectionObserver reveal for these)
-  gsap.utils.toArray('.step, .feat, .venue, .testi').forEach(function(el, i){
-    gsap.from(el, {
-      scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' },
-      y: 50, opacity: 0, duration: 0.55, delay: (i % 3) * 0.09, ease: 'power2.out'
-    });
-  });
-
-  // Hero parallax on canvas
-  var heroBg = document.getElementById('hero-canvas');
-  if(heroBg){
-    gsap.to(heroBg, {
-      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-      y: '30%', ease: 'none'
-    });
-  }
-
-  // GSAP + Lenis integration (if lenis loaded after GSAP)
   if(window.lenis){
     window.lenis.on('scroll', ScrollTrigger.update);
   }
 })();
 </script>
 
-<!-- EFFECT 4: Text scramble on hero (first text node only, preserves .grad span) -->
+<!-- Features section particles -->
 <script>
 (function(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var el = document.querySelector('.hero-title');
-  if(!el) return;
-  // Only scramble the first text node ("Help Each Other.")
-  var textNode = null;
-  for(var i=0;i<el.childNodes.length;i++){
-    if(el.childNodes[i].nodeType===3 && el.childNodes[i].textContent.trim()){
-      textNode = el.childNodes[i]; break;
-    }
-  }
-  if(!textNode) return;
-  var original = textNode.textContent;
-  var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  var frame = 0, totalFrames = 28;
-  function scramble(){
-    var progress = frame / totalFrames;
-    var result = original.split('').map(function(char, i){
-      if(char === ' ' || char === '\n') return char;
-      if(i < progress * original.length) return char;
-      return chars[Math.floor(Math.random() * chars.length)];
-    }).join('');
-    textNode.textContent = result;
-    frame++;
-    if(frame <= totalFrames) requestAnimationFrame(scramble);
-    else textNode.textContent = original;
-  }
-  window.addEventListener('load', function(){ setTimeout(scramble, 250); });
-})();
-</script>
-
-<!-- EFFECT 3: Ambient floating geometry canvas -->
-<script>
-(function(){
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var canvas = document.getElementById('ambient-canvas');
-  if(!canvas) return;
-  var ctx = canvas.getContext('2d');
-  var W, H, shapes = [];
-  var COLORS = ['61,82,160','112,145,230','245,158,11'];
-
-  function Shape(){
-    this.x = Math.random()*W; this.y = Math.random()*H;
-    this.size = Math.random()*55+15;
-    this.type = Math.floor(Math.random()*3);
-    this.color = COLORS[Math.floor(Math.random()*COLORS.length)];
-    this.vx = (Math.random()-0.5)*0.25; this.vy = (Math.random()-0.5)*0.25;
-    this.rotation = Math.random()*Math.PI*2;
-    this.rotSpeed = (Math.random()-0.5)*0.004;
-    this.opacity = Math.random()*0.12+0.04;
-  }
-
-  function resize(){
-    var rect = canvas.parentElement.getBoundingClientRect();
-    W = canvas.width = rect.width; H = canvas.height = rect.height;
-  }
-  function init(){
-    resize(); shapes = [];
-    var count = Math.max(6, Math.floor(W/130));
-    for(var i=0;i<count;i++) shapes.push(new Shape());
-  }
-
-  var scrollY = 0;
-  window.addEventListener('scroll', function(){ scrollY = window.scrollY; },{passive:true});
-  var hidden = false;
-  document.addEventListener('visibilitychange', function(){ hidden = document.hidden; });
-
-  function drawShape(s){
-    ctx.save();
-    ctx.translate(s.x, s.y - scrollY*0.08);
-    ctx.rotate(s.rotation);
-    ctx.strokeStyle = 'rgba('+s.color+','+s.opacity+')';
-    ctx.lineWidth = 1;
-    if(s.type===0){
-      ctx.beginPath(); ctx.arc(0,0,s.size/2,0,Math.PI*2); ctx.stroke();
-    } else if(s.type===1){
-      ctx.beginPath(); ctx.moveTo(0,-s.size/2); ctx.lineTo(s.size/2,s.size/2); ctx.lineTo(-s.size/2,s.size/2); ctx.closePath(); ctx.stroke();
-    } else {
-      ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(-s.size/2,0); ctx.lineTo(s.size/2,0); ctx.stroke();
-    }
-    ctx.restore();
-  }
-
-  function draw(){
-    requestAnimationFrame(draw);
-    if(hidden) return;
-    ctx.clearRect(0,0,W,H);
-    shapes.forEach(function(s){
-      s.x+=s.vx; s.y+=s.vy; s.rotation+=s.rotSpeed;
-      if(s.x<-s.size) s.x=W+s.size; if(s.x>W+s.size) s.x=-s.size;
-      if(s.y<-s.size) s.y=H+s.size; if(s.y>H+s.size) s.y=-s.size;
-      drawShape(s);
-    });
-  }
-
-  window.addEventListener('resize', init);
-  init(); draw();
-})();
-</script>
-
-<script>
-(function () {
-  /* ── prefers-reduced-motion guard ── */
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  /* ════════════════════════════════════════
-     HERO PARTICLE CONSTELLATION
-  ════════════════════════════════════════ */
-  var heroSection = document.querySelector('.hero');
-  var hc = document.getElementById('hero-canvas');
-  if (hc && heroSection) {
-    var hCtx = hc.getContext('2d');
-    var mouse = { x: -9999, y: -9999 };
-    var N = 70;
-    var MAX_DIST = 120;
-    var particles = [];
-
-    function hResize() {
-      hc.width  = heroSection.offsetWidth;
-      hc.height = heroSection.offsetHeight;
-    }
-    hResize();
-    window.addEventListener('resize', hResize, { passive: true });
-
-    for (var i = 0; i < N; i++) {
-      particles.push({
-        x: Math.random() * hc.width,
-        y: Math.random() * hc.height,
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6
-      });
-    }
-
-    window.addEventListener('mousemove', function (e) {
-      var r = heroSection.getBoundingClientRect();
-      mouse.x = e.clientX - r.left;
-      mouse.y = e.clientY - r.top;
-    }, { passive: true });
-
-    window.addEventListener('scroll', function () {
-      hc.style.transform = 'translateY(' + (window.scrollY * 0.4) + 'px)';
-    }, { passive: true });
-
-    function hDraw() {
-      if (document.hidden) { requestAnimationFrame(hDraw); return; }
-      hCtx.clearRect(0, 0, hc.width, hc.height);
-
-      /* gravity toward mouse for nearest 5 */
-      var sorted = particles.slice().sort(function (a, b) {
-        return Math.hypot(a.x - mouse.x, a.y - mouse.y) -
-               Math.hypot(b.x - mouse.x, b.y - mouse.y);
-      });
-      for (var k = 0; k < Math.min(5, sorted.length); k++) {
-        var p = sorted[k];
-        var ddx = mouse.x - p.x, ddy = mouse.y - p.y;
-        var d   = Math.hypot(ddx, ddy) || 1;
-        p.vx += ddx / d * 0.12;
-        p.vy += ddy / d * 0.12;
-      }
-
-      for (var i = 0; i < particles.length; i++) {
-        var p = particles[i];
-        p.vx *= 0.97; p.vy *= 0.97;
-        var spd = Math.hypot(p.vx, p.vy);
-        if (spd > 2) { p.vx = p.vx / spd * 2; p.vy = p.vy / spd * 2; }
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0) p.x = hc.width;  if (p.x > hc.width)  p.x = 0;
-        if (p.y < 0) p.y = hc.height; if (p.y > hc.height) p.y = 0;
-
-        hCtx.beginPath();
-        hCtx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
-        hCtx.fillStyle = 'rgba(61,82,160,0.6)';
-        hCtx.fill();
-
-        for (var j = i + 1; j < particles.length; j++) {
-          var q = particles[j];
-          var dist = Math.hypot(p.x - q.x, p.y - q.y);
-          if (dist < MAX_DIST) {
-            hCtx.beginPath();
-            hCtx.moveTo(p.x, p.y);
-            hCtx.lineTo(q.x, q.y);
-            hCtx.strokeStyle = 'rgba(61,82,160,' + (0.18 * (1 - dist / MAX_DIST)) + ')';
-            hCtx.lineWidth = 1;
-            hCtx.stroke();
-          }
-        }
-      }
-      requestAnimationFrame(hDraw);
-    }
-    hDraw();
-  }
-
-  /* ════════════════════════════════════════
-     FEATURES SECTION PARTICLES
-  ════════════════════════════════════════ */
   var featSection = document.getElementById('features');
   var fc = document.getElementById('features-canvas');
-  if (fc && featSection) {
-    var fCtx = fc.getContext('2d');
-    var fParts = [];
-    var F = 40;
-    var fActive = false;
-
-    function fResize() {
-      fc.width  = featSection.offsetWidth;
-      fc.height = featSection.offsetHeight;
-    }
-    fResize();
-    window.addEventListener('resize', fResize, { passive: true });
-
-    for (var fi = 0; fi < F; fi++) {
-      fParts.push({
-        x: Math.random() * fc.width,
-        y: Math.random() * fc.height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3
-      });
-    }
-
-    function fDraw() {
-      if (!fActive || document.hidden) return;
-      fCtx.clearRect(0, 0, fc.width, fc.height);
-      for (var fi = 0; fi < fParts.length; fi++) {
-        var fp = fParts[fi];
-        fp.x += fp.vx; fp.y += fp.vy;
-        if (fp.x < 0) fp.x = fc.width;  if (fp.x > fc.width)  fp.x = 0;
-        if (fp.y < 0) fp.y = fc.height; if (fp.y > fc.height) fp.y = 0;
-        fCtx.beginPath();
-        fCtx.arc(fp.x, fp.y, 2, 0, Math.PI * 2);
-        fCtx.fillStyle = 'rgba(61,82,160,0.25)';
-        fCtx.fill();
-        for (var fj = fi + 1; fj < fParts.length; fj++) {
-          var fq = fParts[fj];
-          var fd = Math.hypot(fp.x - fq.x, fp.y - fq.y);
-          if (fd < 100) {
-            fCtx.beginPath();
-            fCtx.moveTo(fp.x, fp.y); fCtx.lineTo(fq.x, fq.y);
-            fCtx.strokeStyle = 'rgba(61,82,160,' + (0.08 * (1 - fd / 100)) + ')';
-            fCtx.lineWidth = 0.8;
-            fCtx.stroke();
-          }
-        }
+  if (!fc || !featSection) return;
+  var fCtx = fc.getContext('2d');
+  var fParts = [], F = 40, fActive = false;
+  function fResize(){ fc.width = featSection.offsetWidth; fc.height = featSection.offsetHeight; }
+  fResize();
+  window.addEventListener('resize', fResize, {passive:true});
+  for(var fi=0;fi<F;fi++) fParts.push({x:Math.random()*fc.width,y:Math.random()*fc.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3});
+  function fDraw(){
+    if(!fActive||document.hidden) return;
+    fCtx.clearRect(0,0,fc.width,fc.height);
+    for(var fi=0;fi<fParts.length;fi++){
+      var fp=fParts[fi]; fp.x+=fp.vx; fp.y+=fp.vy;
+      if(fp.x<0)fp.x=fc.width; if(fp.x>fc.width)fp.x=0;
+      if(fp.y<0)fp.y=fc.height; if(fp.y>fc.height)fp.y=0;
+      fCtx.beginPath(); fCtx.arc(fp.x,fp.y,2,0,Math.PI*2);
+      fCtx.fillStyle='rgba(61,82,160,0.25)'; fCtx.fill();
+      for(var fj=fi+1;fj<fParts.length;fj++){
+        var fq=fParts[fj],fd=Math.hypot(fp.x-fq.x,fp.y-fq.y);
+        if(fd<100){fCtx.beginPath();fCtx.moveTo(fp.x,fp.y);fCtx.lineTo(fq.x,fq.y);fCtx.strokeStyle='rgba(61,82,160,'+(0.08*(1-fd/100))+')';fCtx.lineWidth=0.8;fCtx.stroke();}
       }
-      requestAnimationFrame(fDraw);
     }
-
-    var fObs = new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting && !fActive) {
-        fActive = true;
-        fc.classList.add('visible');
-        fDraw();
-      }
-    }, { threshold: 0.1 });
-    fObs.observe(featSection);
+    requestAnimationFrame(fDraw);
   }
+  var fObs=new IntersectionObserver(function(entries){if(entries[0].isIntersecting&&!fActive){fActive=true;fc.classList.add('visible');fDraw();}},{threshold:0.1});
+  fObs.observe(featSection);
+})();
+</script>
 
-  /* ════════════════════════════════════════
-     SCROLL REVEAL
-  ════════════════════════════════════════ */
-  var revealEls = document.querySelectorAll('.step, .feat, .venue, .testi');
-  if ('IntersectionObserver' in window) {
-    var revObs = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
+<!-- Scroll reveal for cards -->
+<script>
+(function(){
+  var revealEls = document.querySelectorAll('.step, .feat, .venue, .testi, .who-card, .faq-item');
+  if('IntersectionObserver' in window){
+    var revObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
           var el = entry.target;
           var siblings = el.parentElement ? Array.from(el.parentElement.children) : [el];
           var idx = siblings.indexOf(el);
-          setTimeout(function () { el.classList.add('revealed'); }, idx * 80);
+          setTimeout(function(){ el.classList.add('revealed'); }, idx * 60);
           revObs.unobserve(el);
         }
       });
-    }, { threshold: 0.12 });
-    revealEls.forEach(function (el) { revObs.observe(el); });
+    }, { threshold: 0.05, rootMargin: '0px 0px -30px 0px' });
+    revealEls.forEach(function(el){ revObs.observe(el); });
   } else {
-    revealEls.forEach(function (el) { el.classList.add('revealed'); });
+    revealEls.forEach(function(el){ el.classList.add('revealed'); });
+  }
+})();
+</script>
+
+<!-- How It Works: no JS needed — pure CSS timeline -->
+
+<!-- Venues horizontal carousel -->
+<script>
+(function(){
+  var carousel = document.getElementById('venuesCarousel');
+  var leftBtn  = document.getElementById('venueLeft');
+  var rightBtn = document.getElementById('venueRight');
+  if(!carousel) return;
+  var SCROLL_AMT = 280;
+  if(leftBtn)  leftBtn.addEventListener('click', function(){ carousel.scrollBy({left: -SCROLL_AMT, behavior: 'smooth'}); });
+  if(rightBtn) rightBtn.addEventListener('click', function(){ carousel.scrollBy({left:  SCROLL_AMT, behavior: 'smooth'}); });
+})();
+</script>
+
+
+<!-- Testimonial carousel -->
+<script>
+(function(){
+  var slides = document.querySelectorAll('.testi-slide');
+  var dotsContainer = document.getElementById('testiDots');
+  var prevBtn = document.getElementById('testiPrev');
+  var nextBtn = document.getElementById('testiNext');
+  if(!slides.length || !dotsContainer) return;
+  var current = 0;
+  var timer = null;
+
+  // Build dots
+  slides.forEach(function(_, i){
+    var dot = document.createElement('button');
+    dot.style.cssText = 'width:8px;height:8px;border-radius:50%;border:none;cursor:pointer;transition:all .3s cubic-bezier(0.34,1.56,0.64,1);padding:0;background:'+(i===0?'#4361EE':'rgba(255,255,255,0.2)');
+    dot.setAttribute('aria-label','Slide '+(i+1));
+    dot.addEventListener('click', function(){ goTo(i); resetTimer(); });
+    dotsContainer.appendChild(dot);
+  });
+
+  function updateDots(){
+    dotsContainer.querySelectorAll('button').forEach(function(d,i){
+      d.style.background = i === current ? '#4361EE' : 'rgba(255,255,255,0.2)';
+      d.style.width = i === current ? '24px' : '8px';
+      d.style.borderRadius = '99px';
+    });
+  }
+
+  function goTo(idx){
+    slides[current].style.display = 'none';
+    current = (idx + slides.length) % slides.length;
+    var slide = slides[current];
+    slide.style.display = 'block';
+    slide.style.animation = 'none';
+    void slide.offsetWidth;
+    slide.style.animation = '';
+    updateDots();
+  }
+
+  function resetTimer(){
+    if(timer) clearInterval(timer);
+    timer = setInterval(function(){ goTo(current + 1); }, 5000);
+  }
+
+  if(prevBtn) prevBtn.addEventListener('click', function(){ goTo(current - 1); resetTimer(); });
+  if(nextBtn) nextBtn.addEventListener('click', function(){ goTo(current + 1); resetTimer(); });
+
+  updateDots();
+  resetTimer();
+})();
+</script>
+
+<!-- FAQ accordion -->
+<script>
+(function(){
+  document.querySelectorAll('.faq-q').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var item = btn.closest('.faq-item');
+      var answer = item.querySelector('.faq-a');
+      var isOpen = btn.getAttribute('aria-expanded') === 'true';
+
+      // Close all
+      document.querySelectorAll('.faq-item').forEach(function(it){
+        it.querySelector('.faq-q').setAttribute('aria-expanded','false');
+        it.querySelector('.faq-a').style.maxHeight = '0';
+        it.classList.remove('faq-open');
+      });
+
+      if(!isOpen){
+        btn.setAttribute('aria-expanded','true');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+        item.classList.add('faq-open');
+      }
+    });
+  });
+})();
+</script>
+
+<!-- Enhancements: stat counter, heading underline, magnetic buttons, 3D tilt, hero mouse parallax -->
+<script>
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  /* ── Stat counter ── */
+  var statObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(!entry.isIntersecting) return;
+      var el = entry.target;
+      var text = el.textContent;
+      var num = parseInt(text.replace(/[^0-9]/g,''));
+      if(!num){ statObs.unobserve(el); return; }
+      var suffix = text.replace(/[0-9,]/g,'');
+      var duration = 1400, startTime = null;
+      function step(ts){
+        if(!startTime) startTime = ts;
+        var p = Math.min((ts - startTime) / duration, 1);
+        var ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(ease * num).toLocaleString() + suffix;
+        if(p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+      statObs.unobserve(el);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('.stat-num').forEach(function(el){ statObs.observe(el); });
+
+  /* ── Section heading underline sweep ── */
+  var titleObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('in-view'); });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.section-title').forEach(function(el){ titleObs.observe(el); });
+
+  /* ── 3D hover tilt (desktop only) ── */
+  if(!window.matchMedia('(pointer: coarse)').matches){
+    document.querySelectorAll('.feat, .venue, .testi, .who-card, .mock').forEach(function(card){
+      var tiltRaf = null;
+      card.addEventListener('mousemove', function(e){
+        if(tiltRaf) return;
+        tiltRaf = requestAnimationFrame(function(){
+          tiltRaf = null;
+          var rect = card.getBoundingClientRect();
+          var x = (e.clientX - rect.left) / rect.width - 0.5;
+          var y = (e.clientY - rect.top)  / rect.height - 0.5;
+          card.style.transition = 'transform 0.15s ease';
+          card.style.transform  = 'perspective(800px) rotateX('+(-y*6)+'deg) rotateY('+(x*6)+'deg) translateY(-3px)';
+        });
+      }, {passive:true});
+      card.addEventListener('mouseleave', function(){
+        if(tiltRaf){ cancelAnimationFrame(tiltRaf); tiltRaf = null; }
+        card.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+        card.style.transform  = '';
+        setTimeout(function(){ card.style.transition = ''; }, 500);
+      });
+    });
+  }
+
+  /* ── Magnetic hero CTA buttons ── */
+  if(!window.matchMedia('(pointer: coarse)').matches){
+    document.querySelectorAll('.hero-btns .btn').forEach(function(btn){
+      var magRaf = null;
+      btn.addEventListener('mousemove', function(e){
+        if(magRaf) return;
+        magRaf = requestAnimationFrame(function(){
+          magRaf = null;
+          var rect = btn.getBoundingClientRect();
+          var x = (e.clientX - rect.left - rect.width/2) * 0.28;
+          var y = (e.clientY - rect.top  - rect.height/2) * 0.28;
+          btn.style.transition = 'transform 0.1s ease';
+          btn.style.transform  = 'translate('+x+'px,'+y+'px)';
+        });
+      }, {passive:true});
+      btn.addEventListener('mouseleave', function(){
+        btn.style.transition = 'transform 0.45s cubic-bezier(0.34,1.56,0.64,1)';
+        btn.style.transform  = '';
+        setTimeout(function(){ btn.style.transition = ''; }, 450);
+      });
+    });
+  }
+
+  /* ── Hero mouse parallax on mockup wrap — rotateY + rotateX ── */
+  var heroWrap = document.getElementById('heroMockupWrap');
+  if(heroWrap && !window.matchMedia('(pointer: coarse)').matches){
+    var mx = 0, my = 0, cx = 0, cy = 0;
+    document.addEventListener('mousemove', function(e){
+      mx = (e.clientX / window.innerWidth  - 0.5) * 2;
+      my = (e.clientY / window.innerHeight - 0.5) * 2;
+    }, {passive:true});
+    heroWrap.style.transformStyle = 'preserve-3d';
+    (function animate(){
+      cx += (mx - cx) * 0.06;
+      cy += (my - cy) * 0.06;
+      heroWrap.style.transform =
+        'perspective(1000px) rotateY('+(cx*6)+'deg) rotateX('+(-cy*4)+'deg) translateY('+(-cy*6)+'px)';
+      requestAnimationFrame(animate);
+    })();
   }
 
 })();

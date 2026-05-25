@@ -9,7 +9,7 @@
 
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-        <a asp-action="Dashboard" asp-controller="Dashboard"><i class="ph ph-house" style="font-size:14px;"></i> Home</a>
+        <a asp-action="Dashboard" asp-controller="Dashboard"><i class="ph-fill ph-house" style="font-size:14px;"></i> Home</a>
         <span class="breadcrumb-sep">›</span>
         <span>Ask a Question</span>
     </div>
@@ -64,14 +64,14 @@
                        placeholder="e.g. AVL tree rotation, trial balance, eigenvalues..." />
                 <button type="button" class="btn btn-ghost btn-sm"
                         onclick="step1Search(document.getElementById('s1-search').value)">
-                    <i class="ph ph-magnifying-glass"></i> Search
+                    <i class="ph-bold ph-magnifying-glass"></i> Search
                 </button>
             </div>
         </div>
 
         <div class="hidden" id="s1-results">
             <div class="search-results-label">
-                <span><i class="ph ph-copy"></i> Similar questions found — check these first:</span>
+                <span><i class="ph-duotone ph-copy"></i> Similar questions found — check these first:</span>
             </div>
             <div id="s1-results-list"></div>
             <div class="search-answer-tip">
@@ -133,8 +133,10 @@
                     <div>
                         <label class="form-label">Course Code <span class="form-label-req">*</span></label>
                         <input class="form-input" id="s2-course" asp-for="CourseCode" maxlength="10"
-                               oninput="updatePreview()" placeholder="e.g. CS302, MATH201, ACCT101" />
-                        <div class="form-hint">The course this question is about</div>
+                               oninput="formatCourseCode(this); updatePreview()"
+                               placeholder="e.g. CS302, MATH201, ACCT101"
+                               autocomplete="off" spellcheck="false" />
+                        <div class="form-hint">Letters + numbers only, auto-formatted uppercase (e.g. CS302)</div>
                         <div class="form-error" id="err-course">⚠ Please enter the course code</div>
                     </div>
                 </div>
@@ -212,7 +214,7 @@
             </div>
         </div>
 
-        <div class="preview-section-label"><i class="ph ph-eye"></i> Preview — this is how your question will look:</div>
+        <div class="preview-section-label"><i class="ph-duotone ph-eye"></i> Preview — this is how your question will look:</div>
 
         <div class="card preview-post-card">
             <div class="preview-post-meta">
@@ -230,9 +232,9 @@
 
             <div class="preview-post-tags" id="prev-tags"></div>
             <div class="preview-post-stats">
-                <span><i class="ph ph-thumbs-up"></i> 0</span>
-                <span><i class="ph ph-chat-dots"></i> 0 answers</span>
-                <span><i class="ph ph-eye"></i> 0 views</span>
+                <span><i class="ph-duotone ph-thumbs-up"></i> 0</span>
+                <span><i class="ph-duotone ph-chat-dots"></i> 0 answers</span>
+                <span><i class="ph-duotone ph-eye"></i> 0 views</span>
                 <span class="chip chip-gray preview-status-chip">Open</span>
             </div>
         </div>
@@ -280,7 +282,7 @@
             <div class="earn-back-panel">
                 <div class="earn-back-heading"><i class="ph-fill ph-coins" style="font-size:16px;margin-right:8px"></i>How to earn your points back:</div>
                 <div class="earn-ways-list">
-                    <span style="display:inline-flex;align-items:center;gap:8px;"><i class="ph ph-thumbs-up" style="font-size:14px;flex-shrink:0;"></i>Every upvote on any of your answers = <strong>+10 pts</strong></span>
+                    <span style="display:inline-flex;align-items:center;gap:8px;"><i class="ph-duotone ph-thumbs-up" style="font-size:14px;flex-shrink:0;"></i>Every upvote on any of your answers = <strong>+10 pts</strong></span>
                     <span style="display:inline-flex;align-items:center;gap:8px;"><i class="ph-fill ph-seal-check" style="font-size:14px;flex-shrink:0;"></i>If your answer is marked Best Answer = <strong>+15 pts</strong></span>
                     <span style="display:inline-flex;align-items:center;gap:8px;"><i class="ph-fill ph-graduation-cap" style="font-size:14px;flex-shrink:0;"></i>Accept a tutoring session = <strong>+20 pts</strong></span>
                 </div>
@@ -299,6 +301,16 @@
     // State
     const state = { title: '', faculty: '', course: '', body: '', tags: [] };
     const tags = [];
+
+    // Course code formatter: uppercase, strip non-alphanumeric
+    function formatCourseCode(input) {
+        const pos = input.selectionStart;
+        const cleaned = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (input.value !== cleaned) {
+            input.value = cleaned;
+            input.setSelectionRange(pos, pos);
+        }
+    }
 
     // Character counter
     function updateCharCount(inputId, counterId, min, max) {
@@ -611,7 +623,7 @@
                 if (successActions && result.postId) {
                     const viewBtn = document.createElement('a');
                     viewBtn.href = `/Dashboard/SinglePost/${result.postId}`;
-                    viewBtn.innerHTML = '<button type="button" class="btn btn-emerald btn-lg" style="margin-bottom:10px; display:inline-flex; align-items:center; gap:8px;"><i class="ph ph-eye" style="font-size:20px;"></i> View Your Question</button>';
+                    viewBtn.innerHTML = '<button type="button" class="btn btn-emerald btn-lg" style="margin-bottom:10px; display:inline-flex; align-items:center; gap:8px;"><i class="ph-fill ph-eye" style="font-size:20px;"></i> View Your Question</button>';
                     successActions.insertBefore(viewBtn, successActions.firstChild);
                 }
             } else {

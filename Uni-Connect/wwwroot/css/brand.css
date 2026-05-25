@@ -185,6 +185,15 @@ p { max-width: 65ch; line-height: 1.65; }
 }
 
 /* Bell — taste-skill tactile hover */
+@keyframes bellShake {
+  0%,100%  { transform: rotate(0deg); }
+  12%      { transform: rotate(16deg); }
+  28%      { transform: rotate(-13deg); }
+  44%      { transform: rotate(10deg); }
+  60%      { transform: rotate(-7deg); }
+  76%      { transform: rotate(4deg); }
+  88%      { transform: rotate(-2deg); }
+}
 .nav-bell {
   width: 36px; height: 36px;
   display: flex; align-items: center; justify-content: center;
@@ -196,6 +205,12 @@ p { max-width: 65ch; line-height: 1.65; }
   background: var(--border) !important;
   transform: scale(1.08) !important;
 }
+.nav-bell.has-notif i {
+  will-change: transform !important;
+  animation: bellShake 0.7s cubic-bezier(0.36,0.07,0.19,0.97) both !important;
+  transform-origin: top center !important;
+  display: inline-block !important;
+}
 .nav-bell-badge {
   background: #E53E60 !important;
   box-shadow: 0 0 0 2px var(--surface) !important;
@@ -203,6 +218,24 @@ p { max-width: 65ch; line-height: 1.65; }
   font-weight: 700 !important;
   border-radius: 99px !important;
   min-width: 16px;
+}
+
+/* Icon pill container inside nav items */
+.nav-item .nav-icon-pill {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  background: transparent;
+  transition: background var(--dur-fast), color var(--dur-fast) !important;
+  flex-shrink: 0;
+}
+.nav-item.active .nav-icon-pill {
+  background: rgba(61,82,160,0.14) !important;
+  color: var(--indigo) !important;
+}
+.nav-item:hover:not(.active) .nav-icon-pill {
+  background: rgba(61,82,160,0.07) !important;
+  color: var(--indigo) !important;
 }
 
 /* User button */
@@ -592,6 +625,8 @@ p { max-width: 65ch; line-height: 1.65; }
 .main {
   padding: 28px 32px !important;
   background: var(--bg) !important;
+  overflow-x: hidden;          /* prevent any child from causing horizontal scroll */
+  min-width: 0;                /* allow flex/grid children to shrink below content size */
 }
 .page-header { margin-bottom: 28px !important; }
 
@@ -945,8 +980,24 @@ a:focus-visible {
   body { font-size: 14.5px; }
 }
 
+@media (max-width: 640px) {
+  /* Hide clock university text — not enough space */
+  .nav-live-info span:first-child { display: none !important; }
+}
+
 @media (max-width: 480px) {
   .btn-lg { border-radius: 10px !important; }
   .nav-logo span { letter-spacing: -0.03em !important; }
   .page-title { font-size: 22px !important; }
+  .nav-live-info { display: none !important; }
+}
+
+@media (max-width: 360px) {
+  .page-title { font-size: 20px !important; }
+  .main { padding: 10px 8px !important; }
+  .card { padding: 14px !important; }
+  .btn { min-height: 44px; } /* touch target */
+  .btn-sm { min-height: 36px; }
+  .sidebar { width: 240px !important; }
+  .nav-logo span { display: none !important; } /* just show icon on tiny screens */
 }

@@ -12,7 +12,7 @@ namespace Uni_Connect.Models
         public User User { get; set; }
 
         public string Title { get; set; }
-        public string Detail { get; set; }
+        public string? Detail { get; set; }
         public int Amount { get; set; }
         public string Icon { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

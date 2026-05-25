@@ -112,6 +112,21 @@ namespace Uni_Connect.Controllers
             return RedirectToAction("Login_Page", "Login");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            var user = await GetCurrentUser();
+            if (user == null) return RedirectToAction("Login_Page", "Login");
+
+            user.IsDeleted = true;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login_Page", "Login");
+        }
+
         public async Task<IActionResult> Settings()
         {
             var user = await GetCurrentUser();
