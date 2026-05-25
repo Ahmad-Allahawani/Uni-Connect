@@ -175,28 +175,62 @@
         const noResults = document.getElementById('noTabResults');
 
         if (type === 'all') {
-            cards.forEach(c => c.style.display = '');
+            cards.forEach(c => {
+                c.style.display = '';
+                c.style.opacity = '1';
+                c.style.transform = 'none';
+                c.style.visibility = 'visible';
+            });
+
             noResults.style.display = 'none';
+
+            if (window.ScrollTrigger) {
+                ScrollTrigger.refresh();
+            }
+
             return;
         }
         if (type === 'faculty') {
             const lower = userFaculty.trim().toLowerCase();
             let visible = 0;
+
             cards.forEach(c => {
                 const fac = (c.dataset.faculty || '').trim().toLowerCase();
+
                 const show = !lower
                     ? true
                     : fac === lower || fac.includes(lower) || lower.includes(fac);
+
                 c.style.display = show ? '' : 'none';
-                if (show) visible++;
+
+                if (show) {
+                    visible++;
+
+                    // FIX: make filtered cards visible even if GSAP kept them hidden
+                    c.style.opacity = '1';
+                    c.style.transform = 'none';
+                    c.style.visibility = 'visible';
+                }
             });
+
             noResults.style.display = visible === 0 ? 'flex' : 'none';
+
+            if (window.ScrollTrigger) {
+                ScrollTrigger.refresh();
+            }
+
             return;
         }
         if (type === 'trending') {
             const list = document.getElementById('questionsList');
             cards.sort((a, b) => parseInt(b.dataset.trend || 0) - parseInt(a.dataset.trend || 0));
-            cards.forEach(c => { c.style.display = ''; list.appendChild(c); });
+            cards.forEach(c => {
+                c.style.display = '';
+                c.style.opacity = '1';
+                c.style.transform = 'none';
+                c.style.visibility = 'visible';
+                list.appendChild(c);
+            });
             noResults.style.display = 'none';
         }
     }
