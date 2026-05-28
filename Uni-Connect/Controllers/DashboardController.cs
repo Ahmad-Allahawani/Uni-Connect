@@ -236,7 +236,7 @@ namespace Uni_Connect.Controllers
             user.NotifyOnAnswers = model.NotifyOnAnswers;
             user.NotifyOnSessionRequests = model.NotifyOnSessionRequests;
 
-            
+            _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Notification preferences saved.";
@@ -262,7 +262,7 @@ namespace Uni_Connect.Controllers
                     .ExecuteUpdateAsync(s => s.SetProperty(n => n.IsRead, true));
             }
 
-            return View(notifications); // original IsRead values preserved in the list
+            return View(notifications); 
         }
 
         public async Task<IActionResult> Leaderboard()

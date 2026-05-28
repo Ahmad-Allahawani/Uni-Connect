@@ -17,8 +17,8 @@ namespace Uni_Connect.Services
             var user = await _context.Users.FindAsync(recipientId);
             if (user == null) return;
 
-            if (type == "answer" && user?.NotifyOnAnswers == false) return;
-            if (type == "session_request" && user?.NotifyOnSessionRequests == false) return;
+            if (type == "Answer" && user?.NotifyOnAnswers == false) return;
+            if (type == "SessionRequest" && user?.NotifyOnSessionRequests == false) return;
 
             var notification = new Notification
             {
