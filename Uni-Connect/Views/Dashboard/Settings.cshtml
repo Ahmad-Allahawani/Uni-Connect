@@ -151,7 +151,9 @@
 
         
         <form asp-action="Settings" method="post">
-            
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="UserID" />
+            <input type="hidden" asp-for="ProfileImageUrl" />
             <div class="settings-row">
                 <div class="settings-row-info">
                     <div class="settings-row-label">

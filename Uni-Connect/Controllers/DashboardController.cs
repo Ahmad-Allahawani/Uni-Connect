@@ -124,12 +124,10 @@ namespace Uni_Connect.Controllers
                 Email = user.Email,
                 Faculty = user.Faculty,
                 YearOfStudy = user.YearOfStudy,
-                ProfileImageUrl = user.ProfileImageUrl
+                ProfileImageUrl = user.ProfileImageUrl,
+                NotifyOnAnswers = user.NotifyOnAnswers,
+                NotifyOnSessionRequests = user.NotifyOnSessionRequests
             };
-
-            model.NotifyOnAnswers = user.NotifyOnAnswers;
-            model.NotifyOnSessionRequests = user.NotifyOnSessionRequests;
-
             return View(model);
         }
 
