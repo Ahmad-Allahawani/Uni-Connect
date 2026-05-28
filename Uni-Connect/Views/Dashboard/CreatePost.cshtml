@@ -157,15 +157,21 @@
                 <!-- Tags -->
                 <div class="form-group tags-form-group">
                     <label class="form-label">
-                        Tags <span class="form-label-note">(optional, max 5)</span>
+                        Tags <span class="form-label-req">*</span>
+                        <span class="form-label-note">(at least 1, max 5)</span>
                     </label>
                     <div class="tags-wrap" id="tags-wrap"
                          onclick="document.getElementById('tags-input').focus()">
                         <input class="tags-input" id="tags-input" maxlength="20"
                                onkeydown="handleTagInput(event)"
+                               oninput="showTagSuggestions(this.value)"
+                               onblur="hideTagSuggestions()"
                                placeholder="Type a tag and press Enter..." type="text" />
                     </div>
-                    <div class="form-hint">Press Enter or comma to add a tag. Examples: AVL, binary-tree, data-structures</div>
+                    <!-- Suggestions dropdown -->
+                    <div id="tag-suggestions" style="display:none; border:1.5px solid var(--border); border-radius:10px; background:#fff; box-shadow:var(--shadow-md); margin-top:4px; overflow:hidden; z-index:100; position:relative;"></div>
+                    <div class="form-hint">Press Enter or comma to add. Examples: AVL, recursion, data-structures</div>
+                    <div class="form-error" id="err-tags" style="display:none;">⚠ Please add at least one tag before continuing</div>
                 </div>
 
                 <!-- Image Upload -->
@@ -298,6 +304,189 @@
 
 <!-- Wizard JavaScript -->
 <script>
+            const TAG_SUGGESTIONS = [
+
+        // ─── Faculty of Information Technology ───────────────────────────
+        // Computer Science
+        'algorithms', 'data-structures', 'AVL-tree', 'binary-tree', 'recursion',
+        'sorting', 'graph-theory', 'dynamic-programming', 'linked-list', 'stack',
+        'queue', 'hash-table', 'heap', 'time-complexity', 'space-complexity',
+        'OOP', 'design-patterns', 'UML', 'operating-systems', 'process-scheduling',
+        'memory-management', 'file-systems', 'compilers', 'automata', 'formal-languages',
+        'computer-architecture', 'assembly', 'discrete-math',
+
+        // Software Engineering
+        'software-engineering', 'SDLC', 'agile', 'scrum', 'requirements-engineering',
+        'software-testing', 'unit-testing', 'software-design', 'MVC', 'REST-API',
+        'version-control', 'git', 'DevOps', 'CI-CD', 'microservices', 'clean-code',
+
+        // Information Security & Cybersecurity
+        'cybersecurity', 'information-security', 'cryptography', 'encryption',
+        'network-security', 'ethical-hacking', 'penetration-testing', 'firewalls',
+        'SSL-TLS', 'authentication', 'authorization', 'digital-forensics',
+        'malware-analysis', 'vulnerability', 'OWASP', 'cyber-law',
+
+        // Data Science & AI
+        'artificial-intelligence', 'machine-learning', 'deep-learning', 'neural-networks',
+        'data-science', 'data-mining', 'NLP', 'computer-vision', 'regression',
+        'classification', 'clustering', 'decision-trees', 'random-forest',
+        'pandas', 'numpy', 'scikit-learn', 'TensorFlow', 'big-data', 'data-visualization',
+
+        // Databases & Networking
+        'database', 'SQL', 'NoSQL', 'MySQL', 'Oracle', 'normalization', 'ER-diagram',
+        'transactions', 'indexing', 'networking', 'TCP-IP', 'OSI-model', 'routing',
+        'subnetting', 'DNS', 'HTTP', 'wireless-networks', 'cloud-computing',
+
+        // ─── Faculty of Engineering & Technology ─────────────────────────
+        // General Engineering
+        'engineering-math', 'statics', 'dynamics', 'thermodynamics', 'fluid-mechanics',
+        'materials-science', 'engineering-drawing', 'CAD', 'simulation',
+
+        // Civil Engineering
+        'civil-engineering', 'structural-analysis', 'concrete-design', 'steel-design',
+        'soil-mechanics', 'geotechnical', 'surveying', 'hydrology', 'transportation',
+        'construction-management', 'AutoCAD',
+
+        // Electrical Engineering
+        'electrical-engineering', 'circuit-analysis', 'Kirchhoff', 'AC-DC',
+        'transformers', 'electric-machines', 'power-systems', 'control-systems',
+        'PLC', 'signal-processing', 'digital-electronics', 'logic-gates',
+        'microcontrollers', 'Arduino', 'Raspberry-Pi',
+
+        // Communications & Electronic Engineering
+        'communications', 'electronics', 'analog-circuits', 'digital-circuits',
+        'semiconductor', 'amplifiers', 'modulation', 'antenna', 'signal-theory',
+        'VLSI', 'embedded-systems', 'PCB-design',
+
+        // Mechanical Engineering
+        'mechanical-engineering', 'mechanics', 'heat-transfer', 'manufacturing',
+        'machine-design', 'vibration', 'CNC', 'robotics', 'MATLAB',
+
+        // Mechatronics
+        'mechatronics', 'sensors', 'actuators', 'automation', 'hydraulics',
+        'pneumatics', 'control-theory', 'feedback-systems',
+
+        // Renewable & Alternative Energy
+        'renewable-energy', 'solar-energy', 'wind-energy', 'energy-storage',
+        'power-electronics', 'smart-grid', 'sustainability', 'energy-audit',
+
+        // Computer Engineering
+        'computer-engineering', 'digital-design', 'FPGA', 'VHDL', 'hardware',
+        'memory-systems', 'pipeline', 'cache',
+
+        // ─── Faculty of Administrative & Financial Sciences (Business) ────
+        'accounting', 'financial-accounting', 'managerial-accounting', 'auditing',
+        'cost-accounting', 'trial-balance', 'journal-entries', 'balance-sheet',
+        'income-statement', 'IFRS', 'tax',
+        'finance', 'corporate-finance', 'investment', 'banking', 'Islamic-banking',
+        'financial-analysis', 'bonds', 'stocks', 'portfolio', 'risk-management',
+        'business-administration', 'management', 'HRM', 'organizational-behavior',
+        'strategic-management', 'operations-management', 'supply-chain',
+        'marketing', 'consumer-behavior', 'market-research', 'digital-marketing',
+        'branding', 'sales',
+        'business-law', 'contracts', 'e-commerce',
+        'hospital-management', 'healthcare-admin', 'health-economics',
+
+        // ─── Faculty of Science ───────────────────────────────────────────
+        'calculus', 'linear-algebra', 'differential-equations', 'numerical-methods',
+        'discrete-math', 'probability', 'statistics', 'real-analysis',
+        'physics', 'mechanics-physics', 'electromagnetism', 'quantum-mechanics',
+        'optics', 'modern-physics',
+        'biotechnology', 'genetic-engineering', 'molecular-biology', 'genetics',
+        'microbiology', 'cell-biology', 'biochemistry', 'DNA', 'PCR', 'bioinformatics',
+        'clinical-nutrition', 'dietetics', 'nutrition-science',
+
+        // ─── Faculty of Pharmacy ─────────────────────────────────────────
+        'pharmacy', 'pharmacology', 'pharmacokinetics', 'drug-interactions',
+        'medicinal-chemistry', 'organic-chemistry', 'inorganic-chemistry',
+        'pharmaceutical-chemistry', 'drug-design', 'toxicology',
+        'clinical-pharmacy', 'patient-counseling', 'dispensing',
+        'pharmaceutics', 'drug-formulation', 'dosage-forms', 'bioavailability',
+        'pharmaceutical-microbiology', 'sterile-products',
+        'anatomy', 'physiology', 'pathology', 'immunology',
+
+        // ─── Faculty of Nursing ──────────────────────────────────────────
+        'nursing', 'patient-care', 'medical-surgical-nursing', 'pediatric-nursing',
+        'maternal-nursing', 'psychiatric-nursing', 'community-nursing',
+        'critical-care', 'ICU', 'emergency-nursing', 'nursing-ethics',
+        'health-assessment', 'vital-signs', 'medication-administration',
+
+        // ─── Faculty of Allied Medical Sciences ─────────────────────────
+        'physiotherapy', 'rehabilitation', 'musculoskeletal', 'kinesiology',
+        'electrotherapy', 'manual-therapy', 'sports-physiotherapy',
+        'anatomy', 'biomechanics', 'neurological-rehab',
+        'clinical-nutrition', 'dietetics', 'therapeutic-diet', 'nutritional-assessment',
+
+        // ─── Faculty of Architecture & Design ───────────────────────────
+        'architecture', 'architectural-design', 'building-design', 'urban-planning',
+        'structural-systems', 'construction-materials', 'building-codes',
+        'AutoCAD', 'Revit', 'SketchUp', '3ds-Max', 'BIM', 'rendering',
+        'interior-design', 'space-planning', 'color-theory', 'lighting-design',
+        'furniture-design', 'materials-finishes',
+        'animation', 'multimedia', '2D-animation', '3D-animation', 'motion-graphics',
+        'video-editing', 'Adobe-Premiere', 'After-Effects', 'Maya', 'Blender',
+        'graphic-design', 'typography', 'Photoshop', 'Illustrator',
+
+        // ─── Faculty of Arts & Educational Sciences ──────────────────────
+        'Arabic-literature', 'Arabic-grammar', 'Arabic-rhetoric', 'classical-Arabic',
+        'English-literature', 'linguistics', 'applied-linguistics', 'phonetics',
+        'translation', 'IELTS', 'academic-writing', 'research-writing',
+        'Chinese-language', 'Mandarin',
+        'counseling-psychology', 'psychology', 'cognitive-psychology',
+        'behavioral-therapy', 'mental-health', 'educational-psychology',
+        'educational-technology', 'curriculum-design', 'teaching-methods',
+
+        // ─── Faculty of Law ──────────────────────────────────────────────
+        'law', 'civil-law', 'criminal-law', 'constitutional-law', 'commercial-law',
+        'international-law', 'administrative-law', 'Jordanian-law', 'legal-writing',
+        'contract-law', 'labor-law', 'family-law', 'intellectual-property',
+        'human-rights', 'public-law', 'private-law', 'litigation', 'jurisprudence',
+
+        // ─── General / Cross-Faculty ─────────────────────────────────────
+        'exam-prep', 'homework', 'project', 'lab', 'theory', 'concept',
+        'graduation-project', 'research', 'presentation', 'report',
+        'midterm', 'final-exam', 'quiz',
+    ];
+
+    function showTagSuggestions(val) {
+        const box = document.getElementById('tag-suggestions');
+        val = val.trim().toLowerCase();
+        if (!val || val.length < 1) { box.style.display = 'none'; return; }
+
+        const matches = TAG_SUGGESTIONS.filter(t =>
+            t.toLowerCase().includes(val) && !tags.includes(t)
+        ).slice(0, 6);
+
+        if (!matches.length) { box.style.display = 'none'; return; }
+
+        box.innerHTML = matches.map(t =>
+            `<div onmousedown="pickTagSuggestion('${t}')"
+                  style="padding:10px 16px; cursor:pointer; font-size:13px; font-weight:600;
+                         color:var(--text-1); border-bottom:1px solid var(--border);"
+                  onmouseover="this.style.background='var(--indigo-light)'"
+                  onmouseout="this.style.background=''">${escapeHtml(t)}</div>`
+        ).join('');
+        box.style.display = 'block';
+    }
+
+    function pickTagSuggestion(val) {
+        if (!val || tags.length >= 5 || tags.includes(val)) return;
+        tags.push(val);
+        renderTags();
+        updateTagPreview();
+        document.getElementById('tags-hidden').value = tags.join(',');
+        // Clear error once user adds a tag
+        document.getElementById('err-tags').style.display = 'none';
+        document.getElementById('tags-wrap').classList.remove('error');
+    }
+
+    function hideTagSuggestions() {
+        // small delay so onmousedown on suggestion fires first
+        setTimeout(() => {
+            const box = document.getElementById('tag-suggestions');
+            if (box) box.style.display = 'none';
+        }, 150);
+    }
     // State
     const state = { title: '', faculty: '', course: '', body: '', tags: [] };
     const tags = [];
@@ -360,56 +549,74 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Sample questions
-    const SAMPLE_QUESTIONS = [
-        { title: 'How does AVL tree rotation actually work?', course: 'CS302', faculty: 'IT', solved: true, answers: 7, votes: 42 },
-        { title: 'What is the time complexity of AVL tree operations?', course: 'CS302', faculty: 'IT', solved: true, answers: 4, votes: 18 },
-        { title: 'Difference between Dijkstra and Bellman-Ford?', course: 'CS401', faculty: 'IT', solved: false, answers: 4, votes: 18 },
-        { title: 'How to prepare a trial balance from journal entries?', course: 'ACCT201', faculty: 'Business', solved: true, answers: 3, votes: 9 },
-        { title: 'Finding eigenvalues of a 3×3 matrix step by step?', course: 'MATH201', faculty: 'Engineering', solved: false, answers: 5, votes: 14 },
-    ];
 
-    // Step 1: Search
-    function step1Search(q) {
+
+        let searchDebounceTimer = null;
+
+    function step1Search(val) {
+        clearTimeout(searchDebounceTimer);
+
         const resultsPanel = document.getElementById('s1-results');
-        const noResults = document.getElementById('s1-no-results');
-        const list = document.getElementById('s1-results-list');
-        q = q.trim().toLowerCase();
+        const noResults    = document.getElementById('s1-no-results');
+        const list         = document.getElementById('s1-results-list');
 
-        if (q.length < 3) {
-            if (resultsPanel) resultsPanel.classList.add('hidden');
-            if (noResults) noResults.classList.add('hidden');
+        val = val.trim();
+
+        if (val.length < 3) {
+            resultsPanel.classList.add('hidden');
+            noResults.classList.add('hidden');
             return;
         }
 
-        const matches = SAMPLE_QUESTIONS.filter(x =>
-            x.title.toLowerCase().includes(q) ||
-            x.course.toLowerCase().includes(q)
-        );
+        // Debounce — wait 350ms after user stops typing before hitting the server
+        searchDebounceTimer = setTimeout(async () => {
+            try {
+                const res  = await fetch(`/Dashboard/SearchPostsJson?q=${encodeURIComponent(val)}`);
+                const data = await res.json();
 
-        if (matches.length && list) {
-            list.innerHTML = '';
-            matches.slice(0, 3).forEach(m => {
-                const el = document.createElement('a');
-                el.href = '#';
-                el.style.cssText = 'display:block;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:10px;text-decoration:none;cursor:pointer;color:inherit;transition:all .2s';
-                el.onmouseover = () => { el.style.borderColor = 'var(--indigo)'; el.style.boxShadow = '0 4px 16px rgba(61,82,160,.12)'; el.style.transform = 'translateY(-1px)'; };
-                el.onmouseout = () => { el.style.borderColor = 'var(--border)'; el.style.boxShadow = 'none'; el.style.transform = 'none'; };
-                el.innerHTML = `
-                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-                        <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;background:${m.solved ? 'var(--emerald-light)' : '#EEF2FF'};color:${m.solved ? '#065F46' : 'var(--indigo)'}">${m.solved ? '✓' : '?'} ${m.solved ? 'Solved' : 'Open'}</span>
-                        <span style="display:inline-flex;align-items:center;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;background:var(--violet-light);color:#5B21B6">${escapeHtml(m.course)}</span>
-                        <span style="font-size:11px;color:var(--text-2);margin-left:auto">${m.answers} answers · ${m.votes} votes</span>
-                    </div>
-                    <div style="font-size:14px;font-weight:700;color:var(--indigo)">${escapeHtml(m.title)}</div>`;
-                list.appendChild(el);
-            });
-            if (resultsPanel) resultsPanel.classList.remove('hidden');
-            if (noResults) noResults.classList.add('hidden');
-        } else {
-            if (resultsPanel) resultsPanel.classList.add('hidden');
-            if (noResults) noResults.classList.remove('hidden');
-        }
+                list.innerHTML = '';
+
+                if (data.results && data.results.length > 0) {
+                    data.results.forEach(m => {
+                        const el = document.createElement('a');
+                        el.href = `/Dashboard/SinglePost/${m.id}`;
+                        el.target = '_blank';
+                        el.rel = 'noopener noreferrer';
+                        el.style.cssText = 'display:block;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:10px;text-decoration:none;cursor:pointer;color:inherit;transition:all .2s';
+                        el.onmouseover = () => { el.style.borderColor = 'var(--indigo)'; el.style.boxShadow = '0 4px 16px rgba(61,82,160,.12)'; el.style.transform = 'translateY(-1px)'; };
+                        el.onmouseout  = () => { el.style.borderColor = 'var(--border)'; el.style.boxShadow = 'none'; el.style.transform = 'none'; };
+                        el.innerHTML = `
+                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+                                <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;
+                                    background:${m.solved ? 'var(--emerald-light)' : '#EEF2FF'};
+                                    color:${m.solved ? '#065F46' : 'var(--indigo)'}">
+                                    ${m.solved ? '✓ Solved' : '? Open'}
+                                </span>
+                                ${m.course ? `<span style="display:inline-flex;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;background:var(--violet-light);color:#5B21B6">${escapeHtml(m.course)}</span>` : ''}
+                                ${m.faculty ? `<span style="display:inline-flex;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;background:#F3F4F6;color:#374151">${escapeHtml(m.faculty)}</span>` : ''}
+                                <span style="font-size:11px;color:var(--text-2);margin-left:auto">${m.answers} answer${m.answers !== 1 ? 's' : ''} · ${m.upvotes} votes</span>
+                            </div>
+                            <div style="font-size:14px;font-weight:700;color:var(--indigo)">${escapeHtml(m.title)}</div>
+                            <div style="font-size:11px;color:var(--text-2);margin-top:6px;display:flex;align-items:center;gap:4px;">
+                                <i class="ph-bold ph-arrow-square-out" style="font-size:11px;"></i> Click to view full answer in a new tab
+                            </div>`;
+                        list.appendChild(el);
+                    });
+
+                    resultsPanel.classList.remove('hidden');
+                    noResults.classList.add('hidden');
+
+                } else {
+                    resultsPanel.classList.add('hidden');
+                    noResults.classList.remove('hidden');
+                }
+
+            } catch (err) {
+                console.error('Search failed:', err);
+                resultsPanel.classList.add('hidden');
+                noResults.classList.add('hidden');
+            }
+        }, 350);
     }
 
     function goToStep1() { switchToStep(1); }
@@ -424,16 +631,16 @@
         const body = document.getElementById('s2-body').value.trim();
 
         function check(inputId, errId, value, minLen) {
-            const inp = document.getElementById(inputId);
-            const err = document.getElementById(errId);
-            if (value.length < minLen) {
-                if (inp) inp.classList.add('error');
-                if (err) err.style.display = 'block';
-                ok = false;
-            } else {
-                if (inp) { inp.classList.remove('error'); inp.classList.add('success'); }
-                if (err) err.style.display = 'none';
-            }
+            const errTag = document.getElementById('err-tags');
+            const tagsWrap = document.getElementById('tags-wrap');
+                if (tags.length === 0) {
+                    if (tagsWrap) tagsWrap.classList.add('error');
+                    if (errTag) errTag.style.display = 'block';
+                    ok = false;
+                } else {
+                    if (tagsWrap) tagsWrap.classList.remove('error');
+                    if (errTag) errTag.style.display = 'none';
+                }
         }
         check('s2-title', 'err-title', title, 10);
         check('s2-faculty', 'err-faculty', faculty, 1);
@@ -487,6 +694,7 @@
             e.preventDefault();
             addTag(inp.value.replace(',', '').trim());
             inp.value = '';
+            document.getElementById('tag-suggestions').style.display = 'none';
         }
         if (e.key === 'Backspace' && inp && inp.value === '' && tags.length) {
             removeTag(tags.length - 1);

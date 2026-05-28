@@ -526,19 +526,52 @@ namespace Uni_Connect.Controllers
                 .Include(p => p.Answers.Where(a => !a.IsDeleted))
                 .AsQueryable();
 
-            // Use .Contains() directly — SQL Server default collation is case-insensitive
+            
             if (!string.IsNullOrWhiteSpace(q))
             {
                 query = query.Where(p =>
-                    p.Title.Contains(q) ||
-                    p.Content.Contains(q) ||
-                    (p.Category != null && p.Category.Name.Contains(q)));
+                p.Title.Contains(q) ||
+                p.Content.Contains(q) ||
+                (p.Category != null && p.Category.Name.Contains(q)) ||
+                (p.PostTags != null && p.PostTags.Any(pt => pt.Tag.Name.Contains(q))));
             }
 
             var results = await query.OrderByDescending(p => p.CreatedAt).ToListAsync();
             ViewBag.Query = q;
             ViewBag.Results = results;
             return View(user);
+        }
+        [HttpGet]
+        public async Task<IActionResult> SearchPostsJson(string q)
+        {
+            if (string.IsNullOrWhiteSpace(q) || q.Trim().Length < 3)
+                return Json(new { results = Array.Empty<object>() });
+
+            q = q.Trim();
+
+            var matches = await _context.Posts
+                .Where(p => !p.IsDeleted && (
+                    p.Title.Contains(q) ||
+                    p.Content.Contains(q) ||
+                    (p.PostTags != null && p.PostTags.Any(pt => pt.Tag.Name.Contains(q)) ||
+                    p.Category != null && p.Category.Name.Contains(q)) 
+                ))
+                .Include(p => p.Answers)
+                .Include(p => p.Category)
+                .OrderByDescending(p => p.CreatedAt)
+                .Take(5)
+                .Select(p => new
+                {
+                    id = p.PostID,
+                    title = p.Title,
+                    faculty = p.Category != null ? p.Category.Name : "",
+                    answers = p.Answers.Count(a => !a.IsDeleted),
+                    upvotes = p.Upvotes,
+                    solved = p.Answers.Any(a => a.IsAccepted && !a.IsDeleted)
+                })
+                .ToListAsync();
+
+            return Json(new { results = matches });
         }
 
         [HttpGet("/api/user/points")]

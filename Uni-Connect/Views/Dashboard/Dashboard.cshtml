@@ -27,6 +27,7 @@
         </span>
     </a>
 
+
     <!-- Tabs -->
     <div class="tab-container">
         <button class="tab-btn active" onclick="filterTab('trending', this)"><i class="ph-fill ph-fire" style="font-size:15px;color:#F59E0B;"></i> Trending</button>
@@ -53,13 +54,21 @@
                     <div class="q-card-enhanced @(isSolved ? "is-solved" : "")"
                          onclick="window.location.href='@postUrl'"
                          data-faculty="@(post.Category?.Name ?? "")"
+                         data-tags="@(post.PostTags != null ? string.Join(",", post.PostTags.Select(pt => pt.Tag.Name)) : "")"
                          data-trend="@trendScore"
                          role="link" tabindex="0"
                          onkeydown="if(event.key==='Enter')window.location.href='@postUrl'">
 
                         <!-- Meta row -->
                         <div class="q-meta-row">
-                            <img src="@AvatarHelper.Url(post.User?.Name, 28)" alt="" class="q-avatar" />
+                            @if (!string.IsNullOrEmpty(post.User?.ProfileImageUrl))
+                            {
+                                <img src="@post.User.ProfileImageUrl" alt="" class="q-avatar" />
+                            }
+                            else
+                            {
+                                <img src="@AvatarHelper.Url(post.User?.Name, 28)" alt="" class="q-avatar" />
+                            }
                             @if (!string.IsNullOrEmpty(post.User?.Username))
                             {
                                 <button type="button" class="q-author"
