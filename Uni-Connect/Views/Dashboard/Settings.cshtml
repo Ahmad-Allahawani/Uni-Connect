@@ -149,31 +149,40 @@
             <i class="ph-duotone ph-bell" style="font-size:20px;"></i> Notifications
         </div>
 
-        <div class="settings-row">
-            <div class="settings-row-info">
-                <div class="settings-row-label">
-                    Answers to my questions
-                    <span style="font-size:10px;font-weight:700;background:var(--amber-light);color:var(--amber-dark);padding:2px 8px;border-radius:99px;margin-left:8px;">Coming Soon</span>
+        
+        <form asp-action="Settings" method="post">
+            
+            <div class="settings-row">
+                <div class="settings-row-info">
+                    <div class="settings-row-label">
+                        Answers to my questions
+                    </div>
+                    <div class="settings-row-sub">Get notified when someone helps you out</div>
                 </div>
-                <div class="settings-row-sub">Get notified when someone helps you out</div>
+                <div class="toggle-switch">
+                    <input type="hidden" name="NotifyOnAnswers" value="false" />
+                    <input type="checkbox" asp-for="NotifyOnAnswers" value="true" />
+                </div>
             </div>
-            <div class="toggle-switch">
-                <input type="checkbox" checked disabled title="This feature is coming soon">
+            <div class="settings-row">
+                <div class="settings-row-info">
+                    <div class="settings-row-label">
+                        Session requests
+                    </div>
+                    <div class="settings-row-sub">Alerts for new private tutoring requests</div>
+                </div>
+                <div class="toggle-switch">
+                    <input type="hidden" name="NotifyOnSessionRequests" value="false" />
+                    <input type="checkbox" asp-for="NotifyOnSessionRequests" value="true" />
+                </div>
             </div>
-        </div>
+            <div style="margin-top:10px;">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+            
+        </form>
 
-        <div class="settings-row">
-            <div class="settings-row-info">
-                <div class="settings-row-label">
-                    Session requests
-                    <span style="font-size:10px;font-weight:700;background:var(--amber-light);color:var(--amber-dark);padding:2px 8px;border-radius:99px;margin-left:8px;">Coming Soon</span>
-                </div>
-                <div class="settings-row-sub">Alerts for new private tutoring requests</div>
-            </div>
-            <div class="toggle-switch">
-                <input type="checkbox" checked disabled title="This feature is coming soon">
-            </div>
-        </div>
+        
     </div>
 
     <!-- Danger Zone -->

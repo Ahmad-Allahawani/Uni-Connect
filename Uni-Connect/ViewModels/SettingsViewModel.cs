@@ -8,6 +8,8 @@ namespace Uni_Connect.ViewModels
         public string Faculty { get; set; } = string.Empty;
         public string YearOfStudy { get; set; } = string.Empty;
         public string? ProfileImageUrl { get; set; }
+        public bool NotifyOnAnswers { get; set; }
+        public bool NotifyOnSessionRequests { get; set; }
 
         // Security
         public string? CurrentPassword { get; set; }

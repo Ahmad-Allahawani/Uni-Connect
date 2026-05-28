@@ -52,6 +52,9 @@ namespace Uni_Connect.Models
         public string? EmailVerificationToken { get; set; }
         public DateTime? EmailVerificationTokenExpiry { get; set; }
 
+        public bool NotifyOnAnswers { get; set; } = true;
+        public bool NotifyOnSessionRequests { get; set; } = true;
+
         public ICollection<Post> Posts { get; set; }
         public ICollection<Answer> Answers { get; set; }
         public ICollection<Request> Requests { get; set; }

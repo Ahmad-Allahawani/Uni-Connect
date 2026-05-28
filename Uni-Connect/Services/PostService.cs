@@ -104,8 +104,15 @@ namespace Uni_Connect.Services
             await _context.SaveChangesAsync(); // save answer FIRST
 
             // Award points after answer is confirmed saved
-            await _pointService.AwardPoints(userId, 5, "Answered a Question",
-                post.Title.Length > 25 ? post.Title[..25] + "..." : post.Title, "🤝");
+            await _pointService.AwardPointsOnce(
+                    userId: answer.UserID,
+                    amount: 5,
+                    title: "Posted an Answer",
+                    postId: postId,
+                    detail: content.Length > 60 ? content[..60] + "…" : content,
+                    icon: "💬",
+                    dailyCap: 30   
+                );
 
             // Notify post owner (only if answerer is not the post owner)
             if (post.UserID != userId)
