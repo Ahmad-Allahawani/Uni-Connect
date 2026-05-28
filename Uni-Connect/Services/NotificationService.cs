@@ -1,3 +1,4 @@
+using Org.BouncyCastle.Cms;
 using Uni_Connect.Models;
 
 namespace Uni_Connect.Services
@@ -14,6 +15,7 @@ namespace Uni_Connect.Services
         public async Task CreateAsync(int recipientId, string message, string type, int? relatedId = null, int? actorUserId = null)
         {
             var user = await _context.Users.FindAsync(recipientId);
+            if (user == null) return;
 
             if (type == "answer" && user?.NotifyOnAnswers == false) return;
             if (type == "session_request" && user?.NotifyOnSessionRequests == false) return;

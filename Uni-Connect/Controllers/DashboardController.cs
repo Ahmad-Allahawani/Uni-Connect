@@ -141,8 +141,7 @@ namespace Uni_Connect.Controllers
             user.Name = model.Name?.Trim() ?? user.Name;
             user.Faculty = model.Faculty;
             user.YearOfStudy = model.YearOfStudy;
-            user.NotifyOnAnswers = model.NotifyOnAnswers;
-            user.NotifyOnSessionRequests = model.NotifyOnSessionRequests;
+            
 
             // Handle profile image upload (file takes priority over URL)
             if (profileImage != null && profileImage.Length > 0)
@@ -227,7 +226,22 @@ namespace Uni_Connect.Controllers
 
             return RedirectToAction("Settings");
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveNotificationSettings(SettingsViewModel model)
+        {
+            var user = await GetCurrentUser();
+            if (user == null) return RedirectToAction("Login_Page", "Login");
 
+            user.NotifyOnAnswers = model.NotifyOnAnswers;
+            user.NotifyOnSessionRequests = model.NotifyOnSessionRequests;
+
+            
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Notification preferences saved.";
+            return RedirectToAction("Settings");
+        }
         public async Task<IActionResult> Notifications()
         {
             var me = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);

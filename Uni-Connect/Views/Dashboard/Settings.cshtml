@@ -150,7 +150,7 @@
         </div>
 
         
-        <form asp-action="Settings" method="post">
+        <form asp-action="SaveNotificationSettings" asp-controller="Dashboard" method="post">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="UserID" />
             <input type="hidden" asp-for="ProfileImageUrl" />
@@ -163,7 +163,7 @@
                 </div>
                 <div class="toggle-switch">
                     <input type="hidden" name="NotifyOnAnswers" value="false" />
-                    <input type="checkbox" asp-for="NotifyOnAnswers" value="true" />
+                    <input type="checkbox" asp-for="NotifyOnAnswers"  />
                 </div>
             </div>
             <div class="settings-row">
@@ -175,7 +175,7 @@
                 </div>
                 <div class="toggle-switch">
                     <input type="hidden" name="NotifyOnSessionRequests" value="false" />
-                    <input type="checkbox" asp-for="NotifyOnSessionRequests" value="true" />
+                    <input type="checkbox" asp-for="NotifyOnSessionRequests" />
                 </div>
             </div>
             <div style="margin-top:10px;">
