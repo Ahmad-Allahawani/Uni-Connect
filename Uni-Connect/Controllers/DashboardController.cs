@@ -441,6 +441,77 @@ namespace Uni_Connect.Controllers
             return RedirectToAction("Dashboard");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditPost(int postId, string title, string content, IFormFile? ImageFile, bool removeImage = false)
+        {
+            var user = await GetCurrentUser();
+            if (user == null) return Unauthorized();
+
+            var post = await _context.Posts.FirstOrDefaultAsync(p =>
+                p.PostID == postId &&
+                p.UserID == user.UserID &&
+                !p.IsDeleted);
+
+            if (post == null) return Forbid();
+
+            post.Title = title?.Trim() ?? post.Title;
+            post.Content = content?.Trim() ?? post.Content;
+
+            if (removeImage)
+            {
+                post.ImageUrl = null;
+            }
+
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+                var ext = Path.GetExtension(ImageFile.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(ext) || ImageFile.Length > 5 * 1024 * 1024)
+                {
+                    TempData["ErrorMessage"] = "Invalid image. Use JPG, PNG, GIF or WebP under 5MB.";
+                    return RedirectToAction("SinglePost", new { id = postId });
+                }
+
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "posts");
+                if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+                var uniqueFileName = Guid.NewGuid() + ext;
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using var fs = new FileStream(filePath, FileMode.Create);
+                await ImageFile.CopyToAsync(fs);
+
+                post.ImageUrl = $"/uploads/posts/{uniqueFileName}";
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("SinglePost", new { id = postId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAnswer(int answerId, int postId, string content)
+        {
+            var user = await GetCurrentUser();
+            if (user == null) return Unauthorized();
+
+            var answer = await _context.Answers.FirstOrDefaultAsync(a =>
+                a.AnswerID == answerId &&
+                a.UserID == user.UserID &&
+                !a.IsDeleted);
+
+            if (answer == null) return Forbid();
+
+            answer.Content = content?.Trim() ?? answer.Content;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("SinglePost", new { id = postId });
+        }
+
         public async Task<IActionResult> ChatPage()
         {
             var user = await GetCurrentUser();

@@ -15,6 +15,7 @@
         }
     }
 }
+<link href="~/css/singlepoststyle.css" rel="stylesheet" />
 
 <div style="max-width: 860px; margin: 0 auto; padding: 20px;">
 
@@ -25,7 +26,7 @@
     @if (Model != null)
     {
         var answerCount = Model.Answers?.Count(a => !a.IsDeleted) ?? 0;
-        var isSolved    = Model.Answers?.Any(a => a.IsAccepted && !a.IsDeleted) == true;
+        var isSolved = Model.Answers?.Any(a => a.IsAccepted && !a.IsDeleted) == true;
 
         <!-- ── QUESTION ── -->
         <div class="card" style="margin-bottom:28px;">
@@ -37,13 +38,12 @@
                     <img src="@Model.User.ProfileImageUrl" alt="" class="q-avatar"
                          style="width:28px;height:28px;border-radius:50%;flex-shrink:0;" />
                 }
-
                 else
-
                 {
                     <img src="@AvatarHelper.Url(Model.User?.Name, 28)" alt=""
                          style="width:28px;height:28px;border-radius:50%;flex-shrink:0;" />
                 }
+
                 <div style="flex:1;">
                     @if (!string.IsNullOrEmpty(Model.User?.Username))
                     {
@@ -58,6 +58,7 @@
                     }
                     <div style="font-size:12px;color:var(--text-2);">@Model.CreatedAt.ToString("MMM dd, yyyy · h:mm tt")</div>
                 </div>
+
                 @if (Model.Category != null)
                 {
                     <span class="chip chip-indigo">@Model.Category.Name</span>
@@ -81,26 +82,93 @@
             <div id="sessionModal" style="display:none; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:18px;">
                 <p style="font-size:13px; font-weight:700; color:var(--text); margin:0 0 10px 0;">Describe what you need help with:</p>
                 <textarea id="sessionDescription" class="form-input form-textarea" rows="3"
-                          placeholder="e.g. I need help understanding your approach to this problem..."></textarea>
+                      placeholder="e.g. I need help understanding your approach to this problem..."></textarea>
                 <div style="display:flex; gap:8px; margin-top:10px;">
                     <button onclick="submitSessionRequest()" class="btn btn-primary btn-sm">Send Request</button>
                     <button onclick="document.getElementById('sessionModal').style.display='none'" class="btn btn-ghost btn-sm">Cancel</button>
                 </div>
             </div>
 
-            <!-- Title -->
-            <h1 style="font-size:26px; font-weight:800; color:var(--text); margin:0 0 14px 0; line-height:1.4; overflow-wrap:break-word; word-break:break-word;">
-                @Model.Title
-            </h1>
+            <!-- Post view mode -->
+            <div id="postViewMode">
+                <h1 style="font-size:26px; font-weight:800; color:var(--text); margin:0 0 14px 0; line-height:1.4; overflow-wrap:break-word; word-break:break-word;">
+                    @Model.Title
+                </h1>
 
-            <!-- Body -->
-            <div style="font-size:15px; color:var(--text); line-height:1.75; margin-bottom:20px; white-space:pre-wrap; overflow-wrap:break-word; word-break:break-word;">@Model.Content</div>
+                <div style="font-size:15px; color:var(--text); line-height:1.75; margin-bottom:20px; white-space:pre-wrap; overflow-wrap:break-word; word-break:break-word;">@Model.Content</div>
 
-            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div style="margin-bottom:20px; border-radius:12px; overflow:hidden; border:1px solid var(--border);">
+                        <img src="@Model.ImageUrl" alt="" style="max-width:100%; display:block; cursor:pointer;" onclick="window.open(this.src)" />
+                    </div>
+                }
+            </div>
+
+            <!-- Post edit mode: same area turns editable, Reddit-style -->
+            @if (isPostOwner)
             {
-                <div style="margin-bottom:20px; border-radius:12px; overflow:hidden; border:1px solid var(--border);">
-                    <img src="@Model.ImageUrl" alt="" style="max-width:100%; display:block; cursor:pointer;" onclick="window.open(this.src)" />
-                </div>
+                <form id="postEditMode"
+                      asp-action="EditPost"
+                      asp-controller="Dashboard"
+                      method="post"
+                      enctype="multipart/form-data"
+                      style="display:none; margin-bottom:20px;">
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="postId" value="@Model.PostID" />
+
+                    <label style="font-size:13px; font-weight:800; color:var(--text); margin-bottom:6px; display:block;">
+                        Title
+                    </label>
+                    <input name="title"
+                           value="@Model.Title"
+                           class="form-input"
+                           placeholder="Post title"
+                           style="width:100%; margin-bottom:14px;" />
+
+                    <label style="font-size:13px; font-weight:800; color:var(--text); margin-bottom:6px; display:block;">
+                        Description
+                    </label>
+                    <textarea name="content"
+                      rows="7"
+                      class="form-input form-textarea"
+                      placeholder="Write your post description..."
+                      style="width:100%; margin-bottom:14px;">@Model.Content</textarea>
+
+                    <label style="font-size:13px; font-weight:800; color:var(--text); margin-bottom:6px; display:block;">
+                        Image
+                    </label>
+
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <div style="margin-bottom:10px; border-radius:12px; overflow:hidden; border:1px solid var(--border); max-width:320px;">
+                            <img src="@Model.ImageUrl" alt="" style="width:100%; display:block;" />
+                        </div>
+
+                        <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-2); margin-bottom:10px;">
+                            <input type="checkbox" name="removeImage" value="true" />
+                            Remove current image
+                        </label>
+                    }
+
+                    <label class="edit-image-upload">
+                        <i class="ph-duotone ph-image-square"></i>
+                        <span id="editPostImageFileName">Choose new image</span>
+                        <small>JPG, PNG, GIF, or WebP under 5MB</small>
+
+                        <input id="editPostImageInput"
+                               type="file"
+                               name="ImageFile"
+                               accept="image/*"
+                               hidden />
+                    </label>
+
+                    <div style="display:flex; gap:8px; margin-bottom:4px;">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-ghost" onclick="cancelPostEdit()">Cancel</button>
+                    </div>
+                </form>
             }
 
             <!-- Stats bar -->
@@ -120,12 +188,15 @@
                         <span id="postUpvoteCount">@Model.Upvotes</span> upvotes
                     </span>
                 }
+
                 <span style="display:inline-flex; align-items:center; gap:5px;">
                     <i class="ph-duotone ph-chat-circle-dots" style="font-size:15px;"></i> @answerCount answer@(answerCount != 1 ? "s" : "")
                 </span>
+
                 <span style="display:inline-flex; align-items:center; gap:5px;">
                     <i class="ph-duotone ph-eye" style="font-size:15px;"></i> @Model.ViewsCount views
                 </span>
+
                 @if (currentUserId.HasValue && !isPostOwner)
                 {
                     <button onclick="openReportModal(@Model.PostID, 'Post')"
@@ -135,19 +206,50 @@
                         <i class="ph-duotone ph-flag-pennant" style="font-size:14px;"></i> Report
                     </button>
                 }
+
                 @if (isPostOwner)
                 {
-                    <form method="post" asp-action="DeletePost" style="margin-left:auto; display:inline;"
-                          onsubmit="return confirm('Delete this post? This cannot be undone.')">
+                    <button type="button"
+                            id="openDeletePostModalBtn"
+                            style="margin-left:auto; background:none; border:none; cursor:pointer; font-size:12px; color:var(--text-3); display:inline-flex; align-items:center; gap:4px; font-family:inherit; padding:4px 8px; border-radius:6px; transition:color .2s;"
+                            onmouseover="this.style.color='#EF4444'"
+                            onmouseout="this.style.color='var(--text-3)'"
+                            title="Delete this post">
+                        <i class="ph-duotone ph-trash-simple" style="font-size:14px;"></i> Delete
+                    </button>
+
+                    <button type="button"
+                            id="editPostBtn"
+                            onclick="openPostEdit()"
+                            style="background:none; border:none; cursor:pointer; font-size:12px; color:var(--text-3); display:inline-flex; align-items:center; gap:4px; font-family:inherit; padding:4px 8px; border-radius:6px;">
+                        <i class="ph-duotone ph-pencil-simple" style="font-size:14px;"></i> Edit
+                    </button>
+                }
+            </div>
+        </div>
+
+        <div class="confirm-overlay" id="deletePostModal" role="dialog" aria-modal="true" aria-labelledby="deletePostModalTitle">
+            <div class="confirm-modal">
+                <div class="modal-icon">
+                    <i class="ph-fill ph-warning"></i>
+                </div>
+
+                <h3 id="deletePostModalTitle">Delete this post?</h3>
+
+                <p>
+                    This will permanently delete your post from the platform.
+                    This action cannot be undone.
+                </p>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="cancelDeletePostBtn">Cancel</button>
+
+                    <form asp-action="DeletePost" asp-controller="Dashboard" method="post" style="flex:1;margin:0;">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="postId" value="@Model.PostID" />
-                        <button type="submit" style="background:none; border:none; cursor:pointer; font-size:12px; color:var(--text-3); display:inline-flex; align-items:center; gap:4px; font-family:inherit; padding:4px 8px; border-radius:6px; transition:color .2s;"
-                                onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='var(--text-3)'"
-                                title="Delete this post">
-                            <i class="ph-duotone ph-trash-simple" style="font-size:14px;"></i> Delete
-                        </button>
+                        <button type="submit" class="btn-danger" style="width:100%;">Yes, delete this post</button>
                     </form>
-                }
+                </div>
             </div>
         </div>
 
@@ -156,7 +258,7 @@
             <p style="font-size:13px; font-weight:700; color:var(--text); margin:0 0 8px 0;"><i class="ph-fill ph-flag-pennant" style="color:#EF4444; margin-right:4px;"></i> Report Content</p>
             <p style="font-size:12px; color:var(--text-2); margin:0 0 10px 0;">Describe why this content violates community guidelines.</p>
             <textarea id="reportReason" class="form-input form-textarea" rows="3" maxlength="500"
-                      placeholder="e.g. Spam, inappropriate content, misinformation..."></textarea>
+                  placeholder="e.g. Spam, inappropriate content, misinformation..."></textarea>
             <div style="display:flex; gap:8px; margin-top:10px; align-items:center;">
                 <button onclick="submitReport()" class="btn btn-sm" style="background:#EF4444;color:white;border:none;">Submit Report</button>
                 <button onclick="closeReportModal()" class="btn btn-ghost btn-sm">Cancel</button>
@@ -205,21 +307,22 @@
                                     <img src="@answer.User.ProfileImageUrl" alt="" class="q-avatar"
                                          style="width:28px;height:28px;border-radius:50%;flex-shrink:0;" />
                                 }
-                                
                                 else
-
                                 {
                                     <img src="@AvatarHelper.Url(answer.User?.Name, 28)" alt=""
                                          style="width:28px;height:28px;border-radius:50%;flex-shrink:0;" />
                                 }
+
                                 <strong style="font-size:13px; color:var(--text);">@(answer.User?.Name?.Split(' ').First() ?? "User")</strong>
                                 <span style="font-size:12px; color:var(--text-2);">@answer.CreatedAt.ToString("MMM dd, yyyy")</span>
+
                                 @if (isAccepted)
                                 {
                                     <span class="chip chip-emerald" style="display:inline-flex;align-items:center;gap:4px;margin-left:auto;">
                                         <i class="ph-fill ph-seal-check" style="font-size:12px;"></i> Best Answer
                                     </span>
                                 }
+
                                 @if (isPostOwner && !isAccepted)
                                 {
                                     <button class="accept-btn" data-answer-id="@answer.AnswerID"
@@ -229,10 +332,19 @@
                                         <span style="font-size:10px;opacity:.75;font-weight:600;">(-5 pts)</span>
                                     </button>
                                 }
+
                                 <span style="flex:1;"></span>
+
                                 @if (currentUserId.HasValue && answer.UserID == currentUserId.Value)
                                 {
-                                    <form method="post" asp-action="DeleteAnswer" style="margin-left:auto; display:inline;"
+                                    <button type="button"
+                                            onclick="openAnswerEdit(@answer.AnswerID)"
+                                            style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-3);display:inline-flex;align-items:center;gap:3px;font-family:inherit;padding:3px 6px;border-radius:4px;"
+                                            title="Edit this answer">
+                                        <i class="ph-duotone ph-pencil-simple" style="font-size:12px;"></i>
+                                    </button>
+
+                                    <form method="post" asp-action="DeleteAnswer" style="margin-left:0; display:inline;"
                                           onsubmit="return confirm('Delete this answer?')">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="answerId" value="@answer.AnswerID" />
@@ -244,6 +356,7 @@
                                         </button>
                                     </form>
                                 }
+
                                 @if (currentUserId.HasValue && answer.UserID != currentUserId.Value)
                                 {
                                     <button onclick="openReportModal(@answer.AnswerID, 'Answer')"
@@ -255,14 +368,45 @@
                                 }
                             </div>
 
-                            <!-- Answer text -->
-                            <p style="font-size:14px; color:var(--text); line-height:1.75; margin:0; white-space:pre-wrap; overflow-wrap:break-word; word-break:break-word;">@answer.Content</p>
+                            <!-- Answer view mode -->
+                            <div id="answerViewMode-@answer.AnswerID">
+                                <p style="font-size:14px; color:var(--text); line-height:1.75; margin:0; white-space:pre-wrap; overflow-wrap:break-word; word-break:break-word;">@answer.Content</p>
 
-                            @if (!string.IsNullOrEmpty(answer.ImageUrl))
+                                @if (!string.IsNullOrEmpty(answer.ImageUrl))
+                                {
+                                    <div style="margin-top:12px; border-radius:8px; overflow:hidden; border:1px solid var(--border); max-width:400px;">
+                                        <img src="@answer.ImageUrl" alt="" style="max-width:100%; display:block; cursor:pointer;" onclick="window.open(this.src)" />
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Answer edit mode -->
+                            @if (currentUserId.HasValue && answer.UserID == currentUserId.Value)
                             {
-                                <div style="margin-top:12px; border-radius:8px; overflow:hidden; border:1px solid var(--border); max-width:400px;">
-                                    <img src="@answer.ImageUrl" alt="" style="max-width:100%; display:block; cursor:pointer;" onclick="window.open(this.src)" />
-                                </div>
+                                <form id="editAnswerBox-@answer.AnswerID"
+                                      asp-action="EditAnswer"
+                                      asp-controller="Dashboard"
+                                      method="post"
+                                      style="display:none; margin-top:12px;">
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden" name="answerId" value="@answer.AnswerID" />
+                                    <input type="hidden" name="postId" value="@Model.PostID" />
+
+                                    <textarea name="content"
+                              rows="4"
+                              class="form-input form-textarea"
+                              style="width:100%; margin-bottom:8px;">@answer.Content</textarea>
+
+                                    <div style="display:flex; gap:8px; margin-top:8px;">
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <button type="button"
+                                                class="btn btn-ghost"
+                                                onclick="cancelAnswerEdit(@answer.AnswerID)">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
                             }
                         </div>
                     </div>
@@ -295,9 +439,9 @@
                     <input type="hidden" name="postId" value="@Model.PostID" />
 
                     <textarea name="content" class="form-input form-textarea" rows="6"
-                              style="margin-bottom:14px; resize:vertical;"
-                              placeholder="Explain your answer clearly. Include steps, formulas, or examples if helpful."
-                              required></textarea>
+                      style="margin-bottom:14px; resize:vertical;"
+                      placeholder="Explain your answer clearly. Include steps, formulas, or examples if helpful."
+                      required></textarea>
 
                     <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
                         <label style="display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--text-2); cursor:pointer;">
@@ -323,7 +467,35 @@
         <!-- Hidden antiforgery for AJAX -->
         <form id="antiforgeryForm" style="display:none;">@Html.AntiForgeryToken()</form>
 
+       
+    }
+</div>
+
         <script>
+            const deletePostModal = document.getElementById('deletePostModal');
+            const openDeletePostBtn = document.getElementById('openDeletePostModalBtn');
+            const cancelDeletePostBtn = document.getElementById('cancelDeletePostBtn');
+
+            openDeletePostBtn?.addEventListener('click', () => {
+                deletePostModal.classList.add('active');
+                cancelDeletePostBtn?.focus();
+            });
+
+            cancelDeletePostBtn?.addEventListener('click', () => {
+                deletePostModal.classList.remove('active');
+            });
+
+            deletePostModal?.addEventListener('click', e => {
+                if (e.target === deletePostModal) {
+                    deletePostModal.classList.remove('active');
+                }
+            });
+
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') {
+                    deletePostModal?.classList.remove('active');
+                }
+            });
             function getToken() {
                 var el = document.querySelector('#antiforgeryForm input[name="__RequestVerificationToken"]');
                 return el ? el.value : '';
@@ -485,6 +657,48 @@
                         setTimeout(() => window.location.reload(), 800);
                     } catch { showToast('Could not accept answer. Please try again.', 'error'); }
                 });
+            });
+                     function openPostEdit() {
+                const view = document.getElementById('postViewMode');
+                const edit = document.getElementById('postEditMode');
+                const btn = document.getElementById('editPostBtn');
+
+                if (view) view.style.display = 'none';
+                if (edit) edit.style.display = 'block';
+                if (btn) btn.style.display = 'none';
+            }
+
+            function cancelPostEdit() {
+                const view = document.getElementById('postViewMode');
+                const edit = document.getElementById('postEditMode');
+                const btn = document.getElementById('editPostBtn');
+
+                if (edit) edit.style.display = 'none';
+                if (view) view.style.display = 'block';
+                if (btn) btn.style.display = 'inline-flex';
+            }
+
+            function openAnswerEdit(answerId) {
+                const view = document.getElementById('answerViewMode-' + answerId);
+                const edit = document.getElementById('editAnswerBox-' + answerId);
+
+                if (view) view.style.display = 'none';
+                if (edit) edit.style.display = 'block';
+            }
+
+            function cancelAnswerEdit(answerId) {
+                const view = document.getElementById('answerViewMode-' + answerId);
+                const edit = document.getElementById('editAnswerBox-' + answerId);
+
+                if (edit) edit.style.display = 'none';
+                if (view) view.style.display = 'block';
+            }
+
+           document.getElementById('editPostImageInput')?.addEventListener('change', function () {
+                const label = document.getElementById('editPostImageFileName');
+                if (label) {
+                    label.textContent = this.files?.[0]?.name || 'Choose new image';
+                }
             });
         </script>
     }
