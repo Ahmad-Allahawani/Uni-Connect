@@ -152,7 +152,7 @@
 
         <!-- Tabs -->
         <div class="filter-tabs">
-            <button class="filter-tab active" data-tab="trending" type="button">
+            <button class="filter-tab active" data-tab="trending" type="button" onclick="filterTab('Faculty' , this">
                 <i class="ph-fill ph-fire" style="font-size:14px; color:#F59E0B;"></i>
                 Trending
             </button>
@@ -338,192 +338,192 @@
 <form id="antiforgeryForm" style="display:none;">@Html.AntiForgeryToken()</form>
 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script>
-        const userFaculty = '@Html.Raw(Model.Faculty ?? "")'.trim().toLowerCase();
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+    const userFaculty = '@Html.Raw(Model.Faculty ?? "")'.trim().toLowerCase();
 
-        function showCard(c) {
-            if (window.gsap) gsap.killTweensOf(c);
-            c.style.display       = '';
-            c.style.opacity       = '1';
-            c.style.transform     = 'none';
-            c.style.visibility    = 'visible';
-            c.style.pointerEvents = '';
-        }
+    function showCard(c) {
+        if (window.gsap) gsap.killTweensOf(c);
+        c.style.display       = '';
+        c.style.opacity       = '1';
+        c.style.transform     = 'none';
+        c.style.visibility    = 'visible';
+        c.style.pointerEvents = '';
+    }
 
-        function hideCard(c) {
-            if (window.gsap) gsap.killTweensOf(c);
-            c.style.display    = 'none';
-            c.style.opacity    = '';
-            c.style.transform  = '';
-            c.style.visibility = '';
-        }
+    function hideCard(c) {
+        if (window.gsap) gsap.killTweensOf(c);
+        c.style.display    = 'none';
+        c.style.opacity    = '';
+        c.style.transform  = '';
+        c.style.visibility = '';
+    }
 
-        function filterTab(type, btn) {
-            document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+    function filterTab(type, btn) {
+        document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-            const allCards  = Array.from(document.querySelectorAll('#questionsList .q-card-enhanced'));
-            const noResults = document.getElementById('noTabResults');
-            const list      = document.getElementById('questionsList');
-            const sortParam = new URLSearchParams(window.location.search).get('sort') || 'recent';
+        const allCards  = Array.from(document.querySelectorAll('#questionsList .q-card-enhanced'));
+        const noResults = document.getElementById('noTabResults');
+        const list      = document.getElementById('questionsList');
+        const sortParam = new URLSearchParams(window.location.search).get('sort') || 'recent';
 
-            if (type === 'trending') {
-                allCards.forEach(c => showCard(c));
-                noResults.style.display = 'none';
+        if (type === 'trending') {
+            allCards.forEach(c => showCard(c));
+            noResults.style.display = 'none';
 
-                if (sortParam === 'recent') {
-                    [...allCards]
-                        .sort((a, b) => parseInt(b.dataset.trend || 0) - parseInt(a.dataset.trend || 0))
-                        .forEach(c => list.appendChild(c));
-                }
-
-            } else if (type === 'faculty') {
-                let visibleCount = 0;
-
-                allCards.forEach(c => {
-                    // data-faculty now contains post.User.Faculty (after Razor fix above)
-                    const cardFaculty = (c.dataset.faculty || '').trim().toLowerCase();
-
-                    // Show card if: user has no faculty, or faculties match
-                    const match = !userFaculty
-                        || cardFaculty === userFaculty
-                        || cardFaculty.includes(userFaculty)
-                        || userFaculty.includes(cardFaculty);
-
-                    if (match) { showCard(c); visibleCount++; }
-                    else hideCard(c);
-                });
-
-                noResults.style.display = visibleCount === 0 ? 'flex' : 'none';
+            if (sortParam === 'recent') {
+                [...allCards]
+                    .sort((a, b) => parseInt(b.dataset.trend || 0) - parseInt(a.dataset.trend || 0))
+                    .forEach(c => list.appendChild(c));
             }
 
-            if (window.ScrollTrigger) ScrollTrigger.refresh();
-        }
+        } else if (type === 'faculty') {
+            let visibleCount = 0;
 
-        function applySort(value) {
-            const url       = new URL(window.location.href);
-            const activeBtn = document.querySelector('.filter-tab.active');
-            const tab       = activeBtn?.dataset.tab || 'trending';
-            url.searchParams.set('sort', value);
-            url.searchParams.set('tab', tab);
-            window.location.href = url.toString();
-        }
+            allCards.forEach(c => {
+                // data-faculty now contains post.User.Faculty (after Razor fix above)
+                const cardFaculty = (c.dataset.faculty || '').trim().toLowerCase();
 
-        window.applySort  = applySort;
-        window.upvotePost = upvotePost;
+                // Show card if: user has no faculty, or faculties match
+                const match = !userFaculty
+                    || cardFaculty === userFaculty
+                    || cardFaculty.includes(userFaculty)
+                    || userFaculty.includes(cardFaculty);
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // Wire tab buttons
-            document.querySelectorAll('.filter-tab').forEach(function (btn) {
-                btn.addEventListener('click', function () {
-                    filterTab(btn.dataset.tab, btn);
-                });
+                if (match) { showCard(c); visibleCount++; }
+                else hideCard(c);
             });
 
-            // Sync sort dropdown
-            const params     = new URLSearchParams(window.location.search);
-            const activeSort = params.get('sort') || 'recent';
-            const savedTab   = params.get('tab')  || 'trending';
-            const sel        = document.getElementById('sortSelect');
-            if (sel) sel.value = activeSort;
+            noResults.style.display = visibleCount === 0 ? 'flex' : 'none';
+        }
 
-            // Restore upvote states
-            fetch('/api/user/votes')
-                .then(r => r.ok ? r.json() : null)
-                .then(data => {
-                    if (data) (data.postIds || []).forEach(id => setPostVoteState(id, true, null));
-                })
-                .catch(() => {});
+        if (window.ScrollTrigger) ScrollTrigger.refresh();
+    }
 
-            // Activate the correct tab on load
-            const savedBtn = document.querySelector(`.filter-tab[data-tab="${savedTab}"]`)
-                          || document.querySelector('.filter-tab');
-            if (savedBtn) filterTab(savedTab, savedBtn);
+    function applySort(value) {
+        const url       = new URL(window.location.href);
+        const activeBtn = document.querySelector('.filter-tab.active');
+        const tab       = activeBtn?.dataset.tab || 'trending';
+        url.searchParams.set('sort', value);
+        url.searchParams.set('tab', tab);
+        window.location.href = url.toString();
+    }
 
-            // GSAP — runs after tabs already set visibility
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.gsap) {
-                gsap.registerPlugin(ScrollTrigger);
+    window.applySort  = applySort;
+    window.upvotePost = upvotePost;
 
-                document.querySelectorAll('#questionsList .q-card-enhanced').forEach(function (card, i) {
-                    if (card.style.display === 'none') return;
-
-                    gsap.fromTo(card,
-                        { y: 24, opacity: 0 },
-                        {
-                            y: 0, opacity: 1,
-                            duration: 0.42,
-                            delay: (i % 4) * 0.06,
-                            ease: 'power2.out',
-                            scrollTrigger: {
-                                trigger: card,
-                                start: 'top 93%',
-                                toggleActions: 'play none none none'
-                            },
-                            onComplete: function () {
-                                card.style.opacity   = '';
-                                card.style.transform = '';
-                            }
-                        }
-                    );
-                });
-
-                if (!window.matchMedia('(pointer: coarse)').matches) {
-                    document.querySelectorAll('#questionsList .q-card-enhanced').forEach(function (card) {
-                        card.addEventListener('mousemove', function (e) {
-                            var r = card.getBoundingClientRect();
-                            gsap.to(card, {
-                                rotateX: -((e.clientY - r.top)  / r.height - 0.5) * 4,
-                                rotateY:  ((e.clientX - r.left) / r.width  - 0.5) * 4,
-                                transformPerspective: 800, duration: 0.3, ease: 'power1.out'
-                            });
-                        });
-                        card.addEventListener('mouseleave', function () {
-                            gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
-                        });
-                    });
-                }
-
-                if (window.lenis) window.lenis.on('scroll', ScrollTrigger.update);
-            }
+    document.addEventListener('DOMContentLoaded', function () {
+        // Wire tab buttons
+        document.querySelectorAll('.filter-tab').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                filterTab(btn.dataset.tab, btn);
+            });
         });
 
-        function getToken() {
-            const el = document.querySelector('#antiforgeryForm input[name="__RequestVerificationToken"]');
-            return el ? el.value : '';
-        }
+        // Sync sort dropdown
+        const params     = new URLSearchParams(window.location.search);
+        const activeSort = params.get('sort') || 'recent';
+        const savedTab   = params.get('tab')  || 'trending';
+        const sel        = document.getElementById('sortSelect');
+        if (sel) sel.value = activeSort;
 
-        async function upvotePost(postId) {
-            const btn = document.getElementById('upvote-btn-' + postId);
-            if (btn?.dataset.pending === '1') return;
-            if (btn) btn.dataset.pending = '1';
-            try {
-                const resp = await fetch('/Dashboard/UpvotePost', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'RequestVerificationToken': getToken()
-                    },
-                    body: 'postId=' + encodeURIComponent(postId)
+        // Restore upvote states
+        fetch('/api/user/votes')
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (data) (data.postIds || []).forEach(id => setPostVoteState(id, true, null));
+            })
+            .catch(() => {});
+
+        // Activate the correct tab on load
+        const savedBtn = document.querySelector(`.filter-tab[data-tab="${savedTab}"]`)
+                      || document.querySelector('.filter-tab');
+        if (savedBtn) filterTab(savedTab, savedBtn);
+
+        // GSAP — runs after tabs already set visibility
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.gsap) {
+            gsap.registerPlugin(ScrollTrigger);
+
+            document.querySelectorAll('#questionsList .q-card-enhanced').forEach(function (card, i) {
+                if (card.style.display === 'none') return;
+
+                gsap.fromTo(card,
+                    { y: 24, opacity: 0 },
+                    {
+                        y: 0, opacity: 1,
+                        duration: 0.42,
+                        delay: (i % 4) * 0.06,
+                        ease: 'power2.out',
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 93%',
+                            toggleActions: 'play none none none'
+                        },
+                        onComplete: function () {
+                            card.style.opacity   = '';
+                            card.style.transform = '';
+                        }
+                    }
+                );
+            });
+
+            if (!window.matchMedia('(pointer: coarse)').matches) {
+                document.querySelectorAll('#questionsList .q-card-enhanced').forEach(function (card) {
+                    card.addEventListener('mousemove', function (e) {
+                        var r = card.getBoundingClientRect();
+                        gsap.to(card, {
+                            rotateX: -((e.clientY - r.top)  / r.height - 0.5) * 4,
+                            rotateY:  ((e.clientX - r.left) / r.width  - 0.5) * 4,
+                            transformPerspective: 800, duration: 0.3, ease: 'power1.out'
+                        });
+                    });
+                    card.addEventListener('mouseleave', function () {
+                        gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
+                    });
                 });
-                const data = await resp.json();
-                if (btn) btn.dataset.pending = '0';
-                if (!resp.ok) { showToast(data.message || 'Could not upvote.', 'error'); return; }
-                setPostVoteState(postId, data.voted, data.upvotes);
-            } catch {
-                if (btn) btn.dataset.pending = '0';
-                showToast('Failed to upvote. Try again.', 'error');
             }
-        }
 
-        function setPostVoteState(postId, voted, newCount) {
-            const btn   = document.getElementById('upvote-btn-'   + postId);
-            const icon  = document.getElementById('upvote-icon-'  + postId);
-            const count = document.getElementById('upvote-count-' + postId);
-            if (btn)   btn.classList.toggle('voted', voted);
-            if (icon)  icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph-duotone ph-thumbs-up';
-            if (count && newCount !== null) count.textContent = newCount;
+            if (window.lenis) window.lenis.on('scroll', ScrollTrigger.update);
         }
-    </script>
+    });
+
+    function getToken() {
+        const el = document.querySelector('#antiforgeryForm input[name="__RequestVerificationToken"]');
+        return el ? el.value : '';
+    }
+
+    async function upvotePost(postId) {
+        const btn = document.getElementById('upvote-btn-' + postId);
+        if (btn?.dataset.pending === '1') return;
+        if (btn) btn.dataset.pending = '1';
+        try {
+            const resp = await fetch('/Dashboard/UpvotePost', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': getToken()
+                },
+                body: 'postId=' + encodeURIComponent(postId)
+            });
+            const data = await resp.json();
+            if (btn) btn.dataset.pending = '0';
+            if (!resp.ok) { showToast(data.message || 'Could not upvote.', 'error'); return; }
+            setPostVoteState(postId, data.voted, data.upvotes);
+        } catch {
+            if (btn) btn.dataset.pending = '0';
+            showToast('Failed to upvote. Try again.', 'error');
+        }
+    }
+
+    function setPostVoteState(postId, voted, newCount) {
+        const btn   = document.getElementById('upvote-btn-'   + postId);
+        const icon  = document.getElementById('upvote-icon-'  + postId);
+        const count = document.getElementById('upvote-count-' + postId);
+        if (btn)   btn.classList.toggle('voted', voted);
+        if (icon)  icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph-duotone ph-thumbs-up';
+        if (count && newCount !== null) count.textContent = newCount;
+    }
+</script>
 }
