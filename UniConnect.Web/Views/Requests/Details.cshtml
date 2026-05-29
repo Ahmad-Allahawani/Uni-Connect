@@ -1,0 +1,127 @@
+@model UniConnect.Web.Models.AcademicRequest
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="row mt-3">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">@Model.Title</h3>
+                <span class="badge bg-@GetStatusBadge(Model.Status)">@Model.Status</span>
+            </div>
+            <div class="card-body">
+                <p class="card-text">@Model.Description</p>
+                
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" class="img-fluid mb-3" alt="Request image" />
+                }
+                
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <small class="text-muted">
+                        Requested by <a asp-controller="Account" asp-action="Profile" asp-route-id="@Model.UserId">@Model.User?.FirstName @Model.User?.LastName</a>
+                        on @Model.CreatedAt.ToString("MMMM dd, yyyy")
+                    </small>
+                    <span class="badge bg-warning">@Model.PointsOffered points</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Proposals (@Model.Proposals.Count)</h5>
+            </div>
+            <div class="card-body">
+                @foreach (var proposal in Model.Proposals)
+                {
+                    <div class="border-bottom pb-3 mb-3">
+                        <div class="d-flex justify-content-between">
+                            <strong>@proposal.User?.FirstName @proposal.User?.LastName</strong>
+                            <span class="text-muted">@proposal.CreatedAt.ToString("MMM dd, yyyy")</span>
+                        </div>
+                        <p class="mt-2">@proposal.Message</p>
+                        
+                        @if (Model.Status == "Open" && User.GetUserId() == Model.UserId)
+                        {
+                            <form asp-action="AcceptProposal" asp-route-proposalId="@proposal.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                            </form>
+                        }
+                        
+                        @if (proposal.IsAccepted)
+                        {
+                            <span class="badge bg-success">Accepted</span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        
+        @if (Model.Status == "Open" && User.Identity.IsAuthenticated && User.GetUserId() != Model.UserId)
+        {
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Submit Proposal</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="SubmitProposal" asp-route-requestId="@Model.Id" method="post">
+                        <div class="mb-3">
+                            <textarea name="message" class="form-control" rows="4" placeholder="Describe how you can help..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Proposal</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Request Details</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-6">Category:</dt>
+                    <dd class="col-sm-6">@Model.Category?.Name</dd>
+                    
+                    <dt class="col-sm-6">Budget:</dt>
+                    <dd class="col-sm-6">@Model.PointsOffered points</dd>
+                    
+                    <dt class="col-sm-6">Deadline:</dt>
+                    <dd class="col-sm-6">@Model.Deadline?.ToString("MMM dd, yyyy")</dd>
+                    
+                    <dt class="col-sm-6">Status:</dt>
+                    <dd class="col-sm-6">@Model.Status</dd>
+                </dl>
+            </div>
+        </div>
+        
+        @if (Model.Status == "Accepted" && Model.PrivateSession != null)
+        {
+            <div class="card mt-3">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Private Session</h5>
+                </div>
+                <div class="card-body">
+                    <p>This request has been accepted for a private session.</p>
+                    <a asp-controller="Sessions" asp-action="Details" asp-route-id="@Model.PrivateSession.Id" class="btn btn-primary">
+                        View Session
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@helper GetStatusBadge(string status)
+{
+    switch (status)
+    {
+        case "Open": <text>success</text> break;
+        case "Accepted": <text>primary</text> break;
+        case "Completed": <text>info</text> break;
+        default: <text>secondary</text> break;
+    }
+}

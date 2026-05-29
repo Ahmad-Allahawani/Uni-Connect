@@ -1,0 +1,71 @@
+@model IEnumerable<UniConnect.Web.Models.User>
+
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<div class="container">
+    <h1>Manage Users</h1>
+
+    <!-- Search and Filter -->
+    <div class="mb-3">
+        <form asp-action="Users" method="get" class="row g-3">
+            <div class="col-md-6">
+                <input type="text" name="search" class="form-control" placeholder="Search by name, email, or university ID..." value="@ViewBag.Search">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>University ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Faculty</th>
+                <th>Points</th>
+                <th>Verified</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.UniversityId</td>
+                    <td>@user.FirstName @user.LastName</td>
+                    <td>@user.Email</td>
+                    <td>@user.Faculty</td>
+                    <td>@user.Points</td>
+                    <td>
+                        @if (user.IsVerified)
+                        {
+                            <span class="badge bg-success"><i class="fas fa-check"></i> Verified</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Unverified</span>
+                        }
+                    </td>
+                    <td>
+                        @if (user.IsActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Banned</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="UserDetails" asp-route-id="@user.Id" class="btn btn-sm btn-info">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,238 @@
+@model UniConnect.Web.Models.PrivateSession
+
+@{
+    ViewData["Title"] = "Session Details";
+    var currentUserId = User.GetUserId();
+    var canRate = Model.Status == "Completed" && !Model.Ratings.Any(r => r.UserId == currentUserId);
+}
+
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Sessions</a></li>
+            <li class="breadcrumb-item active">Session Details</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">@Model.Subject</h5>
+                        @if (Model.Status == "Pending")
+                        {
+                            <span class="badge bg-warning">Pending</span>
+                        }
+                        else if (Model.Status == "Active")
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else if (Model.Status == "Completed")
+                        {
+                            <span class="badge bg-primary">Completed</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Cancelled</span>
+                        }
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p><strong>Description:</strong> @Model.Description</p>
+                    <p><strong>Points Earned:</strong> @Model.PointsEarned</p>
+                    <p><strong>Created:</strong> @Model.CreatedAt.ToString("MMMM dd, yyyy HH:mm")</p>
+                    @if (Model.StartedAt.HasValue)
+                    {
+                        <p><strong>Started:</strong> @Model.StartedAt.Value.ToString("MMMM dd, yyyy HH:mm")</p>
+                    }
+                    @if (Model.CompletedAt.HasValue)
+                    {
+                        <p><strong>Completed:</strong> @Model.CompletedAt.Value.ToString("MMMM dd, yyyy HH:mm")</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Messages Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Messages</h5>
+                </div>
+                <div class="card-body">
+                    @if (!Model.Messages.Any())
+                    {
+                        <p class="text-muted">No messages yet.</p>
+                    }
+                    else
+                    {
+                        <div class="chat-messages" style="max-height: 400px; overflow-y: auto;">
+                            @foreach (var message in Model.Messages.OrderBy(m => m.CreatedAt))
+                            {
+                                <div class="mb-3 @(message.SenderId == currentUserId ? "text-end" : "text-start")">
+                                    <div class="d-inline-block p-3 rounded @(message.SenderId == currentUserId ? "bg-primary text-white" : "bg-light")">
+                                        <strong>@message.Sender?.FirstName @message.Sender?.LastName</strong>
+                                        <p class="mb-0">@message.Content</p>
+                                        <small class="@(message.SenderId == currentUserId ? "text-white-50" : "text-muted")">@message.CreatedAt.ToString("MMM dd, HH:mm")</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+                @if (Model.Status == "Active")
+                {
+                    <div class="card-footer">
+                        <form asp-action="SendMessage" asp-route-sessionId="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="input-group">
+                                <input type="text" name="content" class="form-control" placeholder="Type a message..." required>
+                                <button type="submit" class="btn btn-primary">Send</button>
+                            </div>
+                        </form>
+                    </div>
+                }
+            </div>
+
+            <!-- Ratings Section -->
+            @if (Model.Status == "Completed")
+            {
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Session Ratings</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (!Model.Ratings.Any())
+                        {
+                            <p class="text-muted">No ratings yet.</p>
+                        }
+                        else
+                        {
+                            @foreach (var rating in Model.Ratings)
+                            {
+                                <div class="mb-3">
+                                    <strong>@rating.User?.FirstName @rating.User?.LastName</strong>
+                                    <div>
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= rating.Rating)
+                                            {
+                                                <i class="fas fa-star text-warning"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-star text-warning"></i>
+                                            }
+                                        }
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(rating.Comment))
+                                    {
+                                        <p class="mb-0">@rating.Comment</p>
+                                    }
+                                </div>
+                            }
+                        }
+
+                        @if (canRate)
+                        {
+                            <hr />
+                            <h6>Rate this Session</h6>
+                            <form asp-action="Rate" asp-route-sessionId="@Model.Id" method="post">
+                                @Html.AntiForgeryToken()
+                                <div class="mb-3">
+                                    <label class="form-label">Rating</label>
+                                    <div>
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <div class="form-check form-check-inline">
+                                                <input type="radio" name="rating" value="@i" class="form-check-input" id="rating@i" required>
+                                                <label class="form-check-label" for="rating@i">@i</label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Comment (optional)</label>
+                                    <textarea name="comment" class="form-control" rows="2"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit Rating</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-4">
+            <!-- Session Actions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Session Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Student:</strong>
+                        <a asp-controller="Account" asp-action="Profile" asp-route-id="@Model.StudentId">
+                            @Model.Student?.FirstName @Model.Student?.LastName
+                        </a>
+                        @if (Model.Student?.IsVerified == true)
+                        {
+                            <i class="fas fa-check-circle text-success" title="Verified Tutor"></i>
+                        }
+                    </div>
+                    <div class="mb-3">
+                        <strong>Tutor:</strong>
+                        <a asp-controller="Account" asp-action="Profile" asp-route-id="@Model.TutorId">
+                            @Model.Tutor?.FirstName @Model.Tutor?.LastName
+                        </a>
+                        @if (Model.Tutor?.IsVerified == true)
+                        {
+                            <i class="fas fa-check-circle text-success" title="Verified Tutor"></i>
+                        }
+                    </div>
+                    <div class="mb-3">
+                        <strong>Points:</strong> @Model.PointsEarned
+                    </div>
+
+                    @if (Model.Status == "Pending" && Model.TutorId == currentUserId)
+                    {
+                        <form asp-action="Start" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success w-100 mb-2">Start Session</button>
+                        </form>
+                    }
+
+                    @if (Model.Status == "Active" && Model.StudentId == currentUserId)
+                    {
+                        <form asp-action="Complete" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-primary w-100 mb-2">Complete Session</button>
+                        </form>
+                    }
+
+                    @if (Model.Status == "Pending" || Model.Status == "Active")
+                    {
+                        <form asp-action="Cancel" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger w-100">Cancel Session</button>
+                        </form>
+                    }
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Stats</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Total Messages:</strong> @Model.Messages.Count</p>
+                    <p><strong>Total Ratings:</strong> @Model.Ratings.Count</p>
+                    @if (Model.Ratings.Any())
+                    {
+                        <p><strong>Average Rating:</strong> @Model.Ratings.Average(r => r.Rating).ToString("F1") / 5</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
