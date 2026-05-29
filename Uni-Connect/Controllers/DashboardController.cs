@@ -47,9 +47,10 @@ namespace Uni_Connect.Controllers
                 "most_liked" => query.OrderByDescending(p => p.Upvotes),
                 "most_answers" => query.OrderByDescending(p => p.Answers.Count(a => !a.IsDeleted)),
                 "oldest" => query.OrderBy(p => p.CreatedAt),
-                "unsolved" => query.Where(p => !p.Answers.Any(a => a.IsAccepted && !a.IsDeleted))
-                                       .OrderByDescending(p => p.CreatedAt),
-                _ => query.OrderByDescending(p => p.CreatedAt) // "recent" + any unknown value
+                "unsolved" => query
+                    .Where(p => !p.Answers.Any(a => a.IsAccepted && !a.IsDeleted))
+                    .OrderByDescending(p => p.CreatedAt),
+                _ => query.OrderByDescending(p => p.CreatedAt)
             };
 
             var posts = await query.Take(50).ToListAsync();

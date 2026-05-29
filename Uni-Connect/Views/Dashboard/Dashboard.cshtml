@@ -13,7 +13,7 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 20px;
             margin-bottom: 20px;
             background: var(--surface, #fff);
             border: 1px solid var(--border, #e5e7eb);
@@ -150,17 +150,17 @@
     <!-- ── Filter Strip ───────────────────────────────────────────── -->
     <div class="filter-strip">
 
-        <!-- Tabs -->
-        <div class="filter-tabs">
-            <button class="filter-tab active" data-tab="trending" type="button" onclick="filterTab('Faculty' , this">
-                <i class="ph-fill ph-fire" style="font-size:14px; color:#F59E0B;"></i>
-                Trending
+       <div class="filter-tabs">
+            <button class="filter-tab active" data-tab="all" type="button" onclick="filterTab('all', this)">
+                <i class="ph-duotone ph-clock" style="font-size:14px;"></i>
+                Most Recent
             </button>
-            <button class="filter-tab" data-tab="faculty" type="button">
+
+            <button class="filter-tab" data-tab="faculty" type="button" onclick="filterTab('faculty', this)">
                 <i class="ph-duotone ph-users-three" style="font-size:14px;"></i>
                 My Faculty
             </button>
-        </div>
+       </div>
 
         <!-- Divider -->
         <div class="filter-divider"></div>
@@ -360,52 +360,43 @@
         c.style.visibility = '';
     }
 
-    function filterTab(type, btn) {
-        document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+           function filterTab(type, btn) {
+            document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-        const allCards  = Array.from(document.querySelectorAll('#questionsList .q-card-enhanced'));
-        const noResults = document.getElementById('noTabResults');
-        const list      = document.getElementById('questionsList');
-        const sortParam = new URLSearchParams(window.location.search).get('sort') || 'recent';
+            const allCards = Array.from(document.querySelectorAll('#questionsList .q-card-enhanced'));
+            const noResults = document.getElementById('noTabResults');
 
-        if (type === 'trending') {
-            allCards.forEach(c => showCard(c));
-            noResults.style.display = 'none';
-
-            if (sortParam === 'recent') {
-                [...allCards]
-                    .sort((a, b) => parseInt(b.dataset.trend || 0) - parseInt(a.dataset.trend || 0))
-                    .forEach(c => list.appendChild(c));
+            if (type === 'all') {
+                allCards.forEach(c => showCard(c));
+                noResults.style.display = 'none';
             }
 
-        } else if (type === 'faculty') {
-            let visibleCount = 0;
+            if (type === 'faculty') {
+                let visibleCount = 0;
 
-            allCards.forEach(c => {
-                // data-faculty now contains post.User.Faculty (after Razor fix above)
-                const cardFaculty = (c.dataset.faculty || '').trim().toLowerCase();
+                allCards.forEach(c => {
+                    const cardFaculty = (c.dataset.faculty || '').trim().toLowerCase();
+                    const match = userFaculty && cardFaculty && cardFaculty === userFaculty;
 
-                // Show card if: user has no faculty, or faculties match
-                const match = !userFaculty
-                    || cardFaculty === userFaculty
-                    || cardFaculty.includes(userFaculty)
-                    || userFaculty.includes(cardFaculty);
+                    if (match) {
+                        showCard(c);
+                        visibleCount++;
+                    } else {
+                        hideCard(c);
+                    }
+                });
 
-                if (match) { showCard(c); visibleCount++; }
-                else hideCard(c);
-            });
+                noResults.style.display = visibleCount === 0 ? 'flex' : 'none';
+            }
 
-            noResults.style.display = visibleCount === 0 ? 'flex' : 'none';
+            if (window.ScrollTrigger) ScrollTrigger.refresh();
         }
-
-        if (window.ScrollTrigger) ScrollTrigger.refresh();
-    }
 
     function applySort(value) {
         const url       = new URL(window.location.href);
         const activeBtn = document.querySelector('.filter-tab.active');
-        const tab       = activeBtn?.dataset.tab || 'trending';
+          const tab = activeBtn?.dataset.tab || 'all';
         url.searchParams.set('sort', value);
         url.searchParams.set('tab', tab);
         window.location.href = url.toString();
@@ -425,7 +416,7 @@
         // Sync sort dropdown
         const params     = new URLSearchParams(window.location.search);
         const activeSort = params.get('sort') || 'recent';
-        const savedTab   = params.get('tab')  || 'trending';
+        const savedTab = params.get('tab') || 'all';
         const sel        = document.getElementById('sortSelect');
         if (sel) sel.value = activeSort;
 
