@@ -6,9 +6,129 @@
 
 @section Styles {
     <link href="~/css/dashboard.css" rel="stylesheet" />
+    <style>
+        /* ── Filter Strip ─────────────────────────────────────────── */
+        .filter-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: var(--surface, #fff);
+            border: 1px solid var(--border, #e5e7eb);
+            border-radius: 14px;
+            padding: 8px 10px;
+        }
+
+        /* Tab group */
+        .filter-tabs {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted, #6b7280);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+
+        .filter-tab:hover {
+            background: var(--hover-bg, #f3f4f6);
+            color: var(--text, #111827);
+        }
+
+        .filter-tab.active {
+            background: var(--indigo, #6366f1);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.25);
+        }
+
+        .filter-tab.active i {
+            color: #fff !important;
+        }
+
+        /* Divider between tabs and sort */
+        .filter-divider {
+            width: 1px;
+            height: 28px;
+            background: var(--border, #e5e7eb);
+            flex-shrink: 0;
+            align-self: center;
+        }
+
+        /* Sort control */
+        .sort-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .sort-label {
+            font-size: 12px;
+            color: var(--text-muted, #9ca3af);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+
+        .sort-select {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 28px 6px 10px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border, #e5e7eb);
+            background: var(--bg, #f9fafb);
+            color: var(--text, #111827);
+            cursor: pointer;
+            outline: none;
+            font-family: inherit;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            transition: border-color 0.15s;
+        }
+
+        .sort-select:hover,
+        .sort-select:focus {
+            border-color: var(--indigo, #6366f1);
+        }
+
+        /* Active sort indicator pill */
+        .sort-active-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 20px;
+            background: rgba(99,102,241,0.1);
+            color: var(--indigo, #6366f1);
+            white-space: nowrap;
+        }
+    </style>
 }
 
 <div style="max-width: 1000px; margin: 0 auto;">
+
     <!-- Page Header -->
     <div class="dashboard-header">
         <h1 class="dashboard-title">Welcome back, @(Model.Name.Split(' ').First())!</h1>
@@ -27,15 +147,64 @@
         </span>
     </a>
 
+    <!-- ── Filter Strip ───────────────────────────────────────────── -->
+    <div class="filter-strip">
 
-    <!-- Tabs -->
-    <div class="tab-container">
-        <button class="tab-btn active" onclick="filterTab('trending', this)"><i class="ph-fill ph-fire" style="font-size:15px;color:#F59E0B;"></i> Trending</button>
-        <button class="tab-btn" onclick="filterTab('all', this)"><i class="ph-duotone ph-list-bullets" style="font-size:15px;"></i> All Questions</button>
-        <button class="tab-btn" onclick="filterTab('faculty', this)"><i class="ph-duotone ph-users-three" style="font-size:15px;"></i> My Faculty</button>
+        <!-- Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-tab="trending" type="button">
+                <i class="ph-fill ph-fire" style="font-size:14px; color:#F59E0B;"></i>
+                Trending
+            </button>
+            <button class="filter-tab" data-tab="faculty" type="button">
+                <i class="ph-duotone ph-users-three" style="font-size:14px;"></i>
+                My Faculty
+            </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="filter-divider"></div>
+
+        <!-- Sort -->
+        <div class="sort-control">
+            <span class="sort-label">
+                <i class="ph-duotone ph-funnel"></i>
+                Sort
+            </span>
+            <select id="sortSelect" class="sort-select"
+                    onchange="applySort(this.value)"
+                    data-current="@(ViewBag.CurrentSort ?? "recent")">
+                <option value="recent">Most Recent</option>
+                <option value="oldest">Oldest First</option>
+                <option value="most_liked">Most Liked</option>
+                <option value="most_viewed">Most Viewed</option>
+                <option value="most_answers">Most Answers</option>
+                <option value="unsolved">Unanswered</option>
+            </select>
+
+            @{
+                var sortLabels = new Dictionary<string, string> {
+                    ["recent"]       = "Most Recent",
+                    ["oldest"]       = "Oldest First",
+                    ["most_liked"]   = "Most Liked",
+                    ["most_viewed"]  = "Most Viewed",
+                    ["most_answers"] = "Most Answers",
+                    ["unsolved"]     = "Unanswered"
+                };
+                var currentSort = (string)(ViewBag.CurrentSort ?? "recent");
+                var activeLabel = sortLabels.ContainsKey(currentSort) ? sortLabels[currentSort] : "Most Recent";
+                if (currentSort != "recent")
+                {
+                    <span class="sort-active-pill">
+                        <i class="ph-fill ph-check-circle" style="font-size:10px;"></i>
+                        @activeLabel
+                    </span>
+                }
+            }
+        </div>
     </div>
 
-    <!-- Questions Feed -->
+    <!-- ── Questions Feed ─────────────────────────────────────────── -->
     <div class="questions-list" id="questionsList">
         @{
             var posts = ViewBag.Posts as List<Post>;
@@ -50,11 +219,9 @@
                     var snippet     = string.IsNullOrEmpty(post.Content) ? "" : (post.Content.Length > 150 ? post.Content[..150] + "…" : post.Content);
                     var postUrl     = Url.Action("SinglePost", new { id = post.PostID });
 
-                    <!-- Card is a <div> so we can safely embed interactive buttons inside -->
                     <div class="q-card-enhanced @(isSolved ? "is-solved" : "")"
                          onclick="window.location.href='@postUrl'"
-                         data-faculty="@(post.Category?.Name ?? "")"
-                         data-tags="@(post.PostTags != null ? string.Join(",", post.PostTags.Select(pt => pt.Tag.Name)) : "")"
+                         data-faculty="@(post.User?.Faculty ?? "")"
                          data-trend="@trendScore"
                          role="link" tabindex="0"
                          onkeydown="if(event.key==='Enter')window.location.href='@postUrl'">
@@ -115,9 +282,8 @@
                             </div>
                         }
 
-                        <!-- Stats row with upvote button -->
+                        <!-- Stats row -->
                         <div class="q-stats">
-                            <!-- Upvote button — interactive, stops card navigation -->
                             <button class="q-upvote-btn" id="upvote-btn-@post.PostID"
                                     onclick="event.stopPropagation(); upvotePost(@post.PostID)"
                                     title="Upvote this question" type="button">
@@ -134,7 +300,6 @@
                                 <b>@post.ViewsCount</b> views
                             </span>
 
-                            <!-- "View answers" CTA — makes navigation intent obvious -->
                             <span style="margin-left:auto; color:var(--indigo); font-weight:700; font-size:12px; display:inline-flex; align-items:center; gap:3px; flex-shrink:0;">
                                 View @(answerCount > 0 ? $"{answerCount} answer{(answerCount != 1 ? "s" : "")}" : "question")
                                 <i class="ph-bold ph-arrow-right" style="font-size:11px;"></i>
@@ -166,197 +331,199 @@
             <i class="ph-bold ph-pencil-simple" style="font-size:15px;"></i> Ask a Question
         </a>
     </div>
+
 </div>
 
 <!-- Hidden antiforgery for AJAX upvote -->
 <form id="antiforgeryForm" style="display:none;">@Html.AntiForgeryToken()</form>
 
 @section Scripts {
-<script>
-    const userFaculty = '@Model.Faculty';
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script>
+        const userFaculty = '@Html.Raw(Model.Faculty ?? "")'.trim().toLowerCase();
 
-    // ── Tab filter ──────────────────────────────────────────────
-    function filterTab(type, btn) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        const cards = Array.from(document.querySelectorAll('#questionsList .q-card-enhanced'));
-        const noResults = document.getElementById('noTabResults');
-
-        if (type === 'all') {
-            cards.forEach(c => {
-                c.style.display = '';
-                c.style.opacity = '1';
-                c.style.transform = 'none';
-                c.style.visibility = 'visible';
-            });
-
-            noResults.style.display = 'none';
-
-            if (window.ScrollTrigger) {
-                ScrollTrigger.refresh();
-            }
-
-            return;
+        function showCard(c) {
+            if (window.gsap) gsap.killTweensOf(c);
+            c.style.display       = '';
+            c.style.opacity       = '1';
+            c.style.transform     = 'none';
+            c.style.visibility    = 'visible';
+            c.style.pointerEvents = '';
         }
-        if (type === 'faculty') {
-            const lower = userFaculty.trim().toLowerCase();
-            let visible = 0;
 
-            cards.forEach(c => {
-                const fac = (c.dataset.faculty || '').trim().toLowerCase();
+        function hideCard(c) {
+            if (window.gsap) gsap.killTweensOf(c);
+            c.style.display    = 'none';
+            c.style.opacity    = '';
+            c.style.transform  = '';
+            c.style.visibility = '';
+        }
 
-                const show = !lower
-                    ? true
-                    : fac === lower || fac.includes(lower) || lower.includes(fac);
+        function filterTab(type, btn) {
+            document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-                c.style.display = show ? '' : 'none';
+            const allCards  = Array.from(document.querySelectorAll('#questionsList .q-card-enhanced'));
+            const noResults = document.getElementById('noTabResults');
+            const list      = document.getElementById('questionsList');
+            const sortParam = new URLSearchParams(window.location.search).get('sort') || 'recent';
 
-                if (show) {
-                    visible++;
+            if (type === 'trending') {
+                allCards.forEach(c => showCard(c));
+                noResults.style.display = 'none';
 
-                    // FIX: make filtered cards visible even if GSAP kept them hidden
-                    c.style.opacity = '1';
-                    c.style.transform = 'none';
-                    c.style.visibility = 'visible';
+                if (sortParam === 'recent') {
+                    [...allCards]
+                        .sort((a, b) => parseInt(b.dataset.trend || 0) - parseInt(a.dataset.trend || 0))
+                        .forEach(c => list.appendChild(c));
                 }
-            });
 
-            noResults.style.display = visible === 0 ? 'flex' : 'none';
+            } else if (type === 'faculty') {
+                let visibleCount = 0;
 
-            if (window.ScrollTrigger) {
-                ScrollTrigger.refresh();
+                allCards.forEach(c => {
+                    // data-faculty now contains post.User.Faculty (after Razor fix above)
+                    const cardFaculty = (c.dataset.faculty || '').trim().toLowerCase();
+
+                    // Show card if: user has no faculty, or faculties match
+                    const match = !userFaculty
+                        || cardFaculty === userFaculty
+                        || cardFaculty.includes(userFaculty)
+                        || userFaculty.includes(cardFaculty);
+
+                    if (match) { showCard(c); visibleCount++; }
+                    else hideCard(c);
+                });
+
+                noResults.style.display = visibleCount === 0 ? 'flex' : 'none';
             }
 
-            return;
+            if (window.ScrollTrigger) ScrollTrigger.refresh();
         }
-        if (type === 'trending') {
-            const list = document.getElementById('questionsList');
-            cards.sort((a, b) => parseInt(b.dataset.trend || 0) - parseInt(a.dataset.trend || 0));
-            cards.forEach(c => {
-                c.style.display = '';
-                c.style.opacity = '1';
-                c.style.transform = 'none';
-                c.style.visibility = 'visible';
-                list.appendChild(c);
+
+        function applySort(value) {
+            const url       = new URL(window.location.href);
+            const activeBtn = document.querySelector('.filter-tab.active');
+            const tab       = activeBtn?.dataset.tab || 'trending';
+            url.searchParams.set('sort', value);
+            url.searchParams.set('tab', tab);
+            window.location.href = url.toString();
+        }
+
+        window.applySort  = applySort;
+        window.upvotePost = upvotePost;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Wire tab buttons
+            document.querySelectorAll('.filter-tab').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    filterTab(btn.dataset.tab, btn);
+                });
             });
-            noResults.style.display = 'none';
-        }
-    }
 
-    // ── Upvote post ─────────────────────────────────────────────
-    function getToken() {
-        var el = document.querySelector('#antiforgeryForm input[name="__RequestVerificationToken"]');
-        return el ? el.value : '';
-    }
+            // Sync sort dropdown
+            const params     = new URLSearchParams(window.location.search);
+            const activeSort = params.get('sort') || 'recent';
+            const savedTab   = params.get('tab')  || 'trending';
+            const sel        = document.getElementById('sortSelect');
+            if (sel) sel.value = activeSort;
 
-    // Restore voted state + apply trending sort on page load
-    document.addEventListener('DOMContentLoaded', async function () {
-        // Apply trending sort as default
-        const trendingBtn = document.querySelector('.tab-btn.active');
-        if (trendingBtn) filterTab('trending', trendingBtn);
+            // Restore upvote states
+            fetch('/api/user/votes')
+                .then(r => r.ok ? r.json() : null)
+                .then(data => {
+                    if (data) (data.postIds || []).forEach(id => setPostVoteState(id, true, null));
+                })
+                .catch(() => {});
 
-        try {
-            const res = await fetch('/api/user/votes');
-            if (res.ok) {
-                const data = await res.json();
-                (data.postIds || []).forEach(id => setPostVoteState(id, true, null));
+            // Activate the correct tab on load
+            const savedBtn = document.querySelector(`.filter-tab[data-tab="${savedTab}"]`)
+                          || document.querySelector('.filter-tab');
+            if (savedBtn) filterTab(savedTab, savedBtn);
+
+            // GSAP — runs after tabs already set visibility
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.gsap) {
+                gsap.registerPlugin(ScrollTrigger);
+
+                document.querySelectorAll('#questionsList .q-card-enhanced').forEach(function (card, i) {
+                    if (card.style.display === 'none') return;
+
+                    gsap.fromTo(card,
+                        { y: 24, opacity: 0 },
+                        {
+                            y: 0, opacity: 1,
+                            duration: 0.42,
+                            delay: (i % 4) * 0.06,
+                            ease: 'power2.out',
+                            scrollTrigger: {
+                                trigger: card,
+                                start: 'top 93%',
+                                toggleActions: 'play none none none'
+                            },
+                            onComplete: function () {
+                                card.style.opacity   = '';
+                                card.style.transform = '';
+                            }
+                        }
+                    );
+                });
+
+                if (!window.matchMedia('(pointer: coarse)').matches) {
+                    document.querySelectorAll('#questionsList .q-card-enhanced').forEach(function (card) {
+                        card.addEventListener('mousemove', function (e) {
+                            var r = card.getBoundingClientRect();
+                            gsap.to(card, {
+                                rotateX: -((e.clientY - r.top)  / r.height - 0.5) * 4,
+                                rotateY:  ((e.clientX - r.left) / r.width  - 0.5) * 4,
+                                transformPerspective: 800, duration: 0.3, ease: 'power1.out'
+                            });
+                        });
+                        card.addEventListener('mouseleave', function () {
+                            gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
+                        });
+                    });
+                }
+
+                if (window.lenis) window.lenis.on('scroll', ScrollTrigger.update);
             }
-        } catch { /* silent */ }
-    });
-
-    async function upvotePost(postId) {
-        const btn = document.getElementById('upvote-btn-' + postId);
-        if (btn && btn.dataset.pending === '1') return;
-        if (btn) btn.dataset.pending = '1';
-
-        try {
-            const resp = await fetch('/Dashboard/UpvotePost', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'RequestVerificationToken': getToken()
-                },
-                body: 'postId=' + encodeURIComponent(postId)
-            });
-            const data = await resp.json();
-
-            const btn2 = document.getElementById('upvote-btn-' + postId);
-            if (btn2) btn2.dataset.pending = '0';
-
-            if (!resp.ok) {
-                showToast(data.message || 'Could not upvote.', 'error');
-                return;
-            }
-
-            setPostVoteState(postId, data.voted, data.upvotes);
-        } catch {
-            const btn2 = document.getElementById('upvote-btn-' + postId);
-            if (btn2) btn2.dataset.pending = '0';
-            showToast('Failed to upvote. Try again.', 'error');
-        }
-    }
-
-    function setPostVoteState(postId, voted, newCount) {
-        const btn   = document.getElementById('upvote-btn-'   + postId);
-        const icon  = document.getElementById('upvote-icon-'  + postId);
-        const count = document.getElementById('upvote-count-' + postId);
-
-        if (btn)  { btn.classList.toggle('voted', voted); }
-        if (icon) { icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph-duotone ph-thumbs-up'; }
-        if (count && newCount !== null) count.textContent = newCount;
-    }
-</script>
-
-<!-- EFFECT 7: GSAP card stagger + hover tilt -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script>
-(function(){
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  gsap.registerPlugin(ScrollTrigger);
-
-  // Stagger cards in as they scroll into view
-  gsap.utils.toArray('.q-card-enhanced').forEach(function(card, i){
-    gsap.from(card, {
-      scrollTrigger: {
-        trigger: card,
-        start: 'top 92%',
-        toggleActions: 'play none none none'
-      },
-      y: 28,
-      opacity: 0,
-      duration: 0.48,
-      delay: (i % 4) * 0.07,
-      ease: 'power2.out'
-    });
-  });
-
-  // Hover tilt — desktop only
-  if(!window.matchMedia('(pointer: coarse)').matches){
-    document.querySelectorAll('.q-card-enhanced').forEach(function(card){
-      card.addEventListener('mousemove', function(e){
-        var rect = card.getBoundingClientRect();
-        var x = (e.clientX - rect.left) / rect.width - 0.5;
-        var y = (e.clientY - rect.top)  / rect.height - 0.5;
-        gsap.to(card, {
-          rotateX: -y * 4,
-          rotateY:  x * 4,
-          transformPerspective: 800,
-          duration: 0.3,
-          ease: 'power1.out'
         });
-      });
-      card.addEventListener('mouseleave', function(){
-        gsap.to(card, { rotateX: 0, rotateY: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
-      });
-    });
-  }
 
-  // GSAP + Lenis integration
-  if(window.lenis){
-    window.lenis.on('scroll', ScrollTrigger.update);
-  }
-})();
-</script>
+        function getToken() {
+            const el = document.querySelector('#antiforgeryForm input[name="__RequestVerificationToken"]');
+            return el ? el.value : '';
+        }
+
+        async function upvotePost(postId) {
+            const btn = document.getElementById('upvote-btn-' + postId);
+            if (btn?.dataset.pending === '1') return;
+            if (btn) btn.dataset.pending = '1';
+            try {
+                const resp = await fetch('/Dashboard/UpvotePost', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': getToken()
+                    },
+                    body: 'postId=' + encodeURIComponent(postId)
+                });
+                const data = await resp.json();
+                if (btn) btn.dataset.pending = '0';
+                if (!resp.ok) { showToast(data.message || 'Could not upvote.', 'error'); return; }
+                setPostVoteState(postId, data.voted, data.upvotes);
+            } catch {
+                if (btn) btn.dataset.pending = '0';
+                showToast('Failed to upvote. Try again.', 'error');
+            }
+        }
+
+        function setPostVoteState(postId, voted, newCount) {
+            const btn   = document.getElementById('upvote-btn-'   + postId);
+            const icon  = document.getElementById('upvote-icon-'  + postId);
+            const count = document.getElementById('upvote-count-' + postId);
+            if (btn)   btn.classList.toggle('voted', voted);
+            if (icon)  icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph-duotone ph-thumbs-up';
+            if (count && newCount !== null) count.textContent = newCount;
+        }
+    </script>
 }

@@ -29,21 +29,34 @@ namespace Uni_Connect.Controllers
             _notificationService = notificationService;
         }
 
-        public async Task<IActionResult> Dashboard()
+        public async Task<IActionResult> Dashboard(string? sort = "recent")
         {
             var user = await GetCurrentUser();
             if (user == null) return RedirectToAction("Login_Page", "Login");
 
-            var posts = await _context.Posts
+            var query = _context.Posts
                 .Where(p => !p.IsDeleted)
                 .Include(p => p.User)
                 .Include(p => p.Category)
                 .Include(p => p.Answers.Where(a => !a.IsDeleted))
-                .OrderByDescending(p => p.CreatedAt)
-                .Take(50)
-                .ToListAsync();
+                .AsQueryable();
+
+            query = sort switch
+            {
+                "most_viewed" => query.OrderByDescending(p => p.ViewsCount),
+                "most_liked" => query.OrderByDescending(p => p.Upvotes),
+                "most_answers" => query.OrderByDescending(p => p.Answers.Count(a => !a.IsDeleted)),
+                "oldest" => query.OrderBy(p => p.CreatedAt),
+                "unsolved" => query.Where(p => !p.Answers.Any(a => a.IsAccepted && !a.IsDeleted))
+                                       .OrderByDescending(p => p.CreatedAt),
+                _ => query.OrderByDescending(p => p.CreatedAt) // "recent" + any unknown value
+            };
+
+            var posts = await query.Take(50).ToListAsync();
 
             ViewBag.Posts = posts;
+            ViewBag.CurrentSort = sort ?? "recent";
+
             return View(user);
         }
 
@@ -93,7 +106,7 @@ namespace Uni_Connect.Controllers
 
             return View("Profile", userProfile);
         }
-        
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -141,7 +154,7 @@ namespace Uni_Connect.Controllers
             user.Name = model.Name?.Trim() ?? user.Name;
             user.Faculty = model.Faculty;
             user.YearOfStudy = model.YearOfStudy;
-            
+
 
             // Handle profile image upload (file takes priority over URL)
             if (profileImage != null && profileImage.Length > 0)
@@ -262,7 +275,7 @@ namespace Uni_Connect.Controllers
                     .ExecuteUpdateAsync(s => s.SetProperty(n => n.IsRead, true));
             }
 
-            return View(notifications); 
+            return View(notifications);
         }
 
         public async Task<IActionResult> Leaderboard()
@@ -545,7 +558,7 @@ namespace Uni_Connect.Controllers
                 .Include(p => p.Answers.Where(a => !a.IsDeleted))
                 .AsQueryable();
 
-            
+
             if (!string.IsNullOrWhiteSpace(q))
             {
                 query = query.Where(p =>
@@ -573,7 +586,7 @@ namespace Uni_Connect.Controllers
                     p.Title.Contains(q) ||
                     p.Content.Contains(q) ||
                     (p.PostTags != null && p.PostTags.Any(pt => pt.Tag.Name.Contains(q)) ||
-                    p.Category != null && p.Category.Name.Contains(q)) 
+                    p.Category != null && p.Category.Name.Contains(q))
                 ))
                 .Include(p => p.Answers)
                 .Include(p => p.Category)
@@ -616,10 +629,10 @@ namespace Uni_Connect.Controllers
 
             if (answer == null) return NotFound();
 
-            
+
             if (answer.Post.UserID != user.UserID) return Forbid();
 
-           
+
             if (answer.UserID == user.UserID)
                 return BadRequest(new { message = "You cannot mark your own answer as best." });
 
@@ -642,9 +655,9 @@ namespace Uni_Connect.Controllers
 
             if (!deducted)
                 return BadRequest(new { message = "You need at least 5 points to award a Best Answer." });
-            
 
-            
+
+
             var prev = await _context.Answers
                 .Where(a => a.PostID == answer.PostID && a.IsAccepted)
                 .ToListAsync();
@@ -657,7 +670,7 @@ namespace Uni_Connect.Controllers
             }
             catch
             {
-                
+
                 await _pointService.AwardPoints(user.UserID, 5, "Best Answer seal refund", null, "↩️");
                 return StatusCode(500, new { message = "Something went wrong. Your points have been refunded." });
             }
@@ -695,7 +708,7 @@ namespace Uni_Connect.Controllers
                 return Json(new { success = false, message = "No file provided." });
 
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
-            var allowedMimeTypes  = new[] { "image/jpeg", "image/png", "image/gif", "image/webp" };
+            var allowedMimeTypes = new[] { "image/jpeg", "image/png", "image/gif", "image/webp" };
             var ext = Path.GetExtension(profileImage.FileName).ToLowerInvariant();
 
             if (!allowedExtensions.Contains(ext) ||
@@ -766,10 +779,10 @@ namespace Uni_Connect.Controllers
             _context.Reports.Add(new Report
             {
                 ReporterID = user.UserID,
-                TargetID   = targetId,
+                TargetID = targetId,
                 TargetType = targetType,
-                Reason     = reason.Trim(),
-                CreatedAt  = DateTime.UtcNow,
+                Reason = reason.Trim(),
+                CreatedAt = DateTime.UtcNow,
                 IsResolved = false
             });
             await _context.SaveChangesAsync();
