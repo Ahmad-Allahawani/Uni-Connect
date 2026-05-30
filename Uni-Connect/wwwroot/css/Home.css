@@ -27,6 +27,10 @@
     --text-2: #475569;
     --text-3: #94A3B8;
 }
+.wave-light-to-dark,
+.wave-dark-to-light-2 {
+    background: linear-gradient( 5deg, #0D1117 0%, #131B2E 40%, #1a2550 110% );
+}
 
 
 /* ============================================================
@@ -1662,9 +1666,7 @@ button {
 .wave-light-to-dark {
     background: linear-gradient(150deg, #F4F6FF, #EEF2FF);
 }
-.wave-dark-to-light-2 {
-    background: linear-gradient(145deg, #3D52A0 0%, #5B73C7 50%, #7091E6 100%);
-}
+
 
 
 /* ============================================================

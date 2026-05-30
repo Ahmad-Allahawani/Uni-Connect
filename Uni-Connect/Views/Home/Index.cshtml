@@ -472,8 +472,24 @@
 
 <!-- WAVE: light → dark -->
 <div class="wave-divider wave-light-to-dark" aria-hidden="true">
-    <svg viewBox="0 0 1440 56" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-        <path d="M0 0L60 9.3C120 19 240 37 360 42C480 47 600 40 720 32.7C840 26 960 19 1080 18.7C1200 19 1320 26 1380 29.3L1440 33V56H1380C1320 56 1200 56 1080 56C960 56 840 56 720 56C600 56 480 56 360 56C240 56 120 56 60 56H0V0Z" fill="#1a2550"/>
+    <svg viewBox="0 0 1440 80"
+         xmlns="http://www.w3.org/2000/svg"
+         preserveAspectRatio="none">
+
+        <defs>
+            <linearGradient id="ptsGradient"
+                            x1="0%"
+                            y1="0%"
+                            x2="140%"
+                            y2="0%">
+                <stop offset="0%" stop-color="#0D1117" />
+                <stop offset="50%" stop-color="#131B2E" />
+                <stop offset="100%" stop-color="#1a2550" />
+            </linearGradient>
+        </defs>
+
+        <path d="M0 32C240 64 480 80 720 64C960 48 1200 16 1440 32V80H0V32Z"
+              fill="url(#ptsGradient)" />
     </svg>
 </div>
 
@@ -554,10 +570,14 @@
 
 <!-- WAVE: dark → light -->
 <div class="wave-divider wave-dark-to-light-2" aria-hidden="true">
-    <svg viewBox="0 0 1440 56" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-        <path d="M0 56L60 46.7C120 37 240 19 360 14C480 9 600 16 720 23.3C840 30 960 37 1080 37.3C1200 37 1320 30 1380 26.7L1440 23V0H1380C1320 0 1200 0 1080 0C960 0 840 0 720 0C600 0 480 0 360 0C240 0 120 0 60 0H0V56Z" fill="#F4F6FF"/>
+    <svg viewBox="0 0 1440 80"
+         xmlns="http://www.w3.org/2000/svg"
+         preserveAspectRatio="none">
+        <path d="M0 32C240 64 480 80 720 64C960 48 1200 16 1440 32V80H0V32Z"
+              fill="#F6F8FA" />
     </svg>
 </div>
+
 
 <!-- CAMPUS VENUES — horizontal carousel -->
 <section class="section" id="venues" style="background:#F4F6FF">
