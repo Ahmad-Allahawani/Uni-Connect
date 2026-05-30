@@ -252,6 +252,49 @@
                 </div>
             </div>
         </div>
+        <div class="confirm-overlay" id="deleteAnswerModal">
+            <div class="confirm-modal">
+                <div class="modal-icon">
+                    <i class="ph-fill ph-warning"></i>
+                </div>
+
+                <h3>Delete this answer?</h3>
+
+                <p>
+                    This will permanently delete your answer.
+                    This action cannot be undone.
+                </p>
+
+                <div class="modal-actions">
+                    <button type="button"
+                            class="btn-cancel"
+                            onclick="closeDeleteAnswerModal()">
+                        Cancel
+                    </button>
+
+                    <form asp-action="DeleteAnswer"
+                          asp-controller="Dashboard"
+                          method="post"
+                          style="flex:1;margin:0;">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden"
+                               id="deleteAnswerIdInput"
+                               name="answerId" />
+
+                        <input type="hidden"
+                               name="postId"
+                               value="@Model.PostID" />
+
+                        <button type="submit"
+                                class="btn-danger"
+                                style="width:100%;">
+                            Yes, delete this answer
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <!-- Report Modal -->
         <div id="reportModal" style="display:none; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:18px;">
@@ -344,17 +387,14 @@
                                         <i class="ph-duotone ph-pencil-simple" style="font-size:12px;"></i>
                                     </button>
 
-                                    <form method="post" asp-action="DeleteAnswer" style="margin-left:0; display:inline;"
-                                          onsubmit="return confirm('Delete this answer?')">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="answerId" value="@answer.AnswerID" />
-                                        <input type="hidden" name="postId" value="@Model.PostID" />
-                                        <button type="submit" style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-3);display:inline-flex;align-items:center;gap:3px;font-family:inherit;padding:3px 6px;border-radius:4px;transition:color .2s;"
-                                                onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='var(--text-3)'"
-                                                title="Delete this answer">
-                                            <i class="ph-duotone ph-trash-simple" style="font-size:12px;"></i>
-                                        </button>
-                                    </form>
+                                    <button type="button"
+                                            onclick="openDeleteAnswerModal(@answer.AnswerID)"
+                                            style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-3);display:inline-flex;align-items:center;gap:3px;font-family:inherit;padding:3px 6px;border-radius:4px;transition:color .2s;"
+                                            onmouseover="this.style.color='#EF4444'"
+                                            onmouseout="this.style.color='var(--text-3)'"
+                                            title="Delete this answer">
+                                        <i class="ph-duotone ph-trash-simple" style="font-size:12px;"></i>
+                                    </button>
                                 }
 
                                 @if (currentUserId.HasValue && answer.UserID != currentUserId.Value)
@@ -700,12 +740,22 @@
                     label.textContent = this.files?.[0]?.name || 'Choose new image';
                 }
             });
+            function openDeleteAnswerModal(answerId) {
+                document.getElementById('deleteAnswerIdInput').value = answerId;
+                document.getElementById('deleteAnswerModal').classList.add('active');
+             }
+
+            function closeDeleteAnswerModal() {
+                document.getElementById('deleteAnswerModal').classList.remove('active');
+            }
+
+            document.getElementById('deleteAnswerModal')
+                ?.addEventListener('click', function (e) {
+                    if (e.target === this) {
+                        closeDeleteAnswerModal();
+                    }
+                });
+
         </script>
     }
-    else
-    {
-        <div style="text-align:center; padding:60px 20px; background:var(--surface); border-radius:var(--radius);">
-            <p style="font-size:16px; font-weight:700; color:var(--text);">Post not found</p>
-        </div>
-    }
-</div>
+    

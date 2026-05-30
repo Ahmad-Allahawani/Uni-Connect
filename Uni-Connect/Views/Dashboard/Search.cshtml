@@ -46,45 +46,34 @@
         foreach (var post in results)
         {
             var isSolved   = post.Answers?.Any(a => a.IsAccepted && !a.IsDeleted) == true;
-            var snippet    = string.IsNullOrEmpty(post.Content) ? "" : (post.Content.Length > 160 ? post.Content[..160] + "…" : post.Content);
+            var snippet = string.IsNullOrEmpty(post.Content)? "": (post.Content.Length > 110 ? post.Content[..110] + "…" : post.Content);
             var authorName = post.User?.Name?.Split(' ').First() ?? "User";
 
+            
+    
             <a href="@Url.Action("SinglePost", "Dashboard", new { id = post.PostID })" class="result-card">
-                <div class="result-meta">
-                    <img src="@AvatarHelper.Url(post.User?.Name, 28)"
-                         alt="@authorName" class="result-avatar" />
-                    <span style="font-weight:700; color:var(--text);">@authorName</span>
-                    <span>·</span>
-                    <span>@post.CreatedAt.ToString("MMM dd, yyyy")</span>
-                    @if (post.Category != null)
+                <div class="result-preview">
+                    <div class="result-main">
+                        <div class="result-title">@post.Title</div>
+
+                        @if (!string.IsNullOrEmpty(snippet))
+                        {
+                            <div class="result-snippet">@snippet</div>
+                        }
+
+                        <div class="result-stats">
+                            <span><i class="ph-duotone ph-thumbs-up"></i> @post.Upvotes</span>
+                            <span><i class="ph-duotone ph-chat-dots"></i> @(post.Answers?.Count(a => !a.IsDeleted) ?? 0) answers</span>
+                            <span><i class="ph-duotone ph-eye"></i> @post.ViewsCount views</span>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(post.ImageUrl))
                     {
-                        <span class="chip chip-indigo">@post.Category.Name</span>
+                        <div class="result-thumb">
+                            <img src="@post.ImageUrl" alt="" />
+                        </div>
                     }
-                    @if (isSolved)
-                    {
-                        <span class="chip chip-emerald" style="display:inline-flex; align-items:center; gap:4px;">
-                            <i class="ph-fill ph-check-circle" style="font-size:12px;"></i> Solved
-                        </span>
-                    }
-                </div>
-
-                <div class="result-title">@post.Title</div>
-
-                @if (!string.IsNullOrEmpty(snippet))
-                {
-                    <div class="result-snippet">@snippet</div>
-                }
-
-                <div class="result-stats">
-                    <span style="display:inline-flex; align-items:center; gap:4px;">
-                        <i class="ph-duotone ph-thumbs-up" style="font-size:13px;"></i> @post.Upvotes
-                    </span>
-                    <span style="display:inline-flex; align-items:center; gap:4px;">
-                        <i class="ph-duotone ph-chat-dots" style="font-size:13px;"></i> @(post.Answers?.Count(a => !a.IsDeleted) ?? 0) answers
-                    </span>
-                    <span style="display:inline-flex; align-items:center; gap:4px;">
-                        <i class="ph-duotone ph-eye" style="font-size:13px;"></i> @post.ViewsCount views
-                    </span>
                 </div>
             </a>
         }
