@@ -63,7 +63,7 @@
                         </td>
                         <td>
                             <div style="display:flex; gap:8px;">
-                                @if (report.TargetType == "Post" && report.TargetID.HasValue)
+                                @if (report.TargetType == "Post")
                                 {
                                     <a href="@Url.Action("SinglePost", "Dashboard", new { id = report.TargetID })" target="_blank" class="btn btn-sm btn-secondary" title="View Post"><i class="ph ph-eye" style="font-size:14px;"></i></a>
                                 }
