@@ -49,6 +49,12 @@ namespace Uni_Connect.Controllers
                 .Include(r => r.Post)
                 .Where(r => r.RecipientID == me && r.Status == "Pending" && !r.IsDeleted)
                 .ToListAsync();
+            var pendingRequests = await _context.Requests
+                .Include(r => r.Recipient)
+                .Include(r => r.Post)
+                .Where(r => r.OwnerID == me && r.Status == "Pending" && !r.IsDeleted)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
 
             var history = await _context.PrivateSessions
                 .Include(s => s.Student)
@@ -67,6 +73,7 @@ namespace Uni_Connect.Controllers
             ViewBag.IncomingRequests = incomingRequests;
             ViewBag.History = history;
             ViewBag.CurrentUserId = me;
+            ViewBag.PendingRequests = pendingRequests;
 
             return View("~/Views/Session/ChatPage.cshtml");
         }
@@ -74,7 +81,7 @@ namespace Uni_Connect.Controllers
        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SendRequest(int recipientId, int postId, string description)
+        public async Task<IActionResult> SendRequest(int recipientId, int? postId, string description)
         {
             try
             {
@@ -102,7 +109,7 @@ namespace Uni_Connect.Controllers
                 {
                     OwnerID = me,
                     RecipientID = recipientId,
-                    PostID = postId,
+                    PostID = postId == 0 ? null : postId,
                     Description = description ?? "",
                     Status = "Pending",
                     CreatedAt = DateTime.UtcNow
@@ -288,6 +295,40 @@ namespace Uni_Connect.Controllers
 
             return Ok(new { success = true });
         }
+        [HttpGet]
+        public async Task<IActionResult> SearchStudents(string q)
+        {
+            var me = GetCurrentUserId();
+
+            if (string.IsNullOrWhiteSpace(q) || q.Trim().Length < 2)
+                return Json(new { results = Array.Empty<object>() });
+
+            q = q.Trim();
+
+            var students = await _context.Users
+                .Where(u =>
+                    !u.IsDeleted &&
+                    u.UserID != me &&
+                    (
+                        u.Name.Contains(q) ||
+                        u.Email.Contains(q) ||
+                        u.Faculty.Contains(q)
+                    ))
+                .OrderBy(u => u.Name)
+                .Take(10)
+                .Select(u => new
+                {
+                    id = u.UserID,
+                    name = u.Name,
+                    email = u.Email,
+                    faculty = u.Faculty,
+                    year = u.YearOfStudy,
+                    profileImage = u.ProfileImageUrl
+                })
+                .ToListAsync();
+
+            return Json(new { results = students });
+        }
 
         private async Task<User?> GetCurrentUser()
         {
@@ -296,6 +337,7 @@ namespace Uni_Connect.Controllers
             int userId = int.Parse(userIdStr);
             return await _context.Users.FirstOrDefaultAsync(u => u.UserID == userId);
         }
+
 
         private int GetCurrentUserId() =>
             int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);

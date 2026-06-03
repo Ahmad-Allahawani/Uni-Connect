@@ -21,5 +21,6 @@ namespace Uni_Connect.Models
         public bool IsDeleted { get; set; } = false;
 
         public User? Reporter { get; set; }
+        public Answer? Answer { get; set; }
     }
 }

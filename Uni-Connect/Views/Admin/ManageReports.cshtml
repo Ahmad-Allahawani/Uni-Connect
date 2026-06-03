@@ -2,6 +2,9 @@
 @{
     ViewData["Title"] = "Manage Reports";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    var answerPostMap = ViewBag.AnswerPostMap as Dictionary<int, int> ?? new Dictionary<int, int>();
+    dynamic postOwnerMap = ViewBag.PostOwnerMap;
+    dynamic answerInfoMap = ViewBag.AnswerInfoMap;
 }
 
 @section Styles {
@@ -23,6 +26,7 @@
                 <tr>
                     <th>Date</th>
                     <th>Reporter</th>
+                    <th>Reported User</th>
                     <th>Reason</th>
                     <th>Target Type</th>
                     <th>Status</th>
@@ -33,7 +37,7 @@
                 @if (!Model.Any())
                 {
                     <tr>
-                        <td colspan="6" style="text-align:center; padding: 40px; color: var(--text-3);">
+                        <td colspan="7" style="text-align:center; padding: 40px; color: var(--text-3);">
                             <i class="ph-duotone ph-check-circle" style="font-size:48px; margin-bottom:16px; opacity:0.5;"></i>
                             <div>No active reports. Community is clean!</div>
                         </td>
@@ -44,10 +48,62 @@
                     <tr>
                         <td class="text-2">@report.CreatedAt.ToString("MMM dd, HH:mm")</td>
                         <td>
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                <div class="av av-xs"><img src="@AvatarHelper.Url(report.Reporter.Name, 24)" alt="User"/></div>
-                                <span>@report.Reporter.Name</span>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                @if (!string.IsNullOrEmpty(report.Reporter?.ProfileImageUrl))
+                                {
+                                    <img src="@report.Reporter.ProfileImageUrl"
+                                         style="width:24px;height:24px;border-radius:50%;object-fit:cover;" />
+                                }
+                                else
+                                {
+                                    <img src="@AvatarHelper.Url(report.Reporter?.Name, 24)"
+                                         style="width:24px;height:24px;border-radius:50%;" />
+                                }
+
+                                <span>@report.Reporter?.Name</span>
                             </div>
+
+
+                        </td>
+                        <td>
+                            @if (report.TargetType == "Post" && postOwnerMap.ContainsKey(report.TargetID))
+                            {
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    @if (!string.IsNullOrEmpty(postOwnerMap[report.TargetID].OwnerImageUrl))
+                                    {
+                                        <img src="@postOwnerMap[report.TargetID].OwnerImageUrl"
+                                             style="width:24px;height:24px;border-radius:50%;object-fit:cover;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="@AvatarHelper.Url(postOwnerMap[report.TargetID].OwnerName, 24)"
+                                             style="width:24px;height:24px;border-radius:50%;" />
+                                    }
+
+                                    <span>@postOwnerMap[report.TargetID].OwnerName</span>
+                                </div>
+                            }
+                            else if (report.TargetType == "Answer" && answerInfoMap != null && answerInfoMap.ContainsKey(report.TargetID))
+                            {
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    @if (!string.IsNullOrEmpty(answerInfoMap[report.TargetID].OwnerImageUrl))
+                                    {
+                                        <img src="@answerInfoMap[report.TargetID].OwnerImageUrl"
+                                             style="width:24px;height:24px;border-radius:50%;object-fit:cover;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="@AvatarHelper.Url(answerInfoMap[report.TargetID].OwnerName, 24)"
+                                             style="width:24px;height:24px;border-radius:50%;" />
+                                    }
+
+                                    <span>@answerInfoMap[report.TargetID].OwnerName</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="text-2">Unknown</span>
+                            }
                         </td>
                         <td><strong>@report.Reason</strong></td>
                         <td><span class="badge badge-secondary">@report.TargetType</span></td>
@@ -65,11 +121,27 @@
                             <div style="display:flex; gap:8px;">
                                 @if (report.TargetType == "Post")
                                 {
-                                    <a href="@Url.Action("SinglePost", "Dashboard", new { id = report.TargetID })" target="_blank" class="btn btn-sm btn-secondary" title="View Post"><i class="ph ph-eye" style="font-size:14px;"></i></a>
+                                    <a href="@Url.Action("SinglePost", "Dashboard", new { id = report.TargetID })"
+                                       target="_blank"
+                                       class="btn btn-sm btn-secondary"
+                                       title="View Post">
+                                        <i class="ph ph-eye" style="font-size:14px;"></i>
+                                    </a>
+                                }
+                                else if (report.TargetType == "Answer" && answerInfoMap != null && answerInfoMap.ContainsKey(report.TargetID))
+                                {
+                                    <a href="@Url.Action("SinglePost", "Dashboard", new { id = answerInfoMap[report.TargetID].PostID })"
+                                       target="_blank"
+                                       class="btn btn-sm btn-secondary"
+                                       title="View Answer">
+                                        <i class="ph ph-eye" style="font-size:14px;"></i>
+                                    </a>
                                 }
                                 else
                                 {
-                                    <button class="btn btn-sm btn-secondary" title="Answer #@report.TargetID" disabled><i class="ph ph-eye" style="font-size:14px;"></i></button>
+                                    <button class="btn btn-sm btn-secondary" title="Target not found" disabled>
+                                        <i class="ph ph-eye" style="font-size:14px;"></i>
+                                    </button>
                                 }
                                 @if (!report.IsResolved)
                                 {

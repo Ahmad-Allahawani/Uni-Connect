@@ -1,0 +1,190 @@
+﻿@model List<Uni_Connect.Models.Post>
+
+@{
+    ViewData["Title"] = "Deleted Posts";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section Styles {
+    <link href="~/css/admin.css" rel="stylesheet" />
+    <style>
+        .highlight-post {
+            background: rgba(255, 120, 120, 0.18) !important;
+            box-shadow: inset 4px 0 0 red;
+            transition: background 0.5s ease;
+        }
+    </style>
+}
+
+<div class="dashboard-header">
+    <div>
+        <h1 class="h2">Deleted Posts</h1>
+        <p class="text-2">Review deleted posts and their related answers.</p>
+    </div>
+
+    <a asp-action="ManageContent" class="btn btn-secondary">
+        <i class="ph ph-arrow-left" style="font-size:16px;"></i>
+        Back to Manage Content
+    </a>
+</div>
+
+<div class="card">
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Author</th>
+                    <th>Post</th>
+                    <th>Category</th>
+                    <th>Answers</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" style="text-align:center;padding:40px;color:var(--text-3);">
+                            No deleted posts found.
+                        </td>
+                    </tr>
+                }
+
+                @foreach (var post in Model)
+                {
+                    <tr id="post-@post.PostID">
+                        <td class="text-2">@post.CreatedAt.ToString("MMM dd, HH:mm")</td>
+
+                        <td>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                @if (!string.IsNullOrEmpty(post.User?.ProfileImageUrl))
+                                {
+                                    <img src="@post.User.ProfileImageUrl"
+                                         style="width:24px;height:24px;border-radius:50%;object-fit:cover;" />
+                                }
+                                else
+                                {
+                                    <img src="@AvatarHelper.Url(post.User?.Name, 24)"
+                                         style="width:24px;height:24px;border-radius:50%;" />
+                                }
+
+                                <span>@post.User?.Name</span>
+                            </div>
+                        </td>
+
+                        <td>
+                            <strong>@post.Title</strong>
+                            <div class="text-2" style="font-size:12px;margin-top:4px;">
+                                @(post.Content?.Length > 120 ? post.Content[..120] + "..." : post.Content)
+                            </div>
+                        </td>
+
+                        <td>@post.Category?.Name</td>
+
+                        <td>
+                            @(post.Answers?.Count(a => !a.IsDeleted) ?? 0)
+                        </td>
+                        <td>
+                            @if (post.Answers != null && post.Answers.Any())
+                            {
+                                <button type="button"
+                                        class="btn btn-sm btn-secondary"
+                                        onclick="toggleDeletedPostAnswers('answers-@post.PostID')">
+                                    <i class="ph ph-chat-dots"></i>
+                                    View Answers
+                                </button>
+                            }
+                        </td>
+                    </tr>
+
+                    @if (post.Answers != null && post.Answers.Any())
+                    {
+                        <tr id="answers-@post.PostID" style="display:none;">
+                            <td colspan="6" style="background:var(--surface-2);padding:14px;">
+                                <strong style="font-size:13px;">Related Answers</strong>
+
+                                <div style="margin-top:10px;display:grid;gap:10px;">
+
+                                    <div style="margin-top:10px;display:grid;gap:10px;">
+                                        @foreach (var answer in post.Answers.OrderByDescending(a => a.CreatedAt))
+                                        {
+                                            <div style="padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);">
+                                                <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
+                                                    <div style="display:flex;align-items:center;gap:8px;">
+                                                        @if (!string.IsNullOrEmpty(answer.User?.ProfileImageUrl))
+                                                        {
+                                                            <img src="@answer.User.ProfileImageUrl"
+                                                                 style="width:22px;height:22px;border-radius:50%;object-fit:cover;" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="@AvatarHelper.Url(answer.User?.Name, 22)"
+                                                                 style="width:22px;height:22px;border-radius:50%;" />
+                                                        }
+
+                                                        <strong style="font-size:13px;">@answer.User?.Name</strong>
+                                                    </div>
+
+                                                    @if (answer.IsDeleted)
+                                                    {
+                                                        <span class="badge" style="background:var(--rose-light);color:var(--rose);">Deleted Answer</span>
+                                                    }
+                                                    else if (answer.IsAccepted)
+                                                    {
+                                                        <span class="badge" style="background:var(--emerald-light);color:var(--emerald);">Best Answer</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-secondary">Hidden by Deleted Post</span>
+                                                    }
+                                                </div>
+
+                                                <div style="margin-top:8px;font-size:13px;color:var(--text-2);line-height:1.5;">
+                                                    @answer.Content
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        function toggleDeletedPostAnswers(id) {
+            const row = document.getElementById(id);
+            if (!row) return;
+
+            row.style.display =
+                row.style.display === "none" ? "table-row" : "none";
+        }
+
+                document.addEventListener("DOMContentLoaded", () => {
+            const hash = window.location.hash;
+
+            if (!hash) return;
+
+            const row = document.querySelector(hash);
+
+            if (!row) return;
+
+            row.classList.add("highlight-post");
+
+            row.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+            setTimeout(() => {
+                row.classList.remove("highlight-post");
+            }, 5000);
+        });
+    </script>
+}

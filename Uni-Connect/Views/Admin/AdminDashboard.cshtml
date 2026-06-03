@@ -14,6 +14,7 @@
     </div>
 </div>
 
+
 <div class="stats-grid">
     <div class="stat-card">
         <div class="stat-icon" style="background:var(--indigo-light); color:var(--indigo);"><i class="ph-duotone ph-users" style="font-size:22px;"></i></div>
@@ -41,8 +42,16 @@
             <a asp-action="ManageUsers" class="btn btn-primary" style="text-align: center; display: block; text-decoration: none;">
                 <i class="ph-bold ph-user-gear" style="font-size:16px;margin-right:8px; vertical-align:middle;"></i> Manage Users
             </a>
-            <a asp-action="ManageReports" class="btn btn-secondary" style="text-align: center; display: block; text-decoration: none;">
+            <a asp-action="ManageReports" class="btn btn-primary" style="text-align: center; display: block; text-decoration: none;">
                 <i class="ph-fill ph-flag" style="font-size:16px;margin-right:8px; vertical-align:middle;"></i> Review Reports
+            </a>
+            <a 
+               asp-action="ManageContent"
+               class="btn btn-primary" style="text-align: center; display: block; text-decoration: none;">
+                <i class="ph-fill ph-note-pencil"></i>Manage Posts & Answers
+            </a>
+            <a asp-action="DeletedPosts" class="btn btn-primary" style="text-align: center; display: block; text-decoration: none;">
+                <i class="ph-fill ph-archive-box"></i> View Deleted Posts
             </a>
         </div>
     </div>

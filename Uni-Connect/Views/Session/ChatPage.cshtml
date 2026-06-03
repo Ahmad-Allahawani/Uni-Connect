@@ -9,6 +9,7 @@
     var activeSessions = ViewBag.ActiveSessions as List<Uni_Connect.Models.PrivateSession> ?? new();
     var incomingRequests = ViewBag.IncomingRequests as List<Uni_Connect.Models.Request> ?? new();
     var history = ViewBag.History as List<Uni_Connect.Models.PrivateSession> ?? new();
+    var pendingRequests = ViewBag.PendingRequests as List<Uni_Connect.Models.Request> ?? new();
 }
 <style>
     .tabs {
@@ -292,6 +293,20 @@
         <h1 style="font-size:28px;font-weight:800;margin-bottom:4px;">Private Sessions</h1>
         <p style="font-size:14px;color:var(--text-2);">One-on-one help · 100% voluntary</p>
     </div>
+    <div class="card" style="margin-top:18px;padding:16px;">
+        <div style="display:flex;gap:10px;align-items:center;">
+            <input id="studentSearchInput"
+                   type="text"
+                   class="form-input"
+                   placeholder="Search students by name, email, or faculty..."
+                   oninput="searchStudents()"
+                   style="flex:1;" />
+        </div>
+
+        <div id="studentSearchResults"
+             style="display:none;flex-direction:column;gap:10px;margin-top:12px;">
+        </div>
+    </div>
 
     <!-- Toast -->
     <div id="toast" style="display:none;position:fixed;bottom:24px;right:24px;background:var(--indigo);color:#fff;padding:12px 20px;border-radius:var(--radius);font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.15);"></div>
@@ -312,6 +327,14 @@
                 <span class="nav-badge" style="background:var(--indigo);color:#fff;padding:2px 6px;border-radius:6px;font-size:11px;margin-left:6px;">@incomingRequests.Count</span>
             }
         </div>
+        <div class="tab" onclick="showTab('tab-pending',this)">
+            Pending Requests
+            @if (pendingRequests.Count > 0)
+            {
+                <span class="nav-badge" style="background:var(--indigo);color:#fff;padding:2px 6px;border-radius:6px;font-size:11px;margin-left:6px;">@pendingRequests.Count</span>
+            }
+        </div>
+
         <div class="tab" onclick="showTab('tab-history',this)">History</div>
     </div>
 
@@ -353,7 +376,20 @@
                                      style="display:flex;gap:12px;padding:12px;border-radius:var(--radius);cursor:pointer;margin-bottom:8px;border:1px solid transparent;">
                                     <div style="position:relative;display:inline-block;flex-shrink:0;">
                                         <div class="av av-sm">
-                                            <img src="@AvatarHelper.Url(otherName, 40)" alt="@otherName" />
+                                            
+                                            @if (!string.IsNullOrEmpty(other?.ProfileImageUrl))
+                                            {
+                                                
+                                                    <img src="@other.ProfileImageUrl" alt="@otherName" />
+                                                
+                                            }
+                                            else
+                                            {
+                                                
+                                                    <img src="@AvatarHelper.Url(otherName, 60)" alt="@otherName" />
+                                                
+                                            }
+
                                         </div>
                                         @if (isOnline)
                                         {
@@ -429,9 +465,18 @@
                         var ownerName = r.Owner?.Name ?? "Unknown";
                         var initials = Uri.EscapeDataString(ownerName);
                         <div class="card" id="req-@r.RequestID" style="display:flex;gap:16px;align-items:flex-start;">
-                            <div class="av av-lg">
-                                <img src="@AvatarHelper.Url(ownerName, 60)" alt="@ownerName" />
-                            </div>
+                            @if (!string.IsNullOrEmpty(r.Recipient?.ProfileImageUrl))
+                            {
+                                <div class="av av-lg">
+                                    <img src="@r.Recipient.ProfileImageUrl" alt="@ownerName" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="av av-lg">
+                                    <img src="@AvatarHelper.Url(ownerName, 60)" alt="@ownerName" />
+                                </div>
+                            }
                             <div style="flex:1;">
                                 <div style="margin-bottom:4px;">
                                     <span style="font-weight:700;">@ownerName</span>
@@ -448,6 +493,61 @@
                                 <button class="btn btn-primary btn-sm" onclick="acceptRequest(@r.RequestID, this)">Accept</button>
                                 <button class="btn btn-ghost btn-sm" style="color:var(--text-2);" onclick="declineRequest(@r.RequestID, this)">Decline</button>
                             </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <div id="tab-pending" data-tab class="hidden">
+            @if (!pendingRequests.Any())
+            {
+                <div class="card" style="text-align:center;padding:48px;color:var(--text-2);">
+                    <div style="font-size:40px;margin-bottom:12px;">⏳</div>
+                    <div style="font-weight:600;">No pending requests</div>
+                    <div style="font-size:13px;margin-top:4px;">Requests you send will appear here until accepted or declined.</div>
+                </div>
+            }
+            else
+            {
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                    @foreach (var r in pendingRequests)
+                    {
+                        var recipientName = r.Recipient?.Name ?? "Unknown";
+
+                        <div class="card" style="display:flex;gap:16px;align-items:flex-start;">
+                            @if (!string.IsNullOrEmpty(r.Recipient?.ProfileImageUrl))
+                            {
+                                <div class="av av-lg">
+                                    <img src="@r.Recipient.ProfileImageUrl" alt="@recipientName" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="av av-lg">
+                                    <img src="@AvatarHelper.Url(recipientName, 60)" alt="@recipientName" />
+                                </div>
+                            }
+
+                            <div style="flex:1;">
+                                <div style="margin-bottom:4px;">
+                                    <span style="font-weight:700;">@recipientName</span>
+                                    <span class="chip chip-violet" style="margin-left:8px;">
+                                        @(r.Recipient?.Faculty) · @(r.Recipient?.YearOfStudy)
+                                    </span>
+                                </div>
+
+                                <p style="font-size:14px;color:var(--text-2);line-height:1.6;">
+                                    @r.Description
+                                </p>
+
+                                <div style="font-size:12px;color:var(--text-2);margin-top:4px;">
+                                    Sent @r.CreatedAt.ToString("MMM dd, yyyy · HH:mm")
+                                </div>
+                            </div>
+
+                            <span class="chip" style="background:#fef3c7;color:#92400e;">
+                                Pending
+                            </span>
                         </div>
                     }
                 </div>
@@ -472,8 +572,16 @@
                         var otherName = other?.Name ?? "Unknown";
                         <div class="card" style="display:flex;gap:16px;align-items:center;">
                             <div class="av av-sm">
-                                <img src="@AvatarHelper.Url(otherName, 40)" alt="@otherName" />
+                                @if (!string.IsNullOrEmpty(other?.ProfileImageUrl))
+                                {
+                                    <img src="@other.ProfileImageUrl" alt="@otherName" />
+                                }
+                                else
+                                {
+                                    <img src="@AvatarHelper.Url(otherName, 40)" alt="@otherName" />
+                                }
                             </div>
+
                             <div style="flex:1;">
                                 <div style="font-weight:700;">@otherName</div>
                                 <div style="font-size:12px;color:var(--text-2);">@s.CreatedAt.ToString("MMM dd, yyyy")</div>
@@ -543,6 +651,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 
 <script>
+
+
+
     // ═══════════════════════════════════════════════
     // STATE
     // ═══════════════════════════════════════════════
@@ -990,4 +1101,105 @@
         const item = document.querySelector(`.chat-item[data-session-id="${autoId}"]`);
         if (item) item.click();
     })();
+
+
+
+        let studentSearchTimer = null;
+
+    function searchStudents() {
+        clearTimeout(studentSearchTimer);
+
+        studentSearchTimer = setTimeout(async function () {
+            const input = document.getElementById('studentSearchInput');
+            const resultsBox = document.getElementById('studentSearchResults');
+            const q = input.value.trim();
+
+            if (q.length < 2) {
+                resultsBox.style.display = 'none';
+                resultsBox.innerHTML = '';
+                return;
+            }
+
+            resultsBox.style.display = 'flex';
+            resultsBox.innerHTML = '<div style="font-size:13px;color:var(--text-2);">Searching…</div>';
+
+            try {
+                const res = await fetch('/Session/SearchStudents?q=' + encodeURIComponent(q));
+                const data = await res.json();
+
+                if (!data.results || data.results.length === 0) {
+                    resultsBox.innerHTML = '<div style="font-size:13px;color:var(--text-2);">No students found.</div>';
+                    return;
+                }
+
+                    resultsBox.innerHTML = data.results.map(s => {
+                        const avatarUrl = s.profileImage && s.profileImage.trim() !== ''
+                            ? s.profileImage
+                            : `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name)}&background=3D52A0&color=fff`;
+
+                        return `
+                            <div style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);">
+                                <div class="av av-sm">
+                                    <img src="${avatarUrl}" alt="${escapeHtml(s.name)}" />
+                                </div>
+
+                                <div style="flex:1;min-width:0;">
+                                    <div style="font-weight:700;font-size:14px;">${escapeHtml(s.name)}</div>
+                                    <div style="font-size:12px;color:var(--text-2);">
+                                        ${escapeHtml(s.faculty || 'No faculty')} · ${escapeHtml(s.year || 'No year')}
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary btn-sm" onclick="requestSessionFromSearch(${s.id}, this)">
+                                    Request Session
+                                </button>
+                            </div>
+                        `;
+                    }).join('');
+            } catch {
+                resultsBox.innerHTML = '<div style="font-size:13px;color:var(--danger,#e53e3e);">Search failed.</div>';
+            }
+        }, 300);
+    }
+
+    async function requestSessionFromSearch(recipientId, btn) {
+        const description = prompt('Describe what you need help with:');
+
+        if (!description || !description.trim()) {
+            showToast('Please enter a description.');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+
+        try {
+            const res = await fetch('/Session/SendRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': getToken()
+                },
+                body:
+                    'recipientId=' + encodeURIComponent(recipientId) +
+                    '&postId=' + encodeURIComponent(0) +
+                    '&description=' + encodeURIComponent(description.trim())
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                showToast(data.message || 'Request sent!');
+                btn.textContent = 'Request Sent';
+            } else {
+                showToast(data.message || 'Could not send request.');
+                btn.disabled = false;
+                btn.textContent = 'Request Session';
+            }
+        } catch {
+            showToast('Network error. Try again.');
+            btn.disabled = false;
+            btn.textContent = 'Request Session';
+        }
+    }
 </script>

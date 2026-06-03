@@ -80,13 +80,31 @@
             {
                 var diff2 = Model.LastSeenAt.HasValue ? DateTime.UtcNow - Model.LastSeenAt.Value : (TimeSpan?)null;
                 string lsText = diff2 == null ? "" :
-                    diff2.Value.TotalMinutes < 60 ? $"{(int)diff2.Value.TotalMinutes}m ago" :
-                    diff2.Value.TotalHours < 24   ? $"{(int)diff2.Value.TotalHours}h ago" :
-                    Model.LastSeenAt!.Value.ToString("MMM d");
-                <div style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:@(Model.IsOnline ? "#10B981" : "var(--text-2)");">
-                    <span style="width:8px;height:8px;border-radius:50%;background:@(Model.IsOnline ? "#10B981" : "var(--text-3)");display:inline-block;flex-shrink:0;"></span>
-                    @if (Model.IsOnline) { <text>Online now</text> }
-                    else if (!string.IsNullOrEmpty(lsText)) { <text>Last seen @lsText</text> }
+                diff2.Value.TotalMinutes < 60 ? $"{(int)diff2.Value.TotalMinutes}m ago" :
+                diff2.Value.TotalHours < 24 ? $"{(int)diff2.Value.TotalHours}h ago" :
+                Model.LastSeenAt!.Value.ToString("MMM d");
+
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;">
+                    <div style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:@(Model.IsOnline ? "#10B981" : "var(--text-2)");">
+                        <span style="width:8px;height:8px;border-radius:50%;background:@(Model.IsOnline ? "#10B981" : "var(--text-3)");display:inline-block;flex-shrink:0;"></span>
+                        @if (Model.IsOnline)
+                        {
+                            <text>Online now</text>
+                        }
+                        else if (!string.IsNullOrEmpty(lsText))
+                        {
+
+                            <text>Last seen @lsText</text>
+                        }
+                    </div>
+
+                    <button type="button"
+                            class="btn btn-primary btn-sm"
+                            style="display:inline-flex;align-items:center;gap:8px;"
+                            onclick="openSessionRequestModal(@Model.UserID)">
+                        <i class="ph-fill ph-chat-circle-dots" style="font-size:15px;"></i>
+                        Request Session
+                    </button>
                 </div>
             }
         </div>
@@ -249,6 +267,138 @@
         if (el) el.classList.add('active');
     }
 </script>
+@if (!isOwnProfile)
+{
+    <div id="sessionRequestModal"
+         style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+        <div style="background:var(--surface);width:100%;max-width:420px;border-radius:20px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.25);">
+            <div style="width:52px;height:52px;border-radius:16px;background:var(--indigo-light);color:var(--indigo);display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+                <i class="ph-fill ph-chat-circle-dots" style="font-size:26px;"></i>
+            </div>
+
+            <h3 style="font-size:20px;font-weight:900;margin:0 0 6px;">Request a session</h3>
+            <p style="font-size:13px;color:var(--text-2);line-height:1.6;margin:0 0 18px;">
+                Tell @Model.Name what you need help with.
+            </p>
+
+            <textarea id="sessionRequestDescription"
+                  class="form-input"
+                  rows="4"
+                  placeholder="Example: I need help understanding this topic..."
+                  style="width:100%;resize:vertical;min-height:110px;margin-bottom:14px;"></textarea>
+
+            <div id="sessionRequestError"
+                 style="display:none;color:var(--rose);font-size:13px;font-weight:700;margin-bottom:12px;">
+                Please enter a description.
+            </div>
+
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button type="button"
+                        class="btn btn-ghost btn-sm"
+                        onclick="closeSessionRequestModal()">
+                    Cancel
+                </button>
+
+                <button type="button"
+                        id="sendProfileRequestBtn"
+                        class="btn btn-primary btn-sm"
+                        onclick="submitSessionRequestFromProfile()">
+                    Send Request
+                </button>
+            </div>
+        </div>
+    </div>
+}
+@if (!isOwnProfile)
+{
+    <form id="profileRequestTokenForm" style="display:none;">
+        @Html.AntiForgeryToken()
+    </form>
+    <script>
+        function getProfileRequestToken() {
+            const el = document.querySelector('#profileRequestTokenForm input[name="__RequestVerificationToken"]');
+            return el ? el.value : '';
+        }
+
+        let profileRequestRecipientId = null;
+
+        function getProfileRequestToken() {
+            const el = document.querySelector('#profileRequestTokenForm input[name="__RequestVerificationToken"]');
+            return el ? el.value : '';
+        }
+
+        function openSessionRequestModal(recipientId) {
+            profileRequestRecipientId = recipientId;
+
+            const modal = document.getElementById('sessionRequestModal');
+            const textarea = document.getElementById('sessionRequestDescription');
+            const error = document.getElementById('sessionRequestError');
+
+            textarea.value = '';
+            error.style.display = 'none';
+            modal.style.display = 'flex';
+
+            setTimeout(() => textarea.focus(), 50);
+        }
+
+        function closeSessionRequestModal() {
+            document.getElementById('sessionRequestModal').style.display = 'none';
+            profileRequestRecipientId = null;
+        }
+
+        async function submitSessionRequestFromProfile() {
+            const descriptionEl = document.getElementById('sessionRequestDescription');
+            const error = document.getElementById('sessionRequestError');
+            const btn = document.getElementById('sendProfileRequestBtn');
+
+            const description = descriptionEl.value.trim();
+
+            if (!description) {
+                error.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Sending…';
+
+            try {
+                const res = await fetch('/Session/SendRequest', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': getProfileRequestToken()
+                    },
+                    body:
+                        'recipientId=' + encodeURIComponent(profileRequestRecipientId) +
+                        '&postId=' + encodeURIComponent(0) +
+                        '&description=' + encodeURIComponent(description)
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    closeSessionRequestModal();
+                    showToast(data.message || 'Request sent!');
+                } else {
+                    error.textContent = data.message || 'Could not send request.';
+                    error.style.display = 'block';
+                }
+            } catch {
+                error.textContent = 'Network error. Try again.';
+                error.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Send Request';
+            }
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeSessionRequestModal();
+            }
+        });
+    </script>
+}
 
 @if (isOwnProfile)
 {
@@ -280,5 +430,13 @@
             }
             input.value = '';
         }
+
+    </script>
+    <script>
+        function getProfileRequestToken() {
+            const el = document.querySelector('#profileRequestTokenForm input[name="__RequestVerificationToken"]');
+            return el ? el.value : '';
+        }
+
     </script>
 }

@@ -1,0 +1,429 @@
+﻿@using Uni_Connect.Models
+@{
+    ViewData["Title"] = "Manage Content";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+
+    var posts = ViewBag.Posts as List<Post> ?? new List<Post>();
+    var answers = ViewBag.Answers as List<Answer> ?? new List<Answer>();
+    var currentTab = ViewBag.CurrentTab as string ?? "posts";
+}
+
+@section Styles {
+    <link href="~/css/admin.css" rel="stylesheet" />
+
+    <style>
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .admin-tab {
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: var(--surface);
+            color: var(--text-2);
+            border: 1px solid var(--border);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+            .admin-tab.active {
+                background: var(--indigo);
+                color: white;
+                border-color: var(--indigo);
+            }
+
+        .edit-box {
+            display: none;
+            margin-top: 12px;
+            padding: 14px;
+            border-radius: 12px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+        }
+
+            .edit-box.active {
+                display: block;
+            }
+
+        .admin-input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            margin-bottom: 10px;
+            background: var(--surface);
+            color: var(--text-1);
+        }
+
+        .admin-textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .admin-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            border: 1px solid var(--border);
+        }
+
+            .admin-message i {
+                font-size: 20px;
+            }
+
+            .admin-message.success {
+                background: var(--emerald-light);
+                color: var(--emerald);
+            }
+
+            .admin-message.error {
+                background: var(--rose-light);
+                color: var(--rose);
+            }
+    </style>
+}
+
+<div class="dashboard-header">
+    <div>
+        <h1 class="h2">Manage Content</h1>
+        <p class="text-2">Edit or delete community posts and answers.</p>
+    </div>
+
+    <a asp-action="AdminDashboard" class="btn btn-secondary">
+        <i class="ph ph-arrow-left" style="font-size:16px;"></i>
+        Back to Dashboard
+    </a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="admin-message success">
+        <i class="ph-fill ph-check-circle"></i>
+        <span>@TempData["SuccessMessage"]</span>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="admin-message error">
+        <i class="ph-fill ph-x-circle"></i>
+        <span>@TempData["ErrorMessage"]</span>
+    </div>
+}
+
+<div class="admin-tabs">
+    <a asp-action="ManageContent"
+       asp-route-tab="posts"
+       class="admin-tab @(currentTab == "posts" ? "active" : "")">
+        Posts (@posts.Count)
+    </a>
+
+    <a asp-action="ManageContent"
+       asp-route-tab="answers"
+       class="admin-tab @(currentTab == "answers" ? "active" : "")">
+        Answers (@answers.Count)
+    </a>
+</div>
+
+@if (currentTab == "posts")
+{
+    <div class="card">
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Author</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (!posts.Any())
+                    {
+                        <tr>
+                            <td colspan="6" style="text-align:center;padding:40px;color:var(--text-3);">
+                                No posts found.
+                            </td>
+                        </tr>
+                    }
+
+                    @foreach (var post in posts)
+                    {
+                        <tr>
+                            <td class="text-2">@post.CreatedAt.ToString("MMM dd, HH:mm")</td>
+
+                            <td>
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    @if (!string.IsNullOrEmpty(post.User?.ProfileImageUrl))
+                                    {
+                                        <img src="@post.User.ProfileImageUrl"
+                                             style="width:24px;height:24px;border-radius:50%;object-fit:cover;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="@AvatarHelper.Url(post.User?.Name, 24)"
+                                             style="width:24px;height:24px;border-radius:50%;" />
+                                    }
+
+                                    <span>@post.User?.Name</span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <strong>@post.Title</strong>
+                                <div class="text-2" style="font-size:12px;">
+                                    @(post.Content?.Length > 70 ? post.Content[..70] + "..." : post.Content)
+                                </div>
+                            </td>
+
+                            <td>@post.Category?.Name</td>
+
+                            <td>
+                                @if (post.IsDeleted)
+                                {
+                                    <span class="badge" style="background:var(--rose-light);color:var(--rose);">Deleted</span>
+                                }
+                                else
+                                {
+                                    <span class="badge" style="background:var(--emerald-light);color:var(--emerald);">Active</span>
+                                }
+                            </td>
+
+                            <td>
+                                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                    @if (post.IsDeleted)
+                                    {
+                                        <a href="@Url.Action("DeletedPosts", "Admin")#post-@post.PostID"
+                                           class="btn btn-sm btn-secondary"
+                                           title="View Deleted Post">
+                                            <i class="ph ph-eye"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("SinglePost", "Dashboard", new { id = post.PostID })"
+                                           target="_blank"
+                                           class="btn btn-sm btn-secondary"
+                                           title="View Post">
+                                            <i class="ph ph-eye"></i>
+                                        </a>
+                                    }
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-secondary"
+                                            onclick="toggleEdit('post-edit-@post.PostID')"
+                                            title="Edit Post">
+                                        <i class="ph ph-pencil-simple"></i>
+                                    </button>
+
+                                    @if (!post.IsDeleted)
+                                    {
+                                        <form method="post"
+                                              asp-action="AdminDeletePost"
+                                              asp-route-postId="@post.PostID"
+                                              onsubmit="return confirm('Delete this post?');"
+                                              style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete Post">
+                                                <i class="ph ph-trash"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+
+                                <div id="post-edit-@post.PostID" class="edit-box">
+                                    <form method="post" asp-action="AdminEditPost">
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden" name="postId" value="@post.PostID" />
+
+                                        <input type="text"
+                                               name="title"
+                                               value="@post.Title"
+                                               class="admin-input"
+                                               placeholder="Post title" />
+
+                                        <textarea name="content"
+                                          class="admin-input admin-textarea"
+                                          placeholder="Post content">@post.Content</textarea>
+
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            Save Changes
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else if (currentTab == "answers")
+{
+    <div class="card">
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Author</th>
+                        <th>Answer</th>
+                        <th>Post</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (!answers.Any())
+                    {
+                        <tr>
+                            <td colspan="6" style="text-align:center;padding:40px;color:var(--text-3);">
+                                No answers found.
+                            </td>
+                        </tr>
+                    }
+
+                    @foreach (var answer in answers)
+                    {
+                        <tr>
+                            <td class="text-2">@answer.CreatedAt.ToString("MMM dd, HH:mm")</td>
+
+                            <td>
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    @if (!string.IsNullOrEmpty(answer.User?.ProfileImageUrl))
+                                    {
+                                        <img src="@answer.User.ProfileImageUrl"
+                                             style="width:24px;height:24px;border-radius:50%;object-fit:cover;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="@AvatarHelper.Url(answer.User?.Name, 24)"
+                                             style="width:24px;height:24px;border-radius:50%;" />
+                                    }
+
+                                    <span>@answer.User?.Name</span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <strong>
+                                    @(answer.Content?.Length > 90 ? answer.Content[..90] + "..." : answer.Content)
+                                </strong>
+                            </td>
+
+                            <td>
+                                @(answer.Post?.Title?.Length > 50 ? answer.Post.Title[..50] + "..." : answer.Post?.Title)
+                            </td>
+
+                            <td>
+                                @if (answer.IsDeleted)
+                                {
+                                    <span class="badge" style="background:var(--rose-light);color:var(--rose);">Deleted</span>
+                                }
+                                else if (answer.Post == null || answer.Post.IsDeleted)
+                                {
+                                    <span class="badge" style="background:var(--amber-light);color:var(--amber-dark);">
+                                        Hidden — Post Deleted
+                                    </span>
+                                }
+                                else if (answer.IsAccepted)
+                                {
+                                    <span class="badge" style="background:var(--emerald-light);color:var(--emerald);">Best Answer</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-secondary">Active</span>
+                                }
+                            </td>
+
+                            <td>
+                                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                    @if (answer.Post != null && !answer.Post.IsDeleted)
+                                    {
+                                        <a href="@Url.Action("SinglePost", "Dashboard", new { id = answer.PostID })"
+                                           target="_blank"
+                                           class="btn btn-sm btn-secondary"
+                                           title="View Post">
+                                            <i class="ph ph-eye"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="btn btn-sm btn-secondary"
+                                                disabled
+                                                title="Parent post is deleted">
+                                            <i class="ph ph-eye-slash"></i>
+                                        </button>
+                                    }
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-secondary"
+                                            onclick="toggleEdit('answer-edit-@answer.AnswerID')"
+                                            title="Edit Answer">
+                                        <i class="ph ph-pencil-simple"></i>
+                                    </button>
+
+                                    @if (!answer.IsDeleted)
+                                    {
+                                        <form method="post"
+                                              asp-action="AdminDeleteAnswer"
+                                              asp-route-answerId="@answer.AnswerID"
+                                              onsubmit="return confirm('Delete this answer?');"
+                                              style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete Answer">
+                                                <i class="ph ph-trash"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+
+                                <div id="answer-edit-@answer.AnswerID" class="edit-box">
+                                    <form method="post" asp-action="AdminEditAnswer">
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden" name="answerId" value="@answer.AnswerID" />
+
+                                        <textarea name="content"
+                                          class="admin-input admin-textarea"
+                                          placeholder="Answer content">@answer.Content</textarea>
+
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            Save Changes
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function toggleEdit(id) {
+            const box = document.getElementById(id);
+            if (!box) return;
+
+            box.classList.toggle('active');
+        }
+    </script>
+}

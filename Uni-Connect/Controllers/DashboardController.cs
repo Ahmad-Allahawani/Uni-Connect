@@ -48,11 +48,11 @@ namespace Uni_Connect.Controllers
                 "most_answers" => query.OrderByDescending(p => p.Answers.Count(a => !a.IsDeleted)),
                 "oldest" => query.OrderBy(p => p.CreatedAt),
                 "unsolved" => query
-                    .Where(p => !p.Answers.Any(a => a.IsAccepted && !a.IsDeleted))
-                    .OrderByDescending(p => p.CreatedAt),
+                    .OrderBy(p => p.Answers.Any(a => !a.IsDeleted) ? 1 : 0)
+                    .ThenByDescending(p => p.CreatedAt),
+
                 _ => query.OrderByDescending(p => p.CreatedAt)
             };
-
             var posts = await query.Take(50).ToListAsync();
 
             ViewBag.Posts = posts;
@@ -200,9 +200,11 @@ namespace Uni_Connect.Controllers
                     return View(model);
                 }
 
-                if (model.NewPassword.Length < 6)
+                var passwordError = ValidatePasswordStrength(model.NewPassword);
+
+                if (passwordError != null)
                 {
-                    TempData["ErrorMessage"] = "New password must be at least 6 characters.";
+                    TempData["ErrorMessage"] = passwordError;
                     return View(model);
                 }
 
@@ -618,31 +620,60 @@ namespace Uni_Connect.Controllers
             return Ok(new { postIds, answerIds });
         }
 
-        public async Task<IActionResult> Search(string? q)
+        public async Task<IActionResult> Search(string? q, string tab = "posts")
         {
             var user = await GetCurrentUser();
             if (user == null) return RedirectToAction("Login_Page", "Login");
 
-            var query = _context.Posts
+            var postsQuery = _context.Posts
                 .Where(p => !p.IsDeleted)
                 .Include(p => p.User)
                 .Include(p => p.Category)
                 .Include(p => p.Answers.Where(a => !a.IsDeleted))
                 .AsQueryable();
 
+            var usersQuery = _context.Users
+                .Where(u => !u.IsDeleted)
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(q))
             {
-                query = query.Where(p =>
-                p.Title.Contains(q) ||
-                p.Content.Contains(q) ||
-                (p.Category != null && p.Category.Name.Contains(q)) ||
-                (p.PostTags != null && p.PostTags.Any(pt => pt.Tag.Name.Contains(q))));
+                q = q.Trim();
+
+                postsQuery = postsQuery.Where(p =>
+                        p.Title.Contains(q) ||
+                        p.Content.Contains(q) ||
+                        (p.Category != null && p.Category.Name.Contains(q)) ||
+                        (p.PostTags != null && p.PostTags.Any(pt => pt.Tag.Name.Contains(q))) ||
+
+                        // Search posts by author info
+                        p.User.Name.Contains(q) ||
+                        p.User.Username.Contains(q) ||
+                        p.User.UniversityID.Contains(q) ||
+                        p.User.Email.Contains(q));
+
+
+                usersQuery = usersQuery.Where(u =>
+                    u.Name.Contains(q) ||
+                    u.Username.Contains(q) ||
+                    u.UniversityID.Contains(q) ||
+                    u.Email.Contains(q));
             }
 
-            var results = await query.OrderByDescending(p => p.CreatedAt).ToListAsync();
+            var posts = await postsQuery
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+
+            var users = await usersQuery
+                .OrderBy(u => u.Name)
+                .Take(30)
+                .ToListAsync();
+
             ViewBag.Query = q;
-            ViewBag.Results = results;
+            ViewBag.Results = posts;
+            ViewBag.UserResults = users;
+            ViewBag.CurrentTab = tab;
+
             return View(user);
         }
         [HttpGet]
@@ -868,6 +899,28 @@ namespace Uni_Connect.Controllers
             if (string.IsNullOrEmpty(userIdStr)) return null;
             int userId = int.Parse(userIdStr);
             return await _context.Users.FirstOrDefaultAsync(u => u.UserID == userId);
+        }
+        private string? ValidatePasswordStrength(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+                return "Password is required.";
+
+            if (password.Length < 8)
+                return "Password must be at least 8 characters.";
+
+            if (!password.Any(char.IsUpper))
+                return "Password must contain at least one uppercase letter.";
+
+            if (!password.Any(char.IsLower))
+                return "Password must contain at least one lowercase letter.";
+
+            if (!password.Any(char.IsDigit))
+                return "Password must contain at least one number.";
+
+            if (!password.Any(ch => !char.IsLetterOrDigit(ch)))
+                return "Password must contain at least one special character.";
+
+            return null;
         }
     }
 }

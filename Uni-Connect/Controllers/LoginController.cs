@@ -311,6 +311,9 @@ namespace Uni_Connect.Controllers
         [HttpGet]
         public IActionResult ForgotPass_Page()
         {
+            ViewBag.EmailSent = TempData["EmailSent"] as bool? == true;
+            ViewBag.SentToEmail = TempData["SentToEmail"]?.ToString();
+
             return View(new ForgotPasswordViewModel());
         }
 
@@ -377,9 +380,9 @@ namespace Uni_Connect.Controllers
                         ViewBag.DebugResetUrl = resetUrl;
                 }
 
-                ViewBag.EmailSent = true;
-                ViewBag.SentToEmail = model.Email;
-                return View(model);
+                TempData["EmailSent"] = true;
+                TempData["SentToEmail"] = model.Email;
+                return RedirectToAction("ForgotPass_Page");
             }
             catch (DbUpdateException ex)
             {
