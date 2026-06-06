@@ -32,6 +32,7 @@ namespace Uni_Connect.Models
         [Required, StringLength(20)]
         public string YearOfStudy { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public bool DeletedByAdmin { get; set; } = false;
 
         public string? ProfileImageUrl { get; set; }
         public DateTime CreatedAt { get; set; }

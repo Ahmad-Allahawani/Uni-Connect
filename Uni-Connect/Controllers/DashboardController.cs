@@ -117,6 +117,8 @@ namespace Uni_Connect.Controllers
             if (user == null) return RedirectToAction("Login_Page", "Login");
 
             user.IsDeleted = true;
+            user.DeletedByAdmin = false;
+
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 

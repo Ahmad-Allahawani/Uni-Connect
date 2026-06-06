@@ -38,12 +38,26 @@ namespace Uni_Connect.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleUserDelete(int id)
         {
-            var user = await _context.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.UserID == id);
+            var user = await _context.Users
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(u => u.UserID == id);
+
             if (user != null)
             {
-                user.IsDeleted = !user.IsDeleted;
+                if (!user.IsDeleted)
+                {
+                    user.IsDeleted = true;
+                    user.DeletedByAdmin = true;
+                }
+                else
+                {
+                    user.IsDeleted = false;
+                    user.DeletedByAdmin = false;
+                }
+
                 await _context.SaveChangesAsync();
             }
+
             return RedirectToAction("ManageUsers");
         }
 

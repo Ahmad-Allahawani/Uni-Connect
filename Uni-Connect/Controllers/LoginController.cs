@@ -117,6 +117,11 @@ namespace Uni_Connect.Controllers
                 }
                 if (user.IsDeleted)
                 {
+                    if (user.DeletedByAdmin)
+                    {
+                        ModelState.AddModelError("", "Your account has been disabled by an admin.");
+                        return View(model);
+                    }
                     TempData["ReactivateEmail"] = user.Email;
                     TempData["ReactivateName"] = user.Name;
                     return RedirectToAction("Reactivate_Page");
