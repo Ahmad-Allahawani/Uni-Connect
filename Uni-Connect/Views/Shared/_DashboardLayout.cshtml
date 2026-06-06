@@ -64,6 +64,10 @@
                 <div class="nav-user-dropdown" id="navUserDropdown">
                     <a asp-controller="Dashboard" asp-action="Profile" class="nav-dropdown-item" style="text-decoration:none;"><i class="ph-fill ph-user-circle" style="font-size:16px;color:var(--indigo);"></i> My Profile</a>
                     <a asp-controller="Dashboard" asp-action="Settings" class="nav-dropdown-item" style="text-decoration:none;"><i class="ph-duotone ph-gear" style="font-size:16px;color:var(--text-2);"></i> Settings</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="AdminDashboard" class="nav-dropdown-item" style="text-decoration:none;"><i class="ph-duotone ph-gear" style="font-size:16px;color:var(--text-2);"></i> Admin Dashboard</a>
+                    }
                     <hr style="margin:0; border:none; border-top:1px solid var(--border);">
                     <form method="post" asp-controller="Login" asp-action="Logout" style="display:inline;">
                         <button type="submit" class="nav-dropdown-item logout" style="text-decoration:none; background:none; border:none; cursor:pointer; padding:12px 16px; width:100%; text-align:left;"><i class="ph-fill ph-sign-out" style="font-size:16px;"></i> Sign Out</button>

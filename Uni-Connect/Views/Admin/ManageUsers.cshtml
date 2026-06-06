@@ -42,7 +42,14 @@
                         <td class="text-mono">@user.UniversityID</td>
                         <td>
                             <div style="display:flex; align-items:center; gap:12px;">
-                                <div class="av av-sm"><img src="@AvatarHelper.Url(user.Name, 40)" alt="User"/></div>
+                                @if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+                                {
+                                    <div class="av av-sm"><img src="@user.ProfileImageUrl" alt="User" /></div>
+                                }
+                                else
+                                {
+                                    <div class="av av-sm"><img src="@AvatarHelper.Url(user.Name, 40)" alt="User" /></div>
+                                }
                                 <div>
                                     <div style="font-weight:600;">@user.Name</div>
                                     <div class="text-3">@@@user.Username</div>

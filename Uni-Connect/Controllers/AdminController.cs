@@ -72,6 +72,7 @@ namespace Uni_Connect.Controllers
                  {
                      p.PostID,
                      OwnerName = p.User.Name,
+                     OwnerUserName = p.User.Username,
                      OwnerImageUrl = p.User.ProfileImageUrl
                  })
                  .ToDictionaryAsync(p => p.PostID);
@@ -84,6 +85,7 @@ namespace Uni_Connect.Controllers
                     a.AnswerID,
                     a.PostID,
                     OwnerName = a.User.Name,
+                    OnwerUserName = a.User.Username,
                     OwnerImageUrl = a.User.ProfileImageUrl
                 })
                 .ToDictionaryAsync(a => a.AnswerID);

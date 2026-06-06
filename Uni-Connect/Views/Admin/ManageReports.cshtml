@@ -59,8 +59,10 @@
                                     <img src="@AvatarHelper.Url(report.Reporter?.Name, 24)"
                                          style="width:24px;height:24px;border-radius:50%;" />
                                 }
-
-                                <span>@report.Reporter?.Name</span>
+                                <div>
+                                    <div style="font-weight:600;">@report.Reporter.Name</div>
+                                    <div class="text-3">@@@report.Reporter.Username</div>
+                                </div>
                             </div>
 
 
@@ -79,8 +81,12 @@
                                         <img src="@AvatarHelper.Url(postOwnerMap[report.TargetID].OwnerName, 24)"
                                              style="width:24px;height:24px;border-radius:50%;" />
                                     }
+                                    <div>
+                                        <div style="font-weight:600;">@postOwnerMap[report.TargetID].OwnerName</div>
+                                        <div class="text-3">@@@postOwnerMap[report.TargetID].OwnerUserName</div>
+                                    </div>
 
-                                    <span>@postOwnerMap[report.TargetID].OwnerName</span>
+                                    
                                 </div>
                             }
                             else if (report.TargetType == "Answer" && answerInfoMap != null && answerInfoMap.ContainsKey(report.TargetID))
@@ -96,8 +102,12 @@
                                         <img src="@AvatarHelper.Url(answerInfoMap[report.TargetID].OwnerName, 24)"
                                              style="width:24px;height:24px;border-radius:50%;" />
                                     }
+                                    <div>
+                                        <div style="font-weight:600;">@answerInfoMap[report.TargetID].OwnerName</div>
+                                        <div class="text-3">@@@answerInfoMap[report.TargetID].OnwerUserName</div>
+                                    </div>
 
-                                    <span>@answerInfoMap[report.TargetID].OwnerName</span>
+                                    
                                 </div>
                             }
                             else

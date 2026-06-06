@@ -22,6 +22,10 @@
         <p class="text-2">Review deleted posts and their related answers.</p>
     </div>
 
+    <a asp-action="AdminDashboard" class="btn btn-secondary">
+        <i class="ph ph-arrow-left" style="font-size:16px;"></i>
+        Back to Dashboard
+    </a>
     <a asp-action="ManageContent" class="btn btn-secondary">
         <i class="ph ph-arrow-left" style="font-size:16px;"></i>
         Back to Manage Content
@@ -91,9 +95,9 @@
                             {
                                 <button type="button"
                                         class="btn btn-sm btn-secondary"
-                                        onclick="toggleDeletedPostAnswers('answers-@post.PostID')">
+                                        onclick="toggleDeletedPostAnswers('answers-@post.PostID', this)">
                                     <i class="ph ph-chat-dots"></i>
-                                    View Answers
+                                    <span>View Answers</span>
                                 </button>
                             }
                         </td>
@@ -158,15 +162,21 @@
 </div>
 @section Scripts {
     <script>
-        function toggleDeletedPostAnswers(id) {
+        function toggleDeletedPostAnswers(id, button) {
             const row = document.getElementById(id);
             if (!row) return;
 
-            row.style.display =
-                row.style.display === "none" ? "table-row" : "none";
+            const isHidden =
+                row.style.display === "none" || row.style.display === "";
+
+            row.style.display = isHidden ? "table-row" : "none";
+
+            button.innerHTML = isHidden
+                ? '<i class="ph ph-eye-slash"></i> Hide Answers'
+                : '<i class="ph ph-chat-dots"></i> View Answers';
         }
 
-                document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", () => {
             const hash = window.location.hash;
 
             if (!hash) return;
