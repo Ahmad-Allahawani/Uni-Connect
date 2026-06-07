@@ -734,73 +734,57 @@ namespace Uni_Connect.Controllers
 
             if (answer == null) return NotFound();
 
-
+           
             if (answer.Post.UserID != user.UserID) return Forbid();
 
-
+            
             if (answer.UserID == user.UserID)
-                return BadRequest(new { message = "You cannot mark your own answer as best." });
-
-            // Layer 2 — daily cap check
-            var today = DateTime.UtcNow.Date;
-            int bestAnswerPointsReceivedToday = await _context.PointsTransactions
-                .Where(pt => pt.UserID == answer.UserID &&
-                             pt.Title == "Answer marked as Best Answer" &&
-                             pt.CreatedAt >= today &&
-                             !pt.IsDeleted)
-                .SumAsync(pt => pt.Amount);
-            bool capReached = bestAnswerPointsReceivedToday >= 30;
-
-            // ── LAYER 3 deduct before any writes 
-            bool deducted = await _pointService.DeductPoints(
-                user.UserID, 5,
-                "Awarded Best Answer seal",
-                answer.Content.Length > 60 ? answer.Content[..60] + "…" : answer.Content,
-                "⭐");
-
-            if (!deducted)
-                return BadRequest(new { message = "You need at least 5 points to award a Best Answer." });
-
-
-
-            var prev = await _context.Answers
-                .Where(a => a.PostID == answer.PostID && a.IsAccepted)
-                .ToListAsync();
-            prev.ForEach(a => a.IsAccepted = false);
-
-            answer.IsAccepted = true;
-            try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch
-            {
-
-                await _pointService.AwardPoints(user.UserID, 5, "Best Answer seal refund", null, "↩️");
-                return StatusCode(500, new { message = "Something went wrong. Your points have been refunded." });
+                return BadRequest(new
+                {
+                    message = "You cannot mark your own answer as best."
+                });
             }
 
-            if (!capReached)
+            
+            if (answer.IsAccepted)
             {
-                await _pointService.AwardPoints(
-                    answer.UserID, 15,
-                    "Answer marked as Best Answer",
-                    answer.Content.Length > 60 ? answer.Content[..60] + "…" : answer.Content,
-                    "⭐");
+                return BadRequest(new
+                {
+                    message = "This answer is already marked as best."
+                });
             }
 
-            try
+           
+            bool hasPendingRequest = await _context.BestAnswerRequests.AnyAsync(r =>
+                r.PostID == answer.PostID &&
+                !r.IsApproved &&
+                !r.IsRejected &&
+                !r.IsDeleted);
+
+            if (hasPendingRequest)
             {
-                var notifMessage = capReached
-                    ? "Your answer was marked as the Best Answer! (daily point cap reached)"
-                    : "Your answer was marked as the Best Answer! +15 points";
-
-                await _notificationService.CreateAsync(
-                    answer.UserID, notifMessage, "BestAnswer", answer.PostID);
+                return BadRequest(new
+                {
+                    message = "There is already a pending Best Answer request for this post."
+                });
             }
-            catch { }
 
-            return Ok(new { success = true });
+            _context.BestAnswerRequests.Add(new BestAnswerRequest
+            {
+                PostID = answer.PostID,
+                AnswerID = answer.AnswerID,
+                RequestedByUserID = user.UserID,
+                CreatedAt = DateTime.UtcNow
+            });
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                success = true,
+                message = "Best Answer request sent to admin for approval."
+            });
         }
 
         [HttpPost]

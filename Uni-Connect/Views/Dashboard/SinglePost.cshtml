@@ -427,10 +427,10 @@
                                 @if (isPostOwner && !isAccepted)
                                 {
                                     <button class="accept-btn" data-answer-id="@answer.AnswerID"
-                                            title="Costs 5 pts · Awards answerer 15 pts"
+                                            title="Send Best Answer request to admin"
                                             style="background:none;border:1.5px solid var(--emerald);border-radius:8px;cursor:pointer;font-size:12px;color:var(--emerald);font-weight:700;display:inline-flex;align-items:center;gap:4px;padding:4px 12px;font-family:inherit;transition:all .2s;">
-                                        <i class="ph-fill ph-seal-check" style="font-size:13px;"></i> Mark as Best
-                                        <span style="font-size:10px;opacity:.75;font-weight:600;">(-5 pts)</span>
+                                        <i class="ph-fill ph-seal-check" style="font-size:13px;"></i> Request Best Answer
+                                        <span style="font-size:10px;opacity:.75;font-weight:600;">Admin approval required</span>
                                     </button>
                                 }
 
@@ -529,7 +529,7 @@
                 </h2>
                 <p style="font-size:13px; color:var(--text-2); margin:0 0 18px 0;">
                     <i class="ph-fill ph-seal-check" style="font-size:13px; color:var(--emerald); vertical-align:middle; margin-right:4px;"></i>
-                    Earn <strong>+15 pts</strong> if the asker marks your answer as best!
+                    Earn <strong>+15 pts</strong> if the asker requests your answer as best and an admin approves it!
                 </p>
 
                 <form asp-action="PostAnswer" method="post" enctype="multipart/form-data">
@@ -760,7 +760,7 @@
                             body: 'answerId=' + encodeURIComponent(id)
                         });
                         if (!resp.ok) throw new Error();
-                        showToast('Best answer marked! +15 pts awarded.', 'success');
+                 showToast('Best Answer request sent to admin for approval.', 'success');
                         setTimeout(() => window.location.reload(), 800);
                     } catch { showToast('Could not accept answer. Please try again.', 'error'); }
                 });

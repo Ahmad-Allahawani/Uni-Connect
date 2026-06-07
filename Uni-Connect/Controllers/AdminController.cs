@@ -1,7 +1,9 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uni_Connect.Models;
+using Uni_Connect.Services;
+using System.Security.Claims;
 
 namespace Uni_Connect.Controllers
 {
@@ -9,10 +11,12 @@ namespace Uni_Connect.Controllers
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPointService _pointService;
 
-        public AdminController(ApplicationDbContext context)
+        public AdminController(ApplicationDbContext context, IPointService pointService)
         {
             _context = context;
+            _pointService = pointService;
         }
 
         public async Task<IActionResult> AdminDashboard()
@@ -20,10 +24,12 @@ namespace Uni_Connect.Controllers
             var userCount = await _context.Users.IgnoreQueryFilters().CountAsync();
             var postCount = await _context.Posts.IgnoreQueryFilters().CountAsync();
             var reportCount = await _context.Reports.CountAsync(r => !r.IsResolved);
+            var BestAnswerRequestCount = await _context.BestAnswerRequests.CountAsync(r => !r.IsApproved);
 
             ViewBag.UserCount = userCount;
             ViewBag.PostCount = postCount;
             ViewBag.ReportCount = reportCount;
+            ViewBag.BestAnswerRequestCount = BestAnswerRequestCount;
 
             return View();
         }
@@ -246,6 +252,109 @@ namespace Uni_Connect.Controllers
                 .ToListAsync();
 
             return View(posts);
+        }
+        public async Task<IActionResult> BestAnswerRequests()
+        {
+            var requests = await _context.BestAnswerRequests
+                .Where(r => !r.IsDeleted && !r.IsApproved && !r.IsRejected)
+                .Include(r => r.Post)
+                    .ThenInclude(p => p.User)
+                .Include(r => r.Answer)
+                    .ThenInclude(a => a.User)
+                .Include(r => r.RequestedByUser)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
+            return View(requests);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ApproveBestAnswerRequest(int id)
+        {
+            var adminId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+
+            var request = await _context.BestAnswerRequests
+                .Include(r => r.Answer)
+                    .ThenInclude(a => a.Post)
+                .FirstOrDefaultAsync(r =>
+                    r.BestAnswerRequestID == id &&
+                    !r.IsDeleted &&
+                    !r.IsApproved &&
+                    !r.IsRejected);
+
+            if (request == null)
+            {
+                TempData["ErrorMessage"] = "Best Answer request not found.";
+                return RedirectToAction("BestAnswerRequests");
+            }
+
+            var answer = request.Answer;
+
+            if (answer == null || answer.IsDeleted)
+            {
+                TempData["ErrorMessage"] = "Answer no longer exists.";
+                return RedirectToAction("BestAnswerRequests");
+            }
+
+            // Remove previous best answer for this post
+            var previousBestAnswers = await _context.Answers
+                .Where(a => a.PostID == request.PostID && a.IsAccepted)
+                .ToListAsync();
+
+            foreach (var oldAnswer in previousBestAnswers)
+            {
+                oldAnswer.IsAccepted = false;
+            }
+
+            answer.IsAccepted = true;
+
+            request.IsApproved = true;
+            request.ReviewedAt = DateTime.UtcNow;
+            request.ReviewedByAdminID = adminId;
+
+            await _context.SaveChangesAsync();
+
+            // Award points only after admin approval
+            await _pointService.AwardPoints(
+                answer.UserID,
+                15,
+                "Answer marked as Best Answer",
+                answer.Content.Length > 60 ? answer.Content[..60] + "…" : answer.Content,
+                "⭐"
+            );
+
+            TempData["SuccessMessage"] = "Best Answer approved and points awarded.";
+            return RedirectToAction("BestAnswerRequests");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RejectBestAnswerRequest(int id)
+        {
+            var adminId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+
+            var request = await _context.BestAnswerRequests
+                .FirstOrDefaultAsync(r =>
+                    r.BestAnswerRequestID == id &&
+                    !r.IsDeleted &&
+                    !r.IsApproved &&
+                    !r.IsRejected);
+
+            if (request == null)
+            {
+                TempData["ErrorMessage"] = "Best Answer request not found.";
+                return RedirectToAction("BestAnswerRequests");
+            }
+
+            request.IsRejected = true;
+            request.ReviewedAt = DateTime.UtcNow;
+            request.ReviewedByAdminID = adminId;
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Best Answer request rejected.";
+            return RedirectToAction("BestAnswerRequests");
         }
     }
 }

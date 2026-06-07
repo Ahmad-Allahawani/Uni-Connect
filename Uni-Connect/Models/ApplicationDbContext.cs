@@ -22,7 +22,7 @@ namespace Uni_Connect.Models
         public DbSet<PostVote> PostVotes { get; set; }
         public DbSet<AnswerVote> AnswerVotes { get; set; }
         public DbSet<PostView> PostViews { get; set; }
-
+        public DbSet<BestAnswerRequest> BestAnswerRequests { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Unique Constraints
@@ -125,11 +125,36 @@ namespace Uni_Connect.Models
                 .HasForeignKey(pt => pt.UserID)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<BestAnswerRequest>()
+                 .HasOne(r => r.Post)
+                 .WithMany()
+                 .HasForeignKey(r => r.PostID)
+                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BestAnswerRequest>()
+                .HasOne(r => r.Answer)
+                .WithMany()
+                .HasForeignKey(r => r.AnswerID)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BestAnswerRequest>()
+                .HasOne(r => r.RequestedByUser)
+                .WithMany()
+                .HasForeignKey(r => r.RequestedByUserID)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BestAnswerRequest>()
+                .HasOne(r => r.ReviewedByAdmin)
+                .WithMany()
+                .HasForeignKey(r => r.ReviewedByAdminID)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<PointsTransaction>().HasQueryFilter(e => !e.IsDeleted);
 
             modelBuilder.Entity<PostVote>().HasKey(pv => new { pv.UserID, pv.PostID });
             modelBuilder.Entity<PostVote>().HasOne(pv => pv.User).WithMany().HasForeignKey(pv => pv.UserID).OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<PostVote>().HasOne(pv => pv.Post).WithMany().HasForeignKey(pv => pv.PostID).OnDelete(DeleteBehavior.NoAction);
+
 
             modelBuilder.Entity<AnswerVote>().HasKey(av => new { av.UserID, av.AnswerID });
             modelBuilder.Entity<AnswerVote>().HasOne(av => av.User).WithMany().HasForeignKey(av => av.UserID).OnDelete(DeleteBehavior.NoAction);
@@ -138,6 +163,8 @@ namespace Uni_Connect.Models
             modelBuilder.Entity<PostView>().HasKey(pv => new { pv.UserID, pv.PostID });
             modelBuilder.Entity<PostView>().HasOne(pv => pv.User).WithMany().HasForeignKey(pv => pv.UserID).OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<PostView>().HasOne(pv => pv.Post).WithMany().HasForeignKey(pv => pv.PostID).OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BestAnswerRequest>().HasQueryFilter(e => !e.IsDeleted);
 
         }
     }

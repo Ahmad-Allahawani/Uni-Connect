@@ -31,6 +31,11 @@
         <div class="stat-value">@ViewBag.ReportCount</div>
         <div class="stat-label">Unresolved Reports</div>
     </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background:var(--rose-light); color:var(--rose);"><i class="ph-fill ph-warning" style="font-size:22px;"></i></div>
+        <div class="stat-value">@ViewBag.BestAnswerRequestCount</div>
+        <div class="stat-label">Unresolved Requests</div>
+    </div>
 </div>
 
 <div class="card" style="margin-top: 24px;">
@@ -52,6 +57,9 @@
             </a>
             <a asp-action="DeletedPosts" class="btn btn-primary" style="text-align: center; display: block; text-decoration: none;">
                 <i class="ph-fill ph-archive-box"></i> View Deleted Posts
+            </a>
+            <a asp-action="BestAnswerRequests" class="btn btn-primary" style="text-align: center; display: block; text-decoration: none;">
+                <i class="ph-fill ph-star"></i> Review Best Answer Requests
             </a>
         </div>
     </div>
