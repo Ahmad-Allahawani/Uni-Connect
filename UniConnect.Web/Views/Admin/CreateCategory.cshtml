@@ -1,0 +1,41 @@
+@model UniConnect.Web.Models.Category
+
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+<div class="container">
+    <h1>Create Category</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="CreateCategory">
+                <div class="mb-3">
+                    <label class="form-label">Category Name</label>
+                    <input asp-for="Name" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Category Type</label>
+                    <select asp-for="Type" class="form-select" required>
+                        <option value="">Select Type</option>
+                        <option value="Faculty">Faculty</option>
+                        <option value="Course">Course</option>
+                        <option value="Topic">Topic</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Parent Category (Optional)</label>
+                    <select asp-for="ParentId" class="form-select">
+                        <option value="">None</option>
+                        @foreach (var cat in ViewBag.Categories)
+                        {
+                            <option value="@cat.Id">@cat.Name</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Categories" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

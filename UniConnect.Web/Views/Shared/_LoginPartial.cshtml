@@ -1,0 +1,33 @@
+@using Microsoft.AspNetCore.Identity
+@using UniConnect.Web.Models
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        <a class="nav-link text-white" asp-controller="Account" asp-action="Profile" title="Manage">
+            <i class="fas fa-user"></i> @User.Identity?.Name
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-white" asp-controller="Account" asp-action="Logout">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-white" asp-controller="Account" asp-action="Login">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-white" asp-controller="Account" asp-action="Register">
+            <i class="fas fa-user-plus"></i> Register
+        </a>
+    </li>
+}
+</ul>

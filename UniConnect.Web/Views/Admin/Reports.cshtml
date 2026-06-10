@@ -1,0 +1,70 @@
+@model IEnumerable<UniConnect.Web.Models.Report>
+
+@{
+    ViewData["Title"] = "Manage Reports";
+}
+
+<div class="container">
+    <h1>Manage Reports</h1>
+
+    <!-- Filter Tabs -->
+    <div class="mb-3">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link @(ViewBag.Status == null ? "active" : "")" asp-action="Reports">All</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewBag.Status == "Pending" ? "active" : "")" asp-action="Reports" asp-route-status="Pending">Pending</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewBag.Status == "Resolved" ? "active" : "")" asp-action="Reports" asp-route-status="Resolved">Resolved</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewBag.Status == "Dismissed" ? "active" : "")" asp-action="Reports" asp-route-status="Dismissed">Dismissed</a>
+            </li>
+        </ul>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Reporter</th>
+                <th>Reported User</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var report in Model)
+            {
+                <tr>
+                    <td>@report.Id</td>
+                    <td>@report.Reporter?.FirstName @report.Reporter?.LastName</td>
+                    <td>@report.ReportedUser?.FirstName @report.ReportedUser?.LastName</td>
+                    <td>@report.Reason</td>
+                    <td>
+                        @if (report.Status == "Pending")
+                        {
+                            <span class="badge bg-warning">Pending</span>
+                        }
+                        else if (report.Status == "Resolved")
+                        {
+                            <span class="badge bg-success">Resolved</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Dismissed</span>
+                        }
+                    </td>
+                    <td>@report.CreatedAt.ToString("MMM dd, yyyy")</td>
+                    <td>
+                        <a asp-action="ReportDetails" asp-route-id="@report.Id" class="btn btn-sm btn-info">View</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
