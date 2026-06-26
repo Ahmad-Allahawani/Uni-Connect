@@ -1,17 +1,17 @@
-@* @model Uni_Connect.Models.User
+﻿@model Uni_Connect.Models.User
 @using Uni_Connect.Models
 @{
     ViewData["Title"] = "Search — UniConnect";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 
-    var query   = ViewBag.Query as string ?? "";
+    var query = ViewBag.Query as string ?? "";
     var results = ViewBag.Results as List<Post> ?? new List<Post>();
     var users = ViewBag.UserResults as List<User> ?? new List<User>();
     var currentTab = ViewBag.CurrentTab as string ?? "posts";
 }
 
 @section Styles {
-<link href="~/css/search.css" rel="stylesheet" />
+    <link href="~/css/search.css" rel="stylesheet" />
     <style>
         .search-tabs {
             display: flex;
@@ -43,7 +43,7 @@
     <!-- Search Bar -->
     <div class="search-hero">
         <h1>Search Questions</h1>
-        <form method="get" asp-controller="Dashboard" asp-action="Search" class="search-bar">
+        <form method="get" asp-controller="Search" asp-action="Search" class="search-bar">
             <input type="text" name="q" class="search-input"
                    placeholder="Search by title, content, or category…"
                    value="@query" autofocus autocomplete="off" />
@@ -55,7 +55,7 @@
         {
             <div class="search-tabs">
                 <a class="search-tab @(currentTab == "posts" ? "active" : "")"
-                   asp-controller="Dashboard"
+                   asp-controller="Search"
                    asp-action="Search"
                    asp-route-q="@query"
                    asp-route-tab="posts">
@@ -63,7 +63,7 @@
                 </a>
 
                 <a class="search-tab @(currentTab == "users" ? "active" : "")"
-                   asp-controller="Dashboard"
+                   asp-controller="Search"
                    asp-action="Search"
                    asp-route-q="@query"
                    asp-route-tab="users">
@@ -90,13 +90,13 @@
     {
         foreach (var post in results)
         {
-            var isSolved   = post.Answers?.Any(a => a.IsAccepted && !a.IsDeleted) == true;
-            var snippet = string.IsNullOrEmpty(post.Content)? "": (post.Content.Length > 110 ? post.Content[..110] + "…" : post.Content);
+            var isSolved = post.Answers?.Any(a => a.IsAccepted && !a.IsDeleted) == true;
+            var snippet = string.IsNullOrEmpty(post.Content) ? "" : (post.Content.Length > 110 ? post.Content[..110] + "…" : post.Content);
             var authorName = post.User?.Name?.Split(' ').First() ?? "User";
 
-            
-    
-            <a href="@Url.Action("SinglePost", "Dashboard", new { id = post.PostID })" class="result-card">
+
+
+            <a href="@Url.Action("SinglePost", "Post", new { id = post.PostID })" class="result-card">
                 <div class="result-preview">
                     <div class="result-main">
                         <div class="result-title">@post.Title</div>
@@ -127,7 +127,7 @@
     {
         foreach (var account in users)
         {
-            <a href="@Url.Action("ViewProfile", "Dashboard", new { username = account.Username })" class="result-card">
+            <a href="@Url.Action("ViewProfile", "Profile", new { username = account.Username })" class="result-card">
                 <div class="result-preview">
                     <div style="display:flex;align-items:center;gap:14px;">
                         @if (!string.IsNullOrEmpty(account.ProfileImageUrl))
@@ -181,7 +181,7 @@
                 <p style="font-size:13px;color:var(--text-2);margin-bottom:12px;">
                     Nobody has asked this yet — be the first!
                 </p>
-                <a asp-controller="Dashboard" asp-action="CreatePost"
+                <a asp-controller="Post" asp-action="CreatePost"
                    class="btn btn-primary btn-sm"
                    style="display:inline-flex;align-items:center;gap:8px;">
                     <i class="ph-bold ph-pencil-simple" style="font-size:14px;"></i>
@@ -201,4 +201,4 @@
         </div>
     }
 
-</div> *@
+</div>

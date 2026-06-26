@@ -12,13 +12,16 @@ namespace Uni_Connect.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IPointService _pointService;
+        private readonly INotificationService _notificationService;
 
-        public AdminController(ApplicationDbContext context, IPointService pointService)
+        public AdminController(ApplicationDbContext context, IPointService pointService , INotificationService notificationService)
         {
             _context = context;
             _pointService = pointService;
+            _notificationService = notificationService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> AdminDashboard()
         {
             var userCount = await _context.Users.IgnoreQueryFilters().CountAsync();
@@ -313,6 +316,7 @@ namespace Uni_Connect.Controllers
             request.ReviewedAt = DateTime.UtcNow;
             request.ReviewedByAdminID = adminId;
 
+           
             await _context.SaveChangesAsync();
 
             // Award points only after admin approval
@@ -322,6 +326,13 @@ namespace Uni_Connect.Controllers
                 "Answer marked as Best Answer",
                 answer.Content.Length > 60 ? answer.Content[..60] + "…" : answer.Content,
                 "⭐"
+            );
+            await _notificationService.CreateAsync(
+                answer.UserID,
+                "Your answer was marked as the best answer.",
+                "BestAnswer",
+                request.PostID,
+                request.RequestedByUserID
             );
 
             TempData["SuccessMessage"] = "Best Answer approved and points awarded.";

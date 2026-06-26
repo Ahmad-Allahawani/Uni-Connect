@@ -1,4 +1,4 @@
-@* @model Uni_Connect.ViewModels.SettingsViewModel
+﻿@model Uni_Connect.ViewModels.SettingsViewModel
 
 @{
     ViewData["Title"] = "Settings";
@@ -9,7 +9,7 @@
     <link href="~/css/settings.css" rel="stylesheet" />
     <link href="~/css/notificationsettingsdelete.css" rel="stylesheet" />
 
-  
+
 }
 
 <div class="settings-container">
@@ -149,8 +149,8 @@
             <i class="ph-duotone ph-bell" style="font-size:20px;"></i> Notifications
         </div>
 
-        
-        <form asp-action="SaveNotificationSettings" asp-controller="Dashboard" method="post">
+
+        <form asp-action="SaveNotificationSettings" asp-controller="Settings" method="post">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="UserID" />
             <input type="hidden" asp-for="ProfileImageUrl" />
@@ -162,7 +162,7 @@
                     <div class="settings-row-sub">Get notified when someone helps you out</div>
                 </div>
                 <div class="toggle-switch">
-                    <input type="checkbox" asp-for="NotifyOnAnswers"  />
+                    <input type="checkbox" asp-for="NotifyOnAnswers" />
                 </div>
             </div>
             <div class="settings-row">
@@ -179,10 +179,10 @@
             <div style="margin-top:10px;">
                 <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
-            
+
         </form>
 
-        
+
     </div>
 
     <!-- Danger Zone -->
@@ -220,7 +220,7 @@
             <div class="modal-actions">
                 <button type="button" class="btn-cancel" id="cancelDeleteBtn">Cancel</button>
 
-                <form asp-action="DeleteAccount" asp-controller="Dashboard" method="post" style="flex:1;margin:0;">
+                <form asp-action="DeleteAccount" asp-controller="Settings" method="post" style="flex:1;margin:0;">
                     @Html.AntiForgeryToken()
                     <button type="submit" class="btn-danger" style="width:100%;">Yes, delete my account</button>
                 </form>
@@ -273,4 +273,4 @@
             }
         });
     </script>
-} *@
+}

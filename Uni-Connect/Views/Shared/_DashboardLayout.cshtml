@@ -30,7 +30,7 @@
                     <span><span class="logo-uni">Uni</span><span class="logo-conn">Connect</span></span>
                 </div>
             </a>
-            <form method="get" asp-controller="Dashboard" asp-action="Search" style="position:relative; flex:1; max-width:480px;">
+            <form method="get" asp-controller="Search" asp-action="Search" style="position:relative; flex:1; max-width:480px;">
                 <input type="text" name="q" class="form-input" placeholder="Search questions... students..."
                        value="@Context.Request.Query["q"]"
                        autocomplete="off"
@@ -62,8 +62,8 @@
                     <span class="nav-user-name" style="font-size:13px; font-weight:600; color:var(--text); display:none;">@(User.FindFirst(ClaimTypes.Name)?.Value?.Split(' ').First() ?? "")</span>
                 </button>
                 <div class="nav-user-dropdown" id="navUserDropdown">
-                    <a asp-controller="Dashboard" asp-action="Profile" class="nav-dropdown-item" style="text-decoration:none;"><i class="ph-fill ph-user-circle" style="font-size:16px;color:var(--indigo);"></i> My Profile</a>
-                    <a asp-controller="Dashboard" asp-action="Settings" class="nav-dropdown-item" style="text-decoration:none;"><i class="ph-duotone ph-gear" style="font-size:16px;color:var(--text-2);"></i> Settings</a>
+                    <a asp-controller="Profile" asp-action="Profile" class="nav-dropdown-item" style="text-decoration:none;"><i class="ph-fill ph-user-circle" style="font-size:16px;color:var(--indigo);"></i> My Profile</a>
+                    <a asp-controller="Settings" asp-action="Settings" class="nav-dropdown-item" style="text-decoration:none;"><i class="ph-duotone ph-gear" style="font-size:16px;color:var(--text-2);"></i> Settings</a>
                     @if (User.IsInRole("Admin"))
                     {
                         <a asp-controller="Admin" asp-action="AdminDashboard" class="nav-dropdown-item" style="text-decoration:none;"><i class="ph-duotone ph-gear" style="font-size:16px;color:var(--text-2);"></i> Admin Dashboard</a>
@@ -84,7 +84,7 @@
     <div class="app-wrap">
         <!-- SIDEBAR -->
         <aside class="sidebar" id="sidebar">
-            <a asp-controller="Dashboard" asp-action="Profile" class="sidebar-user" style="text-decoration:none;">
+            <a asp-controller="Profile" asp-action="Profile" class="sidebar-user" style="text-decoration:none;">
                 @{ var _sideImg = User.FindFirst("ProfileImageUrl")?.Value; }
                 <div class="av-wrap">
                     @{ var _sideName = User.FindFirst(ClaimTypes.Name)?.Value; }
@@ -105,20 +105,20 @@
                     <span class="nav-icon-pill"><i class="ph-duotone ph-chats ni-chat" style="font-size:18px;"></i></span> Private Sessions
                     <span class="nav-badge" id="msgBadge" style="display:none">0</span>
                 </a>
-                <a asp-controller="Dashboard" asp-action="Leaderboard" class="nav-item" id="navLeaderboard">
+                <a asp-controller="Leaderboard" asp-action="Leaderboard" class="nav-item" id="navLeaderboard">
                     <span class="nav-icon-pill"><i class="ph-duotone ph-trophy ni-trophy" style="font-size:18px;"></i></span> Leaderboard
                 </a>
                 <a asp-controller="Dashboard" asp-action="Notifications" class="nav-item" id="navNotifications">
                     <span class="nav-icon-pill"><i class="ph-duotone ph-bell ni-bell" style="font-size:18px;"></i></span> Notifications
                     <span class="nav-badge" id="sidebarNotifBadge" style="display:none">0</span>
                 </a>
-                <a asp-controller="Dashboard" asp-action="Profile" class="nav-item" id="navProfile">
+                <a asp-controller="Profile" asp-action="Profile" class="nav-item" id="navProfile">
                     <span class="nav-icon-pill"><i class="ph-duotone ph-user-circle ni-profile" style="font-size:18px;"></i></span> My Profile
                 </a>
-                <a asp-controller="Dashboard" asp-action="Points" class="nav-item" id="navPoints">
+                <a asp-controller="Points" asp-action="Points" class="nav-item" id="navPoints">
                     <span class="nav-icon-pill"><i class="ph-duotone ph-lightning ni-points" style="font-size:18px;"></i></span> Points & Rewards
                 </a>
-                <a asp-controller="Dashboard" asp-action="Settings" class="nav-item" id="navSettings">
+                <a asp-controller="Settings" asp-action="Settings" class="nav-item" id="navSettings">
                     <span class="nav-icon-pill"><i class="ph-duotone ph-gear ni-settings" style="font-size:18px;"></i></span> Settings
                 </a>
             </nav>
@@ -134,7 +134,7 @@
                     <div class="pts-widget-fill" id="ptWidgetBar" style="width: 0%;"></div>
                 </div>
                 <div class="pts-widget-sub" id="ptWidgetSub">— pts to unlock</div>
-                <a asp-action="Points" asp-controller="Dashboard" class="pts-widget-cta">
+                <a asp-action="Points" asp-controller="Points" class="pts-widget-cta">
                     Browse rewards <i class="ph-bold ph-arrow-right" style="font-size:11px;" aria-hidden="true"></i>
                 </a>
             </div>

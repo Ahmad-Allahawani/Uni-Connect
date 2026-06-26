@@ -131,7 +131,7 @@
                             <div style="display:flex; gap:8px;">
                                 @if (report.TargetType == "Post")
                                 {
-                                    <a href="@Url.Action("SinglePost", "Dashboard", new { id = report.TargetID })"
+                                    <a href="@Url.Action("SinglePost", "Post", new { id = report.TargetID })"
                                        target="_blank"
                                        class="btn btn-sm btn-secondary"
                                        title="View Post">
@@ -140,7 +140,7 @@
                                 }
                                 else if (report.TargetType == "Answer" && answerInfoMap != null && answerInfoMap.ContainsKey(report.TargetID))
                                 {
-                                    <a href="@Url.Action("SinglePost", "Dashboard", new { id = answerInfoMap[report.TargetID].PostID })"
+                                    <a href="@Url.Action("SinglePost", "Post", new { id = answerInfoMap[report.TargetID].PostID })"
                                        target="_blank"
                                        class="btn btn-sm btn-secondary"
                                        title="View Answer">

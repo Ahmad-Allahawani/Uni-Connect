@@ -1,4 +1,4 @@
-@* @model Uni_Connect.Models.Post
+﻿@model Uni_Connect.Models.Post
 @{
     ViewData["Title"] = Model?.Title ?? "Post";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
@@ -47,22 +47,19 @@
         }
 
     @@media (max-width: 700px) {
-        .answer-fab
-
-    {
-        right: 18px;
-        bottom: 18px;
-        width: 54px;
-        height: 54px;
-    }
-
+        .answer-fab {
+            right: 18px;
+            bottom: 18px;
+            width: 54px;
+            height: 54px;
+        }
     }
 
 </style>
 
 <div style="max-width: 860px; margin: 0 auto; padding: 20px;">
 
-    <a asp-action="Dashboard" class="btn btn-ghost btn-sm" style="margin-bottom:24px; display:inline-flex; align-items:center; gap:8px;">
+    <a asp-action="Dashboard" asp-controller="Dashboard" class="btn btn-ghost btn-sm" style="margin-bottom:24px; display:inline-flex; align-items:center; gap:8px;">
         <i class="ph-bold ph-arrow-left" style="font-size:15px;"></i> Back to Feed
     </a>
 
@@ -105,7 +102,7 @@
                 <div style="flex:1;">
                     @if (!string.IsNullOrEmpty(Model.User?.Username))
                     {
-                        <a href="@Url.Action("ViewProfile", "Dashboard", new { username = Model.User.Username })"
+                        <a href="@Url.Action("ViewProfile", "Profile", new { username = Model.User.Username })"
                            style="font-size:14px;font-weight:700;color:var(--text);text-decoration:none;display:block;">
                             @(Model.User.Name ?? "User")
                         </a>
@@ -168,7 +165,7 @@
             {
                 <form id="postEditMode"
                       asp-action="EditPost"
-                      asp-controller="Dashboard"
+                      asp-controller="Post"
                       method="post"
                       enctype="multipart/form-data"
                       style="display:none; margin-bottom:20px;">
@@ -302,7 +299,7 @@
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" id="cancelDeletePostBtn">Cancel</button>
 
-                    <form asp-action="DeletePost" asp-controller="Dashboard" method="post" style="flex:1;margin:0;">
+                    <form asp-action="DeletePost" asp-controller="Post" method="post" style="flex:1;margin:0;">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="postId" value="@Model.PostID" />
                         <button type="submit" class="btn-danger" style="width:100%;">Yes, delete this post</button>
@@ -331,7 +328,7 @@
                     </button>
 
                     <form asp-action="DeleteAnswer"
-                          asp-controller="Dashboard"
+                          asp-controller="Answer"
                           method="post"
                           style="flex:1;margin:0;">
                         @Html.AntiForgeryToken()
@@ -483,7 +480,7 @@
                             {
                                 <form id="editAnswerBox-@answer.AnswerID"
                                       asp-action="EditAnswer"
-                                      asp-controller="Dashboard"
+                                      asp-controller="Answer"
                                       method="post"
                                       style="display:none; margin-top:12px;">
                                     @Html.AntiForgeryToken()
@@ -532,7 +529,7 @@
                     Earn <strong>+15 pts</strong> if the asker requests your answer as best and an admin approves it!
                 </p>
 
-                <form asp-action="PostAnswer" method="post" enctype="multipart/form-data">
+                <form asp-action="PostAnswer" asp-controller="Answer" method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="postId" value="@Model.PostID" />
 
@@ -565,7 +562,7 @@
         <!-- Hidden antiforgery for AJAX -->
         <form id="antiforgeryForm" style="display:none;">@Html.AntiForgeryToken()</form>
 
-       
+
     }
     @if (User.Identity?.IsAuthenticated == true)
     {
@@ -578,266 +575,266 @@
     }
 </div>
 
-        <script>
-            const deletePostModal = document.getElementById('deletePostModal');
-            const openDeletePostBtn = document.getElementById('openDeletePostModalBtn');
-            const cancelDeletePostBtn = document.getElementById('cancelDeletePostBtn');
+<script>
+     const deletePostModal = document.getElementById('deletePostModal');
+     const openDeletePostBtn = document.getElementById('openDeletePostModalBtn');
+     const cancelDeletePostBtn = document.getElementById('cancelDeletePostBtn');
 
-            openDeletePostBtn?.addEventListener('click', () => {
-                deletePostModal.classList.add('active');
-                cancelDeletePostBtn?.focus();
-            });
+     openDeletePostBtn?.addEventListener('click', () => {
+         deletePostModal.classList.add('active');
+         cancelDeletePostBtn?.focus();
+     });
 
-            cancelDeletePostBtn?.addEventListener('click', () => {
-                deletePostModal.classList.remove('active');
-            });
+     cancelDeletePostBtn?.addEventListener('click', () => {
+         deletePostModal.classList.remove('active');
+     });
 
-            deletePostModal?.addEventListener('click', e => {
-                if (e.target === deletePostModal) {
-                    deletePostModal.classList.remove('active');
-                }
-            });
+     deletePostModal?.addEventListener('click', e => {
+         if (e.target === deletePostModal) {
+             deletePostModal.classList.remove('active');
+         }
+     });
 
-            document.addEventListener('keydown', e => {
-                if (e.key === 'Escape') {
-                    deletePostModal?.classList.remove('active');
-                }
-            });
-            function getToken() {
-                var el = document.querySelector('#antiforgeryForm input[name="__RequestVerificationToken"]');
-                return el ? el.value : '';
-            }
+     document.addEventListener('keydown', e => {
+         if (e.key === 'Escape') {
+             deletePostModal?.classList.remove('active');
+         }
+     });
+     function getToken() {
+         var el = document.querySelector('#antiforgeryForm input[name="__RequestVerificationToken"]');
+         return el ? el.value : '';
+     }
 
-            // ── Post upvote ──────────────────────────────────────────
-            async function upvoteThisPost(postId) {
-                var btn = document.getElementById('postUpvoteBtn');
-                if (btn && btn.dataset.pending === '1') return;
-                if (btn) btn.dataset.pending = '1';
-                try {
-                    var resp = await fetch('/Dashboard/UpvotePost', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
-                        body: 'postId=' + encodeURIComponent(postId)
-                    });
-                    var data = await resp.json();
-                    if (!resp.ok) { showToast(data.message || 'Could not upvote.', 'error'); return; }
-                    var count = document.getElementById('postUpvoteCount');
-                    if (count) count.textContent = data.upvotes;
-                    markPostUpvoted(data.voted);
-                } catch { showToast('Failed to upvote. Try again.', 'error'); }
-                finally { if (btn) btn.dataset.pending = '0'; }
-            }
+     // ── Post upvote ──────────────────────────────────────────
+     async function upvoteThisPost(postId) {
+         var btn = document.getElementById('postUpvoteBtn');
+         if (btn && btn.dataset.pending === '1') return;
+         if (btn) btn.dataset.pending = '1';
+         try {
+             var resp = await fetch('/Post/UpvotePost', {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
+                 body: 'postId=' + encodeURIComponent(postId)
+             });
+             var data = await resp.json();
+             if (!resp.ok) { showToast(data.message || 'Could not upvote.', 'error'); return; }
+             var count = document.getElementById('postUpvoteCount');
+             if (count) count.textContent = data.upvotes;
+             markPostUpvoted(data.voted);
+         } catch { showToast('Failed to upvote. Try again.', 'error'); }
+         finally { if (btn) btn.dataset.pending = '0'; }
+     }
 
-            function markPostUpvoted(voted) {
-                var btn  = document.getElementById('postUpvoteBtn');
-                var icon = document.getElementById('postUpvoteIcon');
-                if (btn) {
-                    btn.style.borderColor = voted ? 'var(--indigo)' : '';
-                    btn.style.color       = voted ? 'var(--indigo)' : '';
-                    btn.style.background  = voted ? 'var(--indigo-light)' : '';
-                }
-                if (icon) { icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph-duotone ph-thumbs-up'; }
-            }
+     function markPostUpvoted(voted) {
+         var btn  = document.getElementById('postUpvoteBtn');
+         var icon = document.getElementById('postUpvoteIcon');
+         if (btn) {
+             btn.style.borderColor = voted ? 'var(--indigo)' : '';
+             btn.style.color       = voted ? 'var(--indigo)' : '';
+             btn.style.background  = voted ? 'var(--indigo-light)' : '';
+         }
+         if (icon) { icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph-duotone ph-thumbs-up'; }
+     }
 
-            document.addEventListener('DOMContentLoaded', async function() {
-                try {
-                    const res = await fetch('/api/user/votes');
-                    if (res.ok) {
-                        const data = await res.json();
-                        if ((data.postIds || []).includes(@Model.PostID)) markPostUpvoted(true);
-                        (data.answerIds || []).forEach(id => {
-                            var btn = document.querySelector(`.upvote-btn[data-answer-id="${id}"]`);
-                            if (btn) markVoted(btn);
-                        });
-                    }
-                } catch { /* silent */ }
-            });
-
-            // ── Session Request ──────────────────────────────────────
-            let _recipientId, _postId;
-            function openSessionModal(recipientId, postId) {
-                _recipientId = recipientId; _postId = postId;
-                document.getElementById('sessionModal').style.display = 'block';
-            }
-            async function submitSessionRequest() {
-                const description = document.getElementById('sessionDescription').value.trim();
-                if (!description) { showToast('Please describe what you need help with.', 'error'); return; }
-                try {
-                    const res = await fetch('/Session/SendRequest', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
-                        body: `recipientId=${_recipientId}&postId=${_postId}&description=${encodeURIComponent(description)}`
-                    });
-                    const data = await res.json();
-                    showToast(data.message || 'Request sent!', res.ok ? 'success' : 'error');
-                    document.getElementById('sessionModal').style.display = 'none';
-                    document.getElementById('sessionDescription').value = '';
-                } catch { showToast('Could not send request. Try again.', 'error'); }
-            }
-
-            // ── Answer Upvotes ────────────────────────────────────────
-            document.querySelectorAll('.upvote-btn').forEach(function(btn) {
-                var id = btn.dataset.answerId;
-
-                btn.addEventListener('click', async function() {
-                    if (btn.dataset.pending === '1') return;
-                    btn.dataset.pending = '1';
-                    try {
-                        var resp = await fetch('@Url.Action("UpvoteAnswer", "Dashboard")', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
-                            body: 'answerId=' + encodeURIComponent(id)
-                        });
-                        var data = await resp.json();
-                        if (!resp.ok) {
-                            showToast(data.message || 'Could not upvote.', 'error');
-                            return;
-                        }
-                        var display = document.querySelector('[data-upvote-count="' + id + '"]');
-                        if (display) display.textContent = data.upvotes;
-                        setAnswerVoteState(btn, data.voted);
-                    } catch { showToast('Failed to upvote. Try again.', 'error'); }
-                    finally { btn.dataset.pending = '0'; }
-                });
-            });
-
-            function markVoted(btn) { setAnswerVoteState(btn, true); }
-
-            function setAnswerVoteState(btn, voted) {
-                var icon = btn.querySelector('i');
-                btn.style.background  = voted ? 'var(--indigo-light)' : '';
-                btn.style.borderColor = voted ? 'var(--indigo)' : '';
-                btn.style.color       = voted ? 'var(--indigo)' : '';
-                btn.style.cursor      = 'pointer';
-                if (icon) { icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph-duotone ph-thumbs-up'; }
-                btn.title = voted ? 'Click to remove upvote' : 'Upvote this answer';
-            }
-
-            // ── Report content ────────────────────────────────────────
-            let _reportTargetId, _reportTargetType;
-            function openReportModal(targetId, targetType) {
-                _reportTargetId = targetId; _reportTargetType = targetType;
-                document.getElementById('reportReason').value = '';
-                document.getElementById('reportModal').style.display = 'block';
-                document.getElementById('reportModal').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-            function closeReportModal() {
-                document.getElementById('reportModal').style.display = 'none';
-            }
-            async function submitReport() {
-                const reason = document.getElementById('reportReason').value.trim();
-                if (!reason) { showToast('Please describe why you are reporting this.', 'error'); return; }
-                try {
-                    const res = await fetch('/Dashboard/ReportContent', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
-                        body: `targetId=${_reportTargetId}&targetType=${_reportTargetType}&reason=${encodeURIComponent(reason)}`
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        showToast('Report submitted. Thank you!', 'success');
-                        closeReportModal();
-                    } else {
-                        showToast(data.message || 'Could not submit report.', 'error');
-                    }
-                } catch { showToast('Could not submit report. Try again.', 'error'); }
-            }
-
-            // ── Image attach label ────────────────────────────────────
-            document.querySelector('label input[type="file"]')?.addEventListener('change', function() {
-                var label = this.closest('label').querySelector('span');
-                if (label) label.textContent = this.files[0]?.name || 'Attach image';
-            });
-
-            // ── Accept Answer ─────────────────────────────────────────
-            document.querySelectorAll('.accept-btn').forEach(function(btn) {
-                btn.addEventListener('click', async function() {
-                    var id = btn.dataset.answerId;
-                    try {
-                        var resp = await fetch('@Url.Action("AcceptAnswer", "Dashboard")', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
-                            body: 'answerId=' + encodeURIComponent(id)
-                        });
-                        if (!resp.ok) throw new Error();
-                 showToast('Best Answer request sent to admin for approval.', 'success');
-                        setTimeout(() => window.location.reload(), 800);
-                    } catch { showToast('Could not accept answer. Please try again.', 'error'); }
-                });
-            });
-                     function openPostEdit() {
-                const view = document.getElementById('postViewMode');
-                const edit = document.getElementById('postEditMode');
-                const btn = document.getElementById('editPostBtn');
-
-                if (view) view.style.display = 'none';
-                if (edit) edit.style.display = 'block';
-                if (btn) btn.style.display = 'none';
-            }
-
-            function cancelPostEdit() {
-                const view = document.getElementById('postViewMode');
-                const edit = document.getElementById('postEditMode');
-                const btn = document.getElementById('editPostBtn');
-
-                if (edit) edit.style.display = 'none';
-                if (view) view.style.display = 'block';
-                if (btn) btn.style.display = 'inline-flex';
-            }
-
-            function openAnswerEdit(answerId) {
-                const view = document.getElementById('answerViewMode-' + answerId);
-                const edit = document.getElementById('editAnswerBox-' + answerId);
-
-                if (view) view.style.display = 'none';
-                if (edit) edit.style.display = 'block';
-            }
-
-            function cancelAnswerEdit(answerId) {
-                const view = document.getElementById('answerViewMode-' + answerId);
-                const edit = document.getElementById('editAnswerBox-' + answerId);
-
-                if (edit) edit.style.display = 'none';
-                if (view) view.style.display = 'block';
-            }
-
-           document.getElementById('editPostImageInput')?.addEventListener('change', function () {
-                const label = document.getElementById('editPostImageFileName');
-                if (label) {
-                    label.textContent = this.files?.[0]?.name || 'Choose new image';
-                }
-            });
-            function openDeleteAnswerModal(answerId) {
-                document.getElementById('deleteAnswerIdInput').value = answerId;
-                document.getElementById('deleteAnswerModal').classList.add('active');
+     document.addEventListener('DOMContentLoaded', async function() {
+         try {
+             const res = await fetch('/api/user/votes');
+             if (res.ok) {
+                 const data = await res.json();
+                 if ((data.postIds || []).includes(@Model.PostID)) markPostUpvoted(true);
+                 (data.answerIds || []).forEach(id => {
+                     var btn = document.querySelector(`.upvote-btn[data-answer-id="${id}"]`);
+                     if (btn) markVoted(btn);
+                 });
              }
+         } catch { /* silent */ }
+     });
 
-            function closeDeleteAnswerModal() {
-                document.getElementById('deleteAnswerModal').classList.remove('active');
-            }
+     // ── Session Request ──────────────────────────────────────
+     let _recipientId, _postId;
+     function openSessionModal(recipientId, postId) {
+         _recipientId = recipientId; _postId = postId;
+         document.getElementById('sessionModal').style.display = 'block';
+     }
+     async function submitSessionRequest() {
+         const description = document.getElementById('sessionDescription').value.trim();
+         if (!description) { showToast('Please describe what you need help with.', 'error'); return; }
+         try {
+             const res = await fetch('/Session/SendRequest', {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
+                 body: `recipientId=${_recipientId}&postId=${_postId}&description=${encodeURIComponent(description)}`
+             });
+             const data = await res.json();
+             showToast(data.message || 'Request sent!', res.ok ? 'success' : 'error');
+             document.getElementById('sessionModal').style.display = 'none';
+             document.getElementById('sessionDescription').value = '';
+         } catch { showToast('Could not send request. Try again.', 'error'); }
+     }
 
-            document.getElementById('deleteAnswerModal')
-                ?.addEventListener('click', function (e) {
-                    if (e.target === this) {
-                        closeDeleteAnswerModal();
-                    }
-                });
+     // ── Answer Upvotes ────────────────────────────────────────
+     document.querySelectorAll('.upvote-btn').forEach(function(btn) {
+         var id = btn.dataset.answerId;
 
-           function scrollToAnswerBox() {
-                const answerBox = document.getElementById('answerBox');
-                const textarea = answerBox?.querySelector('textarea[name="content"]');
+         btn.addEventListener('click', async function() {
+             if (btn.dataset.pending === '1') return;
+             btn.dataset.pending = '1';
+             try {
+                 var resp = await fetch('@Url.Action("UpvoteAnswer", "Answer")', {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
+                     body: 'answerId=' + encodeURIComponent(id)
+                 });
+                 var data = await resp.json();
+                 if (!resp.ok) {
+                     showToast(data.message || 'Could not upvote.', 'error');
+                     return;
+                 }
+                 var display = document.querySelector('[data-upvote-count="' + id + '"]');
+                 if (display) display.textContent = data.upvotes;
+                 setAnswerVoteState(btn, data.voted);
+             } catch { showToast('Failed to upvote. Try again.', 'error'); }
+             finally { btn.dataset.pending = '0'; }
+         });
+     });
 
-                if (!answerBox) return;
+     function markVoted(btn) { setAnswerVoteState(btn, true); }
 
-                answerBox.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+     function setAnswerVoteState(btn, voted) {
+         var icon = btn.querySelector('i');
+         btn.style.background  = voted ? 'var(--indigo-light)' : '';
+         btn.style.borderColor = voted ? 'var(--indigo)' : '';
+         btn.style.color       = voted ? 'var(--indigo)' : '';
+         btn.style.cursor      = 'pointer';
+         if (icon) { icon.className = voted ? 'ph-fill ph-thumbs-up' : 'ph-duotone ph-thumbs-up'; }
+         btn.title = voted ? 'Click to remove upvote' : 'Upvote this answer';
+     }
 
-                setTimeout(() => {
-                    textarea?.focus();
-                }, 450);
-            }
-        </script>
-    
-     *@
+     // ── Report content ────────────────────────────────────────
+     let _reportTargetId, _reportTargetType;
+     function openReportModal(targetId, targetType) {
+         _reportTargetId = targetId; _reportTargetType = targetType;
+         document.getElementById('reportReason').value = '';
+         document.getElementById('reportModal').style.display = 'block';
+         document.getElementById('reportModal').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+     }
+     function closeReportModal() {
+         document.getElementById('reportModal').style.display = 'none';
+     }
+     async function submitReport() {
+         const reason = document.getElementById('reportReason').value.trim();
+         if (!reason) { showToast('Please describe why you are reporting this.', 'error'); return; }
+         try {
+             const res = await fetch('/Post/ReportContent', {
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
+                 body: `targetId=${_reportTargetId}&targetType=${_reportTargetType}&reason=${encodeURIComponent(reason)}`
+             });
+             const data = await res.json();
+             if (data.success) {
+                 showToast('Report submitted. Thank you!', 'success');
+                 closeReportModal();
+             } else {
+                 showToast(data.message || 'Could not submit report.', 'error');
+             }
+         } catch { showToast('Could not submit report. Try again.', 'error'); }
+     }
+
+     // ── Image attach label ────────────────────────────────────
+     document.querySelector('label input[type="file"]')?.addEventListener('change', function() {
+         var label = this.closest('label').querySelector('span');
+         if (label) label.textContent = this.files[0]?.name || 'Attach image';
+     });
+
+     // ── Accept Answer ─────────────────────────────────────────
+     document.querySelectorAll('.accept-btn').forEach(function(btn) {
+         btn.addEventListener('click', async function() {
+             var id = btn.dataset.answerId;
+             try {
+                 var resp = await fetch('@Url.Action("AcceptAnswer", "Answer")', {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': getToken() },
+                     body: 'answerId=' + encodeURIComponent(id)
+                 });
+                 if (!resp.ok) throw new Error();
+          showToast('Best Answer request sent to admin for approval.', 'success');
+                 setTimeout(() => window.location.reload(), 800);
+             } catch { showToast('Could not accept answer. Please try again.', 'error'); }
+         });
+     });
+              function openPostEdit() {
+         const view = document.getElementById('postViewMode');
+         const edit = document.getElementById('postEditMode');
+         const btn = document.getElementById('editPostBtn');
+
+         if (view) view.style.display = 'none';
+         if (edit) edit.style.display = 'block';
+         if (btn) btn.style.display = 'none';
+     }
+
+     function cancelPostEdit() {
+         const view = document.getElementById('postViewMode');
+         const edit = document.getElementById('postEditMode');
+         const btn = document.getElementById('editPostBtn');
+
+         if (edit) edit.style.display = 'none';
+         if (view) view.style.display = 'block';
+         if (btn) btn.style.display = 'inline-flex';
+     }
+
+     function openAnswerEdit(answerId) {
+         const view = document.getElementById('answerViewMode-' + answerId);
+         const edit = document.getElementById('editAnswerBox-' + answerId);
+
+         if (view) view.style.display = 'none';
+         if (edit) edit.style.display = 'block';
+     }
+
+     function cancelAnswerEdit(answerId) {
+         const view = document.getElementById('answerViewMode-' + answerId);
+         const edit = document.getElementById('editAnswerBox-' + answerId);
+
+         if (edit) edit.style.display = 'none';
+         if (view) view.style.display = 'block';
+     }
+
+    document.getElementById('editPostImageInput')?.addEventListener('change', function () {
+         const label = document.getElementById('editPostImageFileName');
+         if (label) {
+             label.textContent = this.files?.[0]?.name || 'Choose new image';
+         }
+     });
+     function openDeleteAnswerModal(answerId) {
+         document.getElementById('deleteAnswerIdInput').value = answerId;
+         document.getElementById('deleteAnswerModal').classList.add('active');
+      }
+
+     function closeDeleteAnswerModal() {
+         document.getElementById('deleteAnswerModal').classList.remove('active');
+     }
+
+     document.getElementById('deleteAnswerModal')
+         ?.addEventListener('click', function (e) {
+             if (e.target === this) {
+                 closeDeleteAnswerModal();
+             }
+         });
+
+    function scrollToAnswerBox() {
+         const answerBox = document.getElementById('answerBox');
+         const textarea = answerBox?.querySelector('textarea[name="content"]');
+
+         if (!answerBox) return;
+
+         answerBox.scrollIntoView({
+             behavior: 'smooth',
+             block: 'start'
+         });
+
+         setTimeout(() => {
+             textarea?.focus();
+         }, 450);
+     }
+</script>
+
+

@@ -1,0 +1,191 @@
+﻿@model Uni_Connect.Models.User
+@{
+    ViewData["Title"] = "Leaderboard — UniConnect";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+
+    var leaderboard = ViewBag.Leaderboard as List<Uni_Connect.Models.User> ?? new List<Uni_Connect.Models.User>();
+    var myRankIndex = leaderboard.FindIndex(u => u.UserID == Model.UserID);
+    var myRank = myRankIndex >= 0 ? myRankIndex + 1 : (int?)null;
+}
+
+@section Styles {
+    <link href="~/css/leaderboard.css" rel="stylesheet" />
+}
+
+<div class="leaderboard-wrapper">
+    <!-- Header -->
+    <div class="leaderboard-header">
+        <div>
+            <h1 class="leaderboard-title">Leaderboard</h1>
+            <p class="leaderboard-subtitle">Top contributors powering the community</p>
+        </div>
+        <div class="leaderboard-filters">
+            <form asp-action="Leaderboard" method="get" class="leaderboard-filters" style="display:flex;gap:12px;align-items:center;">
+                <select name="faculty" class="form-input">
+                    <option value="">All Faculties</option>
+                    @foreach (var f in ViewBag.Faculties as List<string> ?? new List<string>())
+                    {
+                        if ((ViewBag.SelectedFaculty as string) == f)
+                        {
+                            <option value="@f" selected>@f</option>
+                        }
+                        else
+                        {
+                            <option value="@f">@f</option>
+                        }
+                    }
+                </select>
+                <select name="period" class="form-input">
+                    @if ((ViewBag.SelectedPeriod as string) == "All Time")
+                    {
+                        <option value="All Time" selected>All Time</option>
+                    }
+                    else
+                    {
+                        <option value="All Time">All Time</option>
+                    }
+                    @if ((ViewBag.SelectedPeriod as string) == "This Month")
+                    {
+                        <option value="This Month" selected>This Month</option>
+                    }
+                    else
+                    {
+                        <option value="This Month">This Month</option>
+                    }
+                    @if ((ViewBag.SelectedPeriod as string) == "This Week")
+                    {
+                        <option value="This Week" selected>This Week</option>
+                    }
+                    else
+                    {
+                        <option value="This Week">This Week</option>
+                    }
+                </select>
+                <input type="number" name="top" min="1" max="500" value="@(ViewBag.Top ?? 100)" class="form-input" style="width:110px; padding:6px;" />
+                <button type="submit" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px;"><i class="ph-bold ph-funnel" style="font-size:16px;"></i> Filter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Your Rank Banner -->
+    <div class="rank-banner">
+        <div class="rank-banner-icon"><i class="ph-duotone ph-trophy" style="font-size:40px; color:var(--indigo);"></i></div>
+        <div class="rank-banner-content">
+            <div class="rank-banner-title">You are ranked #@(myRank.HasValue? myRank.Value.ToString() : "N/A") overall!</div>
+            <div class="rank-banner-text">Keep helping classmates to climb higher on the leaderboard.</div>
+        </div>
+        <div class="rank-banner-points">
+            <div class="rank-banner-pts-num">@Model.Points</div>
+            <div class="rank-banner-pts-label">Total Points</div>
+        </div>
+    </div>
+
+    <!-- Podium Section -->
+    @if (leaderboard.Count >= 1)
+    {
+        <div class="podium-section">
+            <div class="podium-wrap" style="justify-content:center;">
+                @{
+                    var top3 = leaderboard.Take(3).ToList();
+
+                    // 2nd Place
+                    if (top3.Count >= 2)
+                    {
+                        var u2 = top3[1];
+                        <div class="podium-card podium-2nd">
+                            <div class="podium-medal"><i class="ph-fill ph-medal" style="font-size:32px;color:#94A3B8;"></i></div>
+                            <div class="av av-lg av-ring-silver" style="margin: 0 auto 14px; box-shadow: 0 4px 18px rgba(148,163,184,0.35);">
+                                @if (!string.IsNullOrEmpty(u2.ProfileImageUrl))
+                                {
+                                    <img src=@u2.ProfileImageUrl alt="@u2.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <img src="@AvatarHelper.Url(u2.Name, 60)" alt="@u2.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                                }
+                            </div>
+                            <div style="font-weight: 800; font-size: 15px;">@u2.Name</div>
+                            <div style="font-size: 12px; color: var(--text-2); font-weight: 600; margin-bottom: 10px;">@u2.Faculty</div>
+                            <div style="font-size: 18px; font-weight: 900; color: var(--text);">@u2.Points pts</div>
+                        </div>
+                    }
+
+                    // 1st Place
+                    if (top3.Count >= 1)
+                    {
+                        var u1 = top3[0];
+                        <div class="podium-card podium-1st">
+                            <div class="podium-medal"><i class="ph-fill ph-crown" style="font-size:36px;color:#FFB627;"></i></div>
+                            <div class="av av-xl av-ring-gold" style="margin: 0 auto 14px; box-shadow: 0 6px 28px rgba(255,182,39,0.45);">
+                                @if (!string.IsNullOrEmpty(u1.ProfileImageUrl))
+                                {
+                                    <img src=@u1.ProfileImageUrl alt="@u1.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <img src="@AvatarHelper.Url(u1.Name, 60)" alt="@u1.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                                }
+                            </div>
+                            <div style="font-weight: 900; font-size: 16px;">@u1.Name</div>
+                            <span class="chip chip-emerald" style="display: inline-block; margin-bottom: 10px;"><i class="ph-fill ph-seal-check" style="font-size:11px;"></i> Top Contributor</span>
+                            <div style="font-size: 24px; font-weight: 900; color: var(--amber);">@u1.Points pts</div>
+                        </div>
+                    }
+
+                    // 3rd Place
+                    if (top3.Count >= 3)
+                    {
+                        var u3 = top3[2];
+                        <div class="podium-card podium-3rd">
+                            <div class="podium-medal"><i class="ph-fill ph-medal" style="font-size:30px;color:#CD7F32;"></i></div>
+                            <div class="av av-lg av-ring-bronze" style="margin: 0 auto 14px; box-shadow: 0 4px 16px rgba(205,127,50,0.30);">
+                                @if (!string.IsNullOrEmpty(u3.ProfileImageUrl))
+                                {
+                                    <img src=@u3.ProfileImageUrl alt="@u3.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <img src="@AvatarHelper.Url(u3.Name, 60)" alt="@u3.Name" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                                }
+                            </div>
+                            <div style="font-weight: 800; font-size: 15px;">@u3.Name</div>
+                            <div style="font-size: 12px; color: var(--text-2); font-weight: 600; margin-bottom: 10px;">@u3.Faculty</div>
+                            <div style="font-size: 18px; font-weight: 900; color: var(--text);">@u3.Points pts</div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Full Rankings Table -->
+    <div class="podium-ranking-table">
+        <div class="ranking-header"><i class="ph-bold ph-list-numbers" style="font-size:14px;"></i> # | Student | Points</div>
+        @{
+            int rankNum = 1;
+            foreach (var u in leaderboard)
+            {
+                var isCurrent = (u.UserID == Model.UserID);
+                <div class="rank-row @(isCurrent ? "highlight-row" : "")" onclick="window.location.href='@Url.Action("ViewProfile", "Profile", new { username = u.Username })'">
+                    <div class="rank-num">#@rankNum</div>
+                    <div class="rank-info">
+                        @if (!string.IsNullOrEmpty(u.ProfileImageUrl))
+                        {
+                            <img src=@u.ProfileImageUrl alt="@u.Name" style="width:36px;height:36px;border-radius:50%;object-fit:cover;   box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px rgba(61,82,160,0.2);" />
+                        }
+                        else
+                        {
+                            <img src="@AvatarHelper.Url(u.Name, 36)" alt="@u.Name" style="width:36px;height:36px;border-radius:50%;object-fit:cover;  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px rgba(61,82,160,0.2);" />
+                        }
+                        <div>
+                            <div class="rank-name">@u.Name @(isCurrent ? "(YOU)" : "")</div>
+                            <div class="rank-faculty">@u.Faculty</div>
+                        </div>
+                    </div>
+                    <div class="rank-points">@u.Points pts</div>
+                </div>
+                rankNum++;
+            }
+        }
+    </div>
+</div>

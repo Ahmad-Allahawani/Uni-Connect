@@ -1,26 +1,26 @@
-@* @model Uni_Connect.Models.User
+﻿@model Uni_Connect.Models.User
 @{
     ViewData["Title"] = "My Profile — UniConnect";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 
 @section Styles {
-<link href="~/css/profile.css" rel="stylesheet" />
+    <link href="~/css/profile.css" rel="stylesheet" />
 }
 
 <div class="profile-wrapper">
     @{
         var questionCount = Model.Posts?.Count(p => !p.IsDeleted) ?? 0;
-        var answerCount   = Model.Answers?.Count(a => !a.IsDeleted) ?? 0;
-        var sessionCount  = ViewBag.SessionCount as int? ?? 0;
-        var avatarUrl     = !string.IsNullOrEmpty(Model.ProfileImageUrl)
-                            ? Model.ProfileImageUrl
-                            : AvatarHelper.Url(Model.Name, 120);
-        var ptsToTutor    = Math.Max(0, 1000 - Model.Points);
-        var tutorPct      = Math.Min((int)((Model.Points / 1000.0) * 100), 100);
-        var viewerIdStr   = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var answerCount = Model.Answers?.Count(a => !a.IsDeleted) ?? 0;
+        var sessionCount = ViewBag.SessionCount as int? ?? 0;
+        var avatarUrl = !string.IsNullOrEmpty(Model.ProfileImageUrl)
+        ? Model.ProfileImageUrl
+        : AvatarHelper.Url(Model.Name, 120);
+        var ptsToTutor = Math.Max(0, 1000 - Model.Points);
+        var tutorPct = Math.Min((int)((Model.Points / 1000.0) * 100), 100);
+        var viewerIdStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         bool isOwnProfile = viewerIdStr != null && int.Parse(viewerIdStr) == Model.UserID;
-        bool isTutor      = Model.Points >= 1000;
+        bool isTutor = Model.Points >= 1000;
     }
 
     @if (!isOwnProfile)
@@ -54,7 +54,10 @@
     </div>
     @if (isOwnProfile)
     {
-        <style>.profile-avatar:hover #photoOverlay { opacity: 1; }</style>
+        <style>
+            .profile-avatar:hover #photoOverlay {
+                opacity: 1;
+            }</style>
     }
 
     <!-- Profile Header -->
@@ -74,7 +77,7 @@
         <div class="profile-actions">
             @if (isOwnProfile)
             {
-                <a asp-action="Settings" class="btn btn-ghost btn-sm" style="display:inline-flex;align-items:center;gap:8px;"><i class="ph-duotone ph-pencil-simple" style="font-size:16px;"></i> Edit Profile</a>
+                <a asp-action="Settings" asp-controller="Settings"class="btn btn-ghost btn-sm" style="display:inline-flex;align-items:center;gap:8px;"><i class="ph-duotone ph-pencil-simple" style="font-size:16px;"></i> Edit Profile</a>
             }
             else
             {
@@ -122,12 +125,17 @@
             </div>
             <div class="progress-text">
                 @if (isTutor)
-                { <span style="color:var(--emerald); font-weight:700;">Verified Tutor unlocked!</span> }
+                {
+                    <span style="color:var(--emerald); font-weight:700;">Verified Tutor unlocked!</span>
+                }
                 else
-                { <text>@ptsToTutor pts to go to unlock tutor badge.</text> }
+                {
+
+                    <text>@ptsToTutor pts to go to unlock tutor badge.</text>
+                }
             </div>
         </div>
-        <a asp-action="Points" class="btn btn-amber btn-sm"><i class="ph-bold ph-arrow-right" style="font-size:14px;vertical-align:middle;margin-right:4px;"></i> View Rewards</a>
+        <a asp-action="Points" asp-controller="Points" class="btn btn-amber btn-sm"><i class="ph-bold ph-arrow-right" style="font-size:14px;vertical-align:middle;margin-right:4px;"></i> View Rewards</a>
     </div>
 
     <!-- Stats Grid — CSS classes instead of inline colors (F2) -->
@@ -173,11 +181,17 @@
             {
                 foreach (var answer in Model.Answers.Where(a => !a.IsDeleted).OrderByDescending(a => a.CreatedAt).Take(10))
                 {
-                    <a href="@(answer.Post != null ? Url.Action("SinglePost", new { id = answer.PostID }) : "#")" style="text-decoration:none; color:inherit;">
+                    <a href="@(answer.Post != null ? Url.Action("SinglePost","Post", new { id = answer.PostID }) : "#")" style="text-decoration:none; color:inherit;">
                         <div class="activity-card">
                             <div class="activity-meta">
-                                @if (answer.IsAccepted) { <span class="chip chip-emerald">Best Answer</span> }
-                                @if (answer.Post?.Category != null) { <span class="chip chip-indigo">@answer.Post.Category.Name</span> }
+                                @if (answer.IsAccepted)
+                                {
+                                    <span class="chip chip-emerald">Best Answer</span>
+                                }
+                                @if (answer.Post?.Category != null)
+                                {
+                                    <span class="chip chip-indigo">@answer.Post.Category.Name</span>
+                                }
                                 <span style="color:var(--text-2);">@answer.CreatedAt.ToString("MMM dd, yyyy")</span>
                             </div>
                             <div class="activity-title">@(answer.Post?.Title ?? "Question")</div>
@@ -194,7 +208,7 @@
                     <div class="empty-state-icon emerald"><i class="ph-duotone ph-chat-dots"></i></div>
                     <h3 class="empty-state-title">No answers yet</h3>
                     <p class="empty-state-text">Help your peers by answering questions and earn points!</p>
-                    <a asp-action="Dashboard" class="btn btn-primary">
+                    <a asp-action="Dashboard" asp-controller="Dashboard" class="btn btn-primary">
                         <i class="ph-bold ph-list-bullets" style="font-size:15px;"></i> Browse Questions
                     </a>
                 </div>
@@ -209,11 +223,17 @@
             {
                 foreach (var post in Model.Posts.Where(p => !p.IsDeleted).OrderByDescending(p => p.CreatedAt).Take(10))
                 {
-                    <a href="@Url.Action("SinglePost", new { id = post.PostID })" style="text-decoration:none; color:inherit;">
+                    <a href="@Url.Action("SinglePost","Post", new { id = post.PostID })" style="text-decoration:none; color:inherit;">
                         <div class="activity-card">
                             <div class="activity-meta">
-                                @if (post.Answers?.Any(a => a.IsAccepted && !a.IsDeleted) == true) { <span class="chip chip-emerald">Solved</span> }
-                                @if (post.Category != null) { <span class="chip chip-indigo">@post.Category.Name</span> }
+                                @if (post.Answers?.Any(a => a.IsAccepted && !a.IsDeleted) == true)
+                                {
+                                    <span class="chip chip-emerald">Solved</span>
+                                }
+                                @if (post.Category != null)
+                                {
+                                    <span class="chip chip-indigo">@post.Category.Name</span>
+                                }
                                 <span style="color:var(--text-2);">@post.CreatedAt.ToString("MMM dd, yyyy")</span>
                             </div>
                             <div class="activity-title">@post.Title</div>
@@ -231,7 +251,7 @@
                     <div class="empty-state-icon"><i class="ph-duotone ph-question"></i></div>
                     <h3 class="empty-state-title">No questions yet</h3>
                     <p class="empty-state-text">Ask your first question in the community!</p>
-                    <a asp-action="CreatePost" class="btn btn-primary">
+                    <a asp-action="CreatePost" asp-controller="Post" class="btn btn-primary">
                         <i class="ph-bold ph-pencil-simple" style="font-size:15px;"></i> Ask a Question
                     </a>
                 </div>
@@ -416,7 +436,7 @@
             if (tokenEl) formData.append('__RequestVerificationToken', tokenEl.value);
 
             try {
-                const res = await fetch('/Dashboard/QuickUpdatePhoto', { method: 'POST', body: formData });
+                const res = await fetch('/Profile/QuickUpdatePhoto', { method: 'POST', body: formData });
                 const data = await res.json();
                 if (data.success) {
                     document.getElementById('profileAvatarImg').src = data.imageUrl;
@@ -439,4 +459,4 @@
         }
 
     </script>
-} *@
+}

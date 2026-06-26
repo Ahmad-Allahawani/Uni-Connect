@@ -1,4 +1,4 @@
-@* @model PointsViewModel
+﻿@model PointsViewModel
 
 @{
     ViewData["Title"] = "Points & Rewards";
@@ -6,7 +6,7 @@
 }
 
 @section Styles {
-<link href="~/css/points.css" rel="stylesheet" />
+    <link href="~/css/points.css" rel="stylesheet" />
 }
 
 <div class="points-hero">
@@ -98,15 +98,15 @@
                 <h3 style="font-size:16px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i class="ph-bold ph-trend-up" style="font-size:18px;color:var(--emerald);"></i> Ways to Earn Points</h3>
                 <div class="card" style="padding:0; overflow:hidden;">
                     <div style="padding:14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border)">
-                        <div><strong>Answer a Question</strong><br/><small style="color:var(--text-2)">Help a fellow student</small></div>
+                        <div><strong>Answer a Question</strong><br /><small style="color:var(--text-2)">Help a fellow student</small></div>
                         <span class="chip chip-emerald">+5 pts</span>
                     </div>
                     <div style="padding:14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border)">
-                        <div><strong>Get an Upvote</strong><br/><small style="color:var(--text-2)">Per upvote on your answer</small></div>
+                        <div><strong>Get an Upvote</strong><br /><small style="color:var(--text-2)">Per upvote on your answer</small></div>
                         <span class="chip chip-emerald">+10 pts</span>
                     </div>
                     <div style="padding:14px; display:flex; justify-content:space-between; align-items:center;">
-                        <div><strong>Best Answer Selected</strong><br/><small style="color:var(--text-2)">Earn bonus for high quality</small></div>
+                        <div><strong>Best Answer Selected</strong><br /><small style="color:var(--text-2)">Earn bonus for high quality</small></div>
                         <span class="chip chip-emerald">+15 pts</span>
                     </div>
                 </div>
@@ -115,11 +115,11 @@
                 <h3 style="font-size:16px; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i class="ph-bold ph-trend-down" style="font-size:18px;color:var(--rose);"></i> Points Decisions</h3>
                 <div class="card" style="padding:0; overflow:hidden;">
                     <div style="padding:14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border)">
-                        <div><strong>Post a Question</strong><br/><small style="color:var(--text-2)">Encourages searching first</small></div>
+                        <div><strong>Post a Question</strong><br /><small style="color:var(--text-2)">Encourages searching first</small></div>
                         <span class="chip chip-rose">−10 pts</span>
                     </div>
                     <div style="padding:14px; display:flex; justify-content:space-between; align-items:center;">
-                        <div><strong>Request Tutoring Session</strong><br/><small style="color:var(--text-2)">Per private request</small></div>
+                        <div><strong>Request Tutoring Session</strong><br /><small style="color:var(--text-2)">Per private request</small></div>
                         <span class="chip chip-rose">−5 pts</span>
                     </div>
                 </div>
@@ -167,12 +167,13 @@
         <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px;">
             @foreach (var achievement in Model.Achievements)
             {
-                var achIcon = achievement.Title switch {
+                var achIcon = achievement.Title switch
+                {
                     "First Steps" => "ph-fill ph-target",
-                    "Helper"      => "ph-fill ph-handshake",
-                    "Questioner"  => "ph-bold ph-question",
-                    "Tutor"       => "ph-fill ph-seal-check",
-                    _             => "ph-fill ph-star"
+                    "Helper" => "ph-fill ph-handshake",
+                    "Questioner" => "ph-bold ph-question",
+                    "Tutor" => "ph-fill ph-seal-check",
+                    _ => "ph-fill ph-star"
                 };
                 <div class="card @(achievement.Unlocked ? "" : "locked")" style="text-align:center; @(achievement.Unlocked ? "background:var(--amber-light); border-color:var(--amber);" : "")">
                     <div style="font-size:32px; margin-bottom:10px; display:flex; justify-content:center;"><i class="@achIcon" style="font-size:40px;"></i></div>
@@ -210,47 +211,47 @@
 </div>
 
 @section Scripts {
-<script>
-    function showTab(id, el) {
-        // Update tabs
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        el.classList.add('active');
+    <script>
+        function showTab(id, el) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
 
-        // Update content
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-    }
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
 
-    const _iconMap = { coffee: 'ph-coffee', books: 'ph-books', 'book-open': 'ph-book-open' };
-    function openRedeemModal(name, icon, desc, cost, loc) {
-        document.getElementById('modalTitle').textContent = name;
-        const el = document.getElementById('modalIconEl');
-        el.className = 'ph-duotone ' + (_iconMap[icon] || 'ph-gift');
-        document.getElementById('modalDesc').textContent = desc;
-        document.getElementById('modalCost').textContent = cost + " pts";
-        document.getElementById('modalLocText').textContent = loc;
-        
-        const modal = document.getElementById('redeemModal');
-        modal.classList.add('open');
-        document.body.style.overflow = 'hidden';
-    }
+        const _iconMap = { coffee: 'ph-coffee', books: 'ph-books', 'book-open': 'ph-book-open' };
+        function openRedeemModal(name, icon, desc, cost, loc) {
+            document.getElementById('modalTitle').textContent = name;
+            const el = document.getElementById('modalIconEl');
+            el.className = 'ph-duotone ' + (_iconMap[icon] || 'ph-gift');
+            document.getElementById('modalDesc').textContent = desc;
+            document.getElementById('modalCost').textContent = cost + " pts";
+            document.getElementById('modalLocText').textContent = loc;
 
-    function closeRedeemModal() {
-        const modal = document.getElementById('redeemModal');
-        modal.classList.remove('open');
-        document.body.style.overflow = '';
-    }
+            const modal = document.getElementById('redeemModal');
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
 
-    function confirmRedeem() {
-        const venueName = document.getElementById('modalTitle')?.textContent || 'this venue';
-        const cost = document.getElementById('modalCost')?.textContent || '?';
-        closeRedeemModal();
-        showToast('Redemption coming soon! ' + venueName + ' (' + cost + ') will launch after deployment.', 'warn');
-    }
+        function closeRedeemModal() {
+            const modal = document.getElementById('redeemModal');
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+        }
 
-    // Close modal on escape
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeRedeemModal();
-    });
-</script>
-} *@
+        function confirmRedeem() {
+            const venueName = document.getElementById('modalTitle')?.textContent || 'this venue';
+            const cost = document.getElementById('modalCost')?.textContent || '?';
+            closeRedeemModal();
+            showToast('Redemption coming soon! ' + venueName + ' (' + cost + ') will launch after deployment.', 'warn');
+        }
+
+        // Close modal on escape
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeRedeemModal();
+        });
+    </script>
+}

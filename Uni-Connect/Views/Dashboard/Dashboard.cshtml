@@ -194,7 +194,7 @@
     }
 
     <!-- Composer Card -->
-    <a asp-action="CreatePost" asp-controller="Dashboard" class="composer-card">
+    <a asp-action="CreatePost" asp-controller="Post" class="composer-card">
         <div class="av-wrap" style="flex-shrink:0;">
             <div class="av av-sm av-gradient-ring"><img src="@AvatarHelper.Url(Model.Name, 44)" alt="" /></div>
             <span class="av-dot"></span>
@@ -269,7 +269,7 @@
                     var authorName  = post.User?.Name?.Split(' ').First() ?? "User";
                     var answerCount = post.Answers?.Count(a => !a.IsDeleted) ?? 0;
                     var snippet     = string.IsNullOrEmpty(post.Content) ? "" : (post.Content.Length > 150 ? post.Content[..150] + "…" : post.Content);
-                    var postUrl     = Url.Action("SinglePost", new { id = post.PostID });
+                    var postUrl     = Url.Action("SinglePost","Post", new { id = post.PostID });
 
                     <div class="q-card-enhanced @(isSolved ? "is-solved" : "")"
                          onclick="window.location.href='@postUrl'"
@@ -329,7 +329,7 @@
                         {
                             <div class="q-tags">
                                 <button type="button" class="chip chip-indigo"
-                                        onclick="event.stopPropagation(); window.location.href='@Url.Action("Search", "Dashboard", new { q = post.Category.Name })';"
+                                        onclick="event.stopPropagation(); window.location.href='@Url.Action("Search", "Search", new { q = post.Category.Name })';"
                                         style="cursor:pointer;font-family:inherit;">@post.Category.Name</button>
                             </div>
                         }
@@ -542,7 +542,7 @@
         if (btn?.dataset.pending === '1') return;
         if (btn) btn.dataset.pending = '1';
         try {
-            const resp = await fetch('/Dashboard/UpvotePost', {
+            const resp = await fetch('/Post/UpvotePost', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

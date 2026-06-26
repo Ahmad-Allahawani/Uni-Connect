@@ -212,7 +212,7 @@
                                     }
                                     else
                                     {
-                                        <a href="@Url.Action("SinglePost", "Dashboard", new { id = post.PostID })"
+                                        <a href="@Url.Action("SinglePost", "Post", new { id = post.PostID })"
                                            target="_blank"
                                            class="btn btn-sm btn-secondary"
                                            title="View Post">
@@ -354,7 +354,7 @@ else if (currentTab == "answers")
                                 <div style="display:flex;gap:8px;flex-wrap:wrap;">
                                     @if (answer.Post != null && !answer.Post.IsDeleted)
                                     {
-                                        <a href="@Url.Action("SinglePost", "Dashboard", new { id = answer.PostID })"
+                                        <a href="@Url.Action("SinglePost", "Post", new { id = answer.PostID })"
                                            target="_blank"
                                            class="btn btn-sm btn-secondary"
                                            title="View Post">

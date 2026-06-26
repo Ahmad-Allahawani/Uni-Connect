@@ -53,17 +53,18 @@
                     "SessionRequest" => Url.Action("ChatPage", "Session"),
                     "SessionAccepted" => Url.Action("ChatPage", "Session"),
                     "NewMessage" => Url.Action("ChatPage", "Session"),
-                    "Answer" => notif.RelatedID.HasValue ? Url.Action("SinglePost", "Dashboard", new { id = notif.RelatedID }) : Url.Action("Dashboard", "Dashboard"),
-                    "Upvote" => notif.RelatedID.HasValue ? Url.Action("SinglePost", "Dashboard", new { id = notif.RelatedID }) : Url.Action("Dashboard", "Dashboard"),
-                    "BestAnswer" => notif.RelatedID.HasValue ? Url.Action("SinglePost", "Dashboard", new { id = notif.RelatedID }) : Url.Action("Dashboard", "Dashboard"),
+                    "Answer" => notif.RelatedID.HasValue ? Url.Action("SinglePost", "Post", new { id = notif.RelatedID }) : Url.Action("Dashboard", "Dashboard"),
+                    "Upvote" => notif.RelatedID.HasValue ? Url.Action("SinglePost", "Post", new { id = notif.RelatedID }) : Url.Action("Dashboard", "Dashboard"),
+                    "BestAnswer" => notif.RelatedID.HasValue ? Url.Action("SinglePost", "Post", new { id = notif.RelatedID }) : Url.Action("Dashboard", "Dashboard"),
                     _ => Url.Action("Dashboard", "Dashboard")
                 };
 
-                <a href="@link" style="text-decoration:none; color:inherit; display:block;">
+                <div onclick="window.location.href='@link'"
+                        style="text-decoration:none; color:inherit; display:block; cursor:pointer;">
                     <div class="notif-item">
                         @if (notif.Actor != null)
                         {
-                            <a href="@Url.Action("ViewProfile", "Dashboard", new { username = notif.Actor.Username })"
+                            <a href="@Url.Action("ViewProfile", "Profile", new { username = notif.Actor.Username })"
                                onclick="event.stopPropagation();"
                                style="flex-shrink:0; text-decoration:none;">
                                 <div class="av av-xs" style="width:32px;height:32px;">
@@ -81,8 +82,8 @@
                         </div>
                         <i class="ph ph-caret-right" style="font-size:16px;color:var(--text-3);flex-shrink:0;"></i>
                     </div>
-                </a>
-            }
+                </div>
+            } 
         </div>
     }
     else

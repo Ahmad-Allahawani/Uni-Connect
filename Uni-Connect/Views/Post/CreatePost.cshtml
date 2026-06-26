@@ -1,4 +1,4 @@
-@* @model Uni_Connect.ViewModels.CreatePostViewModel
+﻿@model Uni_Connect.ViewModels.CreatePostViewModel
 @{
     ViewData["Title"] = "Ask a Question — UniConnect";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
@@ -99,7 +99,7 @@
 
     <!-- STEP 2 — WRITE QUESTION -->
     <div class="hidden" id="wz2">
-        <form id="create-post-form" method="post" asp-action="CreatePost" asp-controller="Dashboard">
+        <form id="create-post-form" method="post" asp-action="CreatePost" asp-controller="Post">
             <div class="card">
                 <!-- Title -->
                 <div class="form-group">
@@ -180,8 +180,8 @@
                         <span>Add an image <span class="form-label-note">(optional)</span></span>
                         <span style="font-size:11px; color:var(--text-3);">Max 5MB • JPG, PNG</span>
                     </label>
-                    
-                    <div id="image-upload-zone" onclick="document.getElementById('image-input').click()" 
+
+                    <div id="image-upload-zone" onclick="document.getElementById('image-input').click()"
                          style="border:2px dashed var(--border); border-radius:12px; padding:24px; text-align:center; cursor:pointer; background:rgba(248,250,252,0.5); transition:all .2s ease; display:flex; flex-direction:column; align-items:center; gap:8px;">
                         <i class="ph-duotone ph-image-plus" style="font-size:32px; color:var(--text-3);"></i>
                         <span id="upload-status-text" style="font-size:13px; color:var(--text-2); font-weight:600;">Click to upload a diagram or screenshot</span>
@@ -190,7 +190,7 @@
 
                     <div id="image-preview-container" class="hidden" style="margin-top:12px; position:relative; display:inline-block;">
                         <img id="image-preview-img" src="" style="max-width:100%; max-height:200px; border-radius:8px; border:1.5px solid var(--border); box-shadow:var(--shadow-sm);">
-                        <button type="button" onclick="removeSelectedImage()" 
+                        <button type="button" onclick="removeSelectedImage()"
                                 style="position:absolute; top:-10px; right:-10px; background:var(--rose); color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-sm);">
                             <i class="ph-bold ph-x" style="font-size:14px;"></i>
                         </button>
@@ -231,7 +231,7 @@
             </div>
             <div class="preview-post-title" id="prev-title" style="overflow-wrap:break-word;word-break:break-word;">Your question title will appear here...</div>
             <div class="preview-post-body" id="prev-body" style="overflow-wrap:break-word;word-break:break-word;">Your question description will appear here...</div>
-            
+
             <div id="prev-image-wrap" class="hidden" style="margin-top:16px;">
                 <img id="prev-image-display" src="" style="max-width:100%; border-radius:12px; border:1px solid var(--border);">
             </div>
@@ -571,7 +571,7 @@
         // Debounce — wait 350ms after user stops typing before hitting the server
         searchDebounceTimer = setTimeout(async () => {
             try {
-                const res  = await fetch(`/Dashboard/SearchPostsJson?q=${encodeURIComponent(val)}`);
+                const res  = await fetch(`/Search/SearchPostsJson?q=${encodeURIComponent(val)}`);
                 const data = await res.json();
 
                 list.innerHTML = '';
@@ -579,7 +579,7 @@
                 if (data.results && data.results.length > 0) {
                     data.results.forEach(m => {
                         const el = document.createElement('a');
-                        el.href = `/Dashboard/SinglePost/${m.id}`;
+                        el.href = `/Post/SinglePost/${m.id}`;
                         el.target = '_blank';
                         el.rel = 'noopener noreferrer';
                         el.style.cssText = 'display:block;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:10px;text-decoration:none;cursor:pointer;color:inherit;transition:all .2s';
@@ -752,7 +752,7 @@
                 document.getElementById('image-preview-img').src = e.target.result;
                 document.getElementById('image-preview-container').classList.remove('hidden');
                 document.getElementById('image-upload-zone').classList.add('hidden');
-                
+
                 // Also update preview step
                 document.getElementById('prev-image-display').src = e.target.result;
                 document.getElementById('prev-image-wrap').classList.remove('hidden');
@@ -766,7 +766,7 @@
         document.getElementById('image-preview-img').src = "";
         document.getElementById('image-preview-container').classList.add('hidden');
         document.getElementById('image-upload-zone').classList.remove('hidden');
-        
+
         document.getElementById('prev-image-display').src = "";
         document.getElementById('prev-image-wrap').classList.add('hidden');
     }
@@ -787,21 +787,21 @@
 
         try {
             const formData = new FormData();
-            
+
             // Add basic fields
             formData.append("Title", document.getElementById('s2-title').value);
             formData.append("Content", document.getElementById('s2-body').value);
             formData.append("Faculty", document.getElementById('s2-faculty').value);
             formData.append("CourseCode", document.getElementById('s2-course').value);
             formData.append("Tags", document.getElementById('tags-hidden').value);
-            
+
             // Add file
             const imgInput = document.getElementById('image-input');
             if (imgInput.files.length > 0) {
                 formData.append("ImageFile", imgInput.files[0]);
             }
 
-            const response = await fetch('@Url.Action("CreatePost","Dashboard")', {
+            const response = await fetch('@Url.Action("CreatePost", "Post")', {
                 method: 'POST',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
@@ -822,15 +822,15 @@
                 if (sidebarPts && result.pointsBalance !== undefined) {
                     sidebarPts.textContent = result.pointsBalance;
                 }
-                
+
                 // Show success step
                 switchToStep(4);
-                
+
                 // Add link to the real post
                 const successActions = document.querySelector('.success-action-buttons');
                 if (successActions && result.postId) {
                     const viewBtn = document.createElement('a');
-                    viewBtn.href = `/Dashboard/SinglePost/${result.postId}`;
+                    viewBtn.href = `/Post/SinglePost/${result.postId}`;
                     viewBtn.innerHTML = '<button type="button" class="btn btn-emerald btn-lg" style="margin-bottom:10px; display:inline-flex; align-items:center; gap:8px;"><i class="ph-fill ph-eye" style="font-size:20px;"></i> View Your Question</button>';
                     successActions.insertBefore(viewBtn, successActions.firstChild);
                 }
@@ -870,4 +870,4 @@
     document.addEventListener('DOMContentLoaded', () => {
         setProgress(1);
     });
-</script> *@
+</script>
