@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <title>Offline - UniConnect</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        :root {
+            --primary: #0d6efd;
+            --background: #f5f7fb;
+            --text: #2c3e50;
+            --muted: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--background);
+            font-family: 'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .offline-card {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,.08);
+            padding: 55px 45px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 95px;
+            height: 95px;
+            margin: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            background: #eef4ff;
+            margin-bottom: 25px;
+        }
+
+            .logo img {
+                width: 70px;
+            }
+
+        h1 {
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 30px;
+            font-size: 17px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffecec;
+            color: #dc3545;
+            padding: 10px 18px;
+            border-radius: 40px;
+            margin-bottom: 35px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #dc3545;
+        }
+
+        .btn-primary {
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .btn-outline-primary {
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .tips {
+            margin-top: 45px;
+            border-top: 1px solid #ececec;
+            padding-top: 30px;
+        }
+
+            .tips h5 {
+                margin-bottom: 15px;
+                color: var(--primary);
+            }
+
+            .tips ul {
+                text-align: left;
+                color: #6c757d;
+                padding-left: 20px;
+                line-height: 1.8;
+            }
+
+        footer {
+            margin-top: 35px;
+            font-size: 14px;
+            color: #adb5bd;
+        }
+
+        @media(max-width:600px) {
+
+            .offline-card {
+                padding: 35px 25px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="offline-card">
+
+        <div class="logo">
+
+            <!-- Replace with your logo -->
+            
+            <img src="../images/logo/logo-color.svg" alt="UniConnect"/>
+
+        </div>
+
+        <h1>You're Offline</h1>
+
+        <div class="status">
+            <i class="bi bi-wifi-off"></i>
+            No Internet Connection
+        </div>
+
+        <p>
+
+            It looks like you've lost your internet connection.
+            You can continue viewing pages that were previously cached,
+            but some features like asking questions, posting answers,
+            notifications, and logging in require an internet connection.
+
+        </p>
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+
+            <button class="btn btn-primary" onclick="retryConnection()">
+                <i class="bi bi-arrow-clockwise"></i>
+                Try Again
+            </button>
+
+            <button class="btn btn-outline-primary" onclick="history.back()">
+                <i class="bi bi-arrow-left"></i>
+                Go Back
+            </button>
+
+        </div>
+
+        <div class="tips">
+
+            <h5>While you're offline you can:</h5>
+
+            <ul>
+
+                <li>Browse cached pages.</li>
+
+                <li>Read previously opened questions.</li>
+
+                <li>View cached course discussions.</li>
+
+                <li>Reconnect to continue participating.</li>
+
+            </ul>
+
+        </div>
+
+        <footer>
+
+            UniConnect • Connect • Learn • Share
+
+        </footer>
+
+    </div>
+
+    <script>
+
+function retryConnection(){
+
+    window.location.reload();
+
+}
+
+window.addEventListener("online", () => {
+
+    window.location.href="/";
+
+});
+
+    </script>
+
+</body>
+
+</html>
