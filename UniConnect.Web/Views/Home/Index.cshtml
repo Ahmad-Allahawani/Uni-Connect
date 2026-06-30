@@ -1,0 +1,123 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to UniConnect</h1>
+    <p class="lead">Your Peer-to-Peer Learning Platform</p>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="jumbotron">
+            <h2>Connect. Learn. Succeed.</h2>
+            <p class="lead">UniConnect is an educational platform designed specifically for university students to promote peer-to-peer learning and collaboration.</p>
+            <hr class="my-4">
+            <p>Join our community to:</p>
+            <ul>
+                <li>Ask questions and get answers from fellow students</li>
+                <li>Share your knowledge and help others</li>
+                <li>Earn points and rewards for your contributions</li>
+                <li>Connect with tutors for private learning sessions</li>
+            </ul>
+            @if (!User.Identity.IsAuthenticated)
+            {
+                <a class="btn btn-primary btn-lg" asp-controller="Account" asp-action="Register" role="button">Get Started</a>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-question-circle"></i> Recent Questions</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.RecentPosts != null && ViewBag.RecentPosts.Count > 0)
+                {
+                    @foreach (var post in ViewBag.RecentPosts)
+                    {
+                        <div class="mb-3">
+                            <a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id" class="text-decoration-none">
+                                <h6>@post.Title</h6>
+                            </a>
+                            <small class="text-muted">
+                                By @post.User?.FirstName @post.User?.LastName | 
+                                <span class="badge bg-secondary">@post.Category?.Name</span> |
+                                @post.Comments.Count answers
+                            </small>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">No questions yet. Be the first to ask!</p>
+                }
+                <a asp-controller="Posts" asp-action="Index" class="btn btn-sm btn-outline-primary">View All Questions</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-hand-holding-usd"></i> Recent Requests</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.RecentRequests != null && ViewBag.RecentRequests.Count > 0)
+                {
+                    @foreach (var request in ViewBag.RecentRequests)
+                    {
+                        <div class="mb-3">
+                            <a asp-controller="Requests" asp-action="Details" asp-route-id="@request.Id" class="text-decoration-none">
+                                <h6>@request.Title</h6>
+                            </a>
+                            <small class="text-muted">
+                                By @request.User?.FirstName @request.User?.LastName |
+                                <span class="badge bg-warning">@request.PointsOffered points</span> |
+                                @request.Status
+                            </small>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">No requests yet.</p>
+                }
+                <a asp-controller="Requests" asp-action="Index" class="btn btn-sm btn-outline-success">View All Requests</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Peer Learning</h5>
+                <p class="card-text">Connect with students from your university and share knowledge.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-trophy fa-3x text-warning mb-3"></i>
+                <h5 class="card-title">Earn Rewards</h5>
+                <p class="card-text">Earn points for helping others and redeem them for benefits.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-shield-alt fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Safe & Secure</h5>
+                <p class="card-text">Verified students only. AI-powered content moderation.</p>
+            </div>
+        </div>
+    </div>
+</div>

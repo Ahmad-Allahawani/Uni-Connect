@@ -1,0 +1,47 @@
+@model UniConnect.Web.Controllers.ReportCreateViewModel
+
+@{
+    ViewData["Title"] = "Submit Report";
+}
+
+<div class="container">
+    <h1>Submit Report</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create">
+                <div class="mb-3">
+                    <label class="form-label">Report Type</label>
+                    <select asp-for="TargetType" class="form-select" required>
+                        <option value="">Select Type</option>
+                        <option value="Post">Post</option>
+                        <option value="Comment">Comment</option>
+                        <option value="User">User</option>
+                        <option value="Request">Request</option>
+                        <option value="Session">Session</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Target ID</label>
+                    <input asp-for="TargetId" class="form-control" type="number" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Reason</label>
+                    <select asp-for="Reason" class="form-select" required>
+                        <option value="">Select Reason</option>
+                        @foreach (var reason in ViewBag.Reasons)
+                        {
+                            <option value="@reason">@reason</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="4" placeholder="Provide additional details..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-danger">Submit Report</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
