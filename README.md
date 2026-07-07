@@ -60,10 +60,11 @@ Graduation project — Software Engineering, Philadelphia University (2025–202
    git clone https://github.com/Ahmad-Allahawani/Uni-Connect.git
    ```
 2. Open `Uni-Connect.sln` in Visual Studio (or run via CLI with the .NET 8 SDK)
-3. Update the connection string in `appsettings.Development.json` to point to your SQL Server instance
+3. Update the connection string in `Uni-Connect/appsettings.Development.json` to point to your SQL Server instance
 4. Apply migrations
    ```bash
-   dotnet ef database update
+   dotnet tool install --global dotnet-ef
+   dotnet ef database update --project Uni-Connect/Uni-Connect.csproj
    ```
 5. Run the project
    ```bash
