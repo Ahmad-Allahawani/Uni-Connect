@@ -1,6 +1,6 @@
 # UniConnect
 
-![UniConnect Logo](logo/logo-color.svg)
+![UniConnect Logo](logo/live-logo-color.svg)
 
 **A peer-to-peer academic learning platform exclusively for Philadelphia University students.**
 
