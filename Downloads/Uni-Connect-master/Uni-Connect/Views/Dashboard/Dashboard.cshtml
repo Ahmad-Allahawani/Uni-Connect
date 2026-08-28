@@ -1,0 +1,236 @@
+@model Uni_Connect.Models.DashboardViewModel
+
+@{
+    Layout = null;
+    // Helper to format the "Time Ago" (e.g., 2 hours ago)
+    string GetTimeAgo(DateTime dt)
+    {
+        var span = DateTime.Now - dt;
+        if (span.TotalDays > 1) return $"{(int)span.TotalDays} days ago";
+        if (span.TotalHours > 1) return $"{(int)span.TotalHours} hours ago";
+        if (span.TotalMinutes > 1) return $"{(int)span.TotalMinutes} minutes ago";
+        return "Just now";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Home Feed — UniConnect</title>
+<link href="~/css/site.css" rel="stylesheet" />
+<link href="~/css/Home.css" rel="stylesheet" />
+<style>
+  /* Local adjustments */
+  .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+  @@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <button class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  <a asp-action="Dashboard" class="nav-logo">
+    <div class="nav-logo-icon">🎓</div><span>UniConnect</span>
+  </a>
+  <div class="nav-search">
+    <input class="form-input" id="main-search" placeholder="🔍  Search questions, courses, topics..." autocomplete="off">
+  </div>
+  <div class="nav-actions">
+    <a href="/Post/Create"><button class="btn btn-primary btn-sm">+ Ask</button></a>
+    <a asp-action="Notifications" class="nav-bell">
+      🔔@if(Model.UnreadNotificationsCount > 0){<span class="nav-bell-badge">@Model.UnreadNotificationsCount</span>}
+    </a>
+    <!-- User menu -->
+    <div class="nav-user-menu">
+      <div onclick="toggleUserMenu()" style="cursor:pointer;display:flex;align-items:center;gap:7px">
+        <div class="av av-sm">
+          <img src="@(Model.CurrentUser.ProfileImageUrl ?? "https://i.pravatar.cc/36?u=" + Model.CurrentUser.UserID)" alt="@Model.CurrentUser.Name">
+        </div>
+        <span style="font-size:13px;font-weight:600;color:var(--text)">@Model.CurrentUser.Name ▾</span>
+      </div>
+      <div class="nav-user-dropdown" id="user-dropdown">
+        <a asp-action="Profile"><div class="nav-dropdown-item">👤 My Profile</div></a>
+        <a href="/Settings"><div class="nav-dropdown-item">⚙️ Settings</div></a>
+        <a href="/Points"><div class="nav-dropdown-item">🪙 Points &amp; Rewards</div></a>
+        <div class="nav-dropdown-sep"></div>
+        <form asp-controller="Login" asp-action="Logout" method="post" id="logoutForm">
+           @Html.AntiForgeryToken()
+           <button type="submit" class="nav-dropdown-item logout" style="background:none;border:none;width:100%;text-align:left;font-family:inherit;padding-left:15px">🚪 Sign Out</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<div class="app-wrap">
+  <aside class="sidebar" id="sidebar">
+    <a asp-action="Profile" class="sidebar-user">
+      <div class="av av-md">
+        <img src="@(Model.CurrentUser.ProfileImageUrl ?? "https://i.pravatar.cc/44?u=" + Model.CurrentUser.UserID)" alt="@Model.CurrentUser.Name">
+      </div>
+      <div>
+        <div class="sidebar-user-name">@Model.CurrentUser.Name</div>
+        <div class="sidebar-user-pts">🪙 @Model.CurrentUser.Points pts</div>
+      </div>
+    </a>
+    <nav class="sidebar-nav">
+      <a asp-action="Dashboard"><div class="nav-item active"><span class="ni">🏠</span>Home Feed</div></a>
+      <a href="/Post/Create"><div class="nav-item"><span class="ni">✏️</span>Ask a Question</div></a>
+      <a href="/Sessions"><div class="nav-item"><span class="ni">💬</span>My Sessions</div></a>
+      <a asp-action="Leaderboard"><div class="nav-item"><span class="ni">🏆</span>Leaderboard</div></a>
+      <a asp-action="Notifications">
+        <div class="nav-item"><span class="ni">🔔</span>Notifications
+          @if(Model.UnreadNotificationsCount > 0){<span class="nav-badge">@Model.UnreadNotificationsCount</span>}
+        </div>
+      </a>
+      <a asp-action="Profile"><div class="nav-item"><span class="ni">👤</span>My Profile</div></a>
+    </nav>
+    <a href="/Points">
+      <div class="pts-widget">
+        <div class="pts-widget-num">@Model.CurrentUser.Points</div>
+        <div class="pts-widget-label">🪙 Your Points</div>
+        <div class="pts-widget-bar"><div class="pts-widget-fill" style="width:@(Math.Min(100, Model.CurrentUser.Points/10))%"></div></div>
+        <div class="pts-widget-sub">Academic Level: @(Model.CurrentUser.Points > 500 ? "Verified Tutor" : "Student Contributor")</div>
+      </div>
+    </a>
+    <div class="sidebar-logout" onclick="document.getElementById('logoutForm').submit()">🚪 Sign Out</div>
+  </aside>
+
+  <main class="main">
+    <div class="tabs" id="main-tabs">
+      <div class="tab active" onclick="showTab('tab-all',this)">All Questions</div>
+      <div class="tab" onclick="showTab('tab-unans',this)">Unanswered</div>
+      <div class="tab" onclick="showTab('tab-fac',this)">My Faculty</div>
+    </div>
+
+    <div data-tabs-container>
+      <!-- ALL QUESTIONS FEED -->
+      <div id="tab-all" data-tab>
+        <div id="cards-container">
+          @if (Model.RecentPosts != null && Model.RecentPosts.Any())
+          {
+            foreach (var post in Model.RecentPosts)
+            {
+              <a href="/Post/SinglePost/@post.PostID" class="q-card card-hover" 
+                 data-title="@post.Title" 
+                 data-faculty="@(post.Category?.Faculty ?? "General")" 
+                 data-course="@(post.Category?.Name ?? "")">
+                <div class="q-card-meta">
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <div class="av av-sm"><img src="https://i.pravatar.cc/36?u=@post.UserID" alt="@post.User.Name"></div>
+                    <span style="font-weight:600;font-size:13px">@post.User.Name</span>
+                  </div>
+                  <span style="font-size:12px;color:var(--text-2)">· @GetTimeAgo(post.CreatedAt)</span>
+                  <span class="chip chip-indigo" style="margin-left:auto">@(post.Category?.Faculty ?? "General")</span>
+                  <span class="chip chip-violet">@(post.Category?.Name ?? "Question")</span>
+                  @if (post.Answers != null && post.Answers.Any(a => a.IsAccepted))
+                  {
+                    <span class="chip chip-emerald">✓ Solved</span>
+                  }
+                </div>
+                <div class="q-card-title">@post.Title</div>
+                <div class="q-card-body clamp-2">@post.Content</div>
+                <div class="q-card-footer">
+                  <span>👍 @post.Upvotes</span>
+                  <span>💬 @(post.Answers?.Count ?? 0) answers</span>
+                  <span>👁️ @post.ViewsCount views</span>
+                  <button class="btn btn-primary btn-sm" style="margin-left:auto">💬 Request Session</button>
+                </div>
+              </a>
+            }
+          }
+          else
+          {
+            <div class="empty-state">
+              <div class="empty-state-icon">📝</div>
+              <h3>No questions yet</h3>
+              <p>Be the first to ask an academic question and earn points!</p>
+              <a href="/Post/Create"><button class="btn btn-primary">Ask a Question</button></a>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Other tabs placeholder -->
+      <div id="tab-unans" data-tab class="hidden">
+         <div class="empty-state"><h3>Unanswered feed is coming soon</h3></div>
+      </div>
+      <div id="tab-fac" data-tab class="hidden">
+         <div class="empty-state"><h3>Filtered faculty feed is coming soon</h3></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-col">
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-weight:700;margin-bottom:12px">📊 My Overview</div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px solid var(--border)">
+        <span style="color:var(--text-2)">Total Balance</span>
+        <span style="font-weight:700;color:var(--amber)">🪙 @Model.CurrentUser.Points</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:7px 0">
+        <span style="color:var(--text-2)">Role</span>
+        <span style="font-weight:700">@Model.CurrentUser.Role</span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-weight:700;margin-bottom:12px">🏆 Top Contributors</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        @foreach (var topUser in Model.TopContributors)
+        {
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="av av-sm"><img src="https://i.pravatar.cc/36?u=@topUser.UserID" alt="@topUser.Name"></div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600">@topUser.Name</div>
+              <div style="font-size:11px;color:var(--text-2)">Student</div>
+            </div>
+            <span style="font-size:13px;font-weight:700;color:var(--amber)">@topUser.Points</span>
+          </div>
+        }
+      </div>
+      <div style="margin-top:12px;text-align:center"><a asp-action="Leaderboard" style="font-size:12px;color:var(--indigo);font-weight:600">View Full Leaderboard →</a></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Dashboard interactivity
+function initSidebar(){
+    const h=document.getElementById('hamburger'),s=document.getElementById('sidebar'),o=document.getElementById('sidebar-overlay');
+    if(!h||!s)return;
+    h.addEventListener('click',()=>{
+        const open=s.classList.toggle('open');
+        h.classList.toggle('open',open);
+        if(o)o.classList.toggle('open',open);
+    });
+}
+function showTab(id,el){
+    const parent=el.closest('.tabs');
+    if(parent)parent.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('[data-tab]').forEach(c=>c.classList.add('hidden'));
+    const t=document.getElementById(id);
+    if(t){t.classList.remove('hidden');t.classList.add('fade-in');}
+}
+function toggleUserMenu(){
+    const d=document.getElementById('user-dropdown');
+    if(d)d.classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+    const d=document.getElementById('user-dropdown');
+    if(d&&!e.target.closest('.nav-user-menu'))d.classList.remove('open');
+});
+document.addEventListener('DOMContentLoaded',initSidebar);
+</script>
+
+</body>
+</html>

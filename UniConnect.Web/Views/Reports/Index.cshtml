@@ -1,0 +1,55 @@
+@model IEnumerable<UniConnect.Web.Models.Report>
+
+@{
+    ViewData["Title"] = "My Reports";
+}
+
+<div class="container">
+    <h1>My Reports</h1>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <p>You haven't submitted any reports yet.</p>
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Reason</th>
+                    <th>Reported User</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var report in Model)
+                {
+                    <tr>
+                        <td>@report.Type</td>
+                        <td>@report.Reason</td>
+                        <td>@report.ReportedUser?.FirstName @report.ReportedUser?.LastName</td>
+                        <td>
+                            @if (report.Status == "Pending")
+                            {
+                                <span class="badge bg-warning">Pending</span>
+                            }
+                            else if (report.Status == "Resolved")
+                            {
+                                <span class="badge bg-success">Resolved</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Dismissed</span>
+                            }
+                        </td>
+                        <td>@report.CreatedAt.ToString("MMM dd, yyyy")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

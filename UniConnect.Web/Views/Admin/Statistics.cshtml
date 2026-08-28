@@ -1,0 +1,131 @@
+@model UniConnect.Web.Controllers.AdminStatisticsViewModel
+
+@{
+    ViewData["Title"] = "Statistics";
+}
+
+<div class="container">
+    <h1>Platform Statistics</h1>
+
+    <!-- User Statistics -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">User Statistics</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3 class="text-primary">@Model.UserStats.TotalUsers</h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3 class="text-success">@Model.UserStats.VerifiedUsers</h3>
+                        <p>Verified Users</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3 class="text-warning">@Model.UserStats.ActiveUsers</h3>
+                        <p>Active Users</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h3 class="text-secondary">@Model.UserStats.UnverifiedUsers</h3>
+                        <p>Unverified Users</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Statistics -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Post Statistics</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <h3 class="text-primary">@Model.PostStats.TotalPosts</h3>
+                        <p>Total Posts</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <h3 class="text-success">@Model.PostStats.ResolvedPosts</h3>
+                        <p>Resolved Posts</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <h3 class="text-warning">@Model.PostStats.UnresolvedPosts</h3>
+                        <p>Unresolved Posts</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Statistics -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Request Statistics</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <h3 class="text-primary">@Model.RequestStats.TotalRequests</h3>
+                        <p>Total Requests</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <h3 class="text-success">@Model.RequestStats.CompletedRequests</h3>
+                        <p>Completed Requests</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <h3 class="text-warning">@Model.RequestStats.OpenRequests</h3>
+                        <p>Open Requests</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Statistics -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Session Statistics</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <h3 class="text-primary">@Model.SessionStats.TotalSessions</h3>
+                        <p>Total Sessions</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <h3 class="text-success">@Model.SessionStats.CompletedSessions</h3>
+                        <p>Completed Sessions</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <h3 class="text-warning">@Model.SessionStats.ActiveSessions</h3>
+                        <p>Active Sessions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

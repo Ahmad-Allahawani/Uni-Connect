@@ -1,0 +1,94 @@
+@model IEnumerable<UniConnect.Web.Models.PrivateSession>
+
+@{
+    ViewData["Title"] = "My Sessions";
+}
+
+<div class="container">
+    <h1>My Learning Sessions</h1>
+    
+    <div class="mb-3">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link @(ViewBag.Status == null ? "active" : "")" asp-action="Index">All</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewBag.Status == "Pending" ? "active" : "")" asp-action="Index" asp-route-status="Pending">Pending</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewBag.Status == "Active" ? "active" : "")" asp-action="Index" asp-route-status="Active">Active</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewBag.Status == "Completed" ? "active" : "")" asp-action="Index" asp-route-status="Completed">Completed</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewBag.Status == "Cancelled" ? "active" : "")" asp-action="Index" asp-route-status="Cancelled">Cancelled</a>
+            </li>
+        </ul>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <p>You don't have any sessions yet. 
+            <a asp-controller="Requests" asp-action="Index">Browse requests</a> to find tutoring opportunities 
+            or <a asp-controller="Posts" asp-action="Index">answer questions</a> to help other students.</p>
+        </div>
+    }
+
+    <div class="row">
+        @foreach (var session in Model)
+        {
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>
+                                @if (session.Status == "Pending")
+                                {
+                                    <span class="badge bg-warning">Pending</span>
+                                }
+                                else if (session.Status == "Active")
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else if (session.Status == "Completed")
+                                {
+                                    <span class="badge bg-primary">Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Cancelled</span>
+                                }
+                            </span>
+                            <small class="text-muted">@session.CreatedAt.ToString("MMM dd, yyyy")</small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@session.Subject</h5>
+                        <p class="card-text">
+                            <strong>Student:</strong> @session.Student?.FirstName @session.Student?.LastName<br>
+                            <strong>Tutor:</strong> @session.Tutor?.FirstName @session.Tutor?.LastName<br>
+                            <strong>Points:</strong> @session.PointsEarned
+                        </p>
+                        @if (session.Status == "Pending" && session.TutorId == User.GetUserId())
+                        {
+                            <form asp-action="Start" asp-route-id="@session.Id" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-success btn-sm">Start Session</button>
+                            </form>
+                        }
+                        @if (session.Status == "Active" && session.StudentId == User.GetUserId())
+                        {
+                            <form asp-action="Complete" asp-route-id="@session.Id" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-primary btn-sm">Complete Session</button>
+                            </form>
+                        }
+                        <a asp-action="Details" asp-route-id="@session.Id" class="btn btn-info btn-sm">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

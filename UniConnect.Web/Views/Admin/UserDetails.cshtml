@@ -1,0 +1,249 @@
+@model UniConnect.Web.Models.User
+
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<div class="container">
+    <h1>User Details</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Profile Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> @Model.FirstName @Model.LastName</p>
+                    <p><strong>University ID:</strong> @Model.UniversityId</p>
+                    <p><strong>Email:</strong> @Model.Email</p>
+                    <p><strong>Faculty:</strong> @Model.Faculty</p>
+                    <p><strong>Bio:</strong> @Model.Bio</p>
+                    <p><strong>Joined:</strong> @Model.CreatedAt.ToString("MMMM dd, yyyy")</p>
+                    <p><strong>Status:</strong> 
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Banned</span>
+                        }
+                    </p>
+                    <p><strong>Verified:</strong> 
+                        @if (Model.IsVerified)
+                        {
+                            <span class="badge bg-success"><i class="fas fa-check"></i> Verified</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Unverified</span>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Activity Stats</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Points:</strong> @Model.Points</p>
+                    <p><strong>Total Posts:</strong> @Model.TotalPosts</p>
+                    <p><strong>Total Comments:</strong> @Model.TotalComments</p>
+                    <p><strong>Total Sessions:</strong> @Model.TotalSessions</p>
+                    <p><strong>Rating:</strong> @Model.Rating.ToString("F1") / 5 (@Model.TotalRatings reviews)</p>
+                    <p><strong>Streak:</strong> @Model.Streak days</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Actions</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.IsVerified)
+                    {
+                        <form asp-action="ToggleVerification" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-warning w-100 mb-2">Remove Verification</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="ToggleVerification" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success w-100 mb-2">Verify User</button>
+                        </form>
+                    }
+
+                    @if (Model.IsActive)
+                    {
+                        <form asp-action="BanUser" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger w-100 mb-2" onclick="return confirm('Are you sure?')">Ban User</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="UnbanUser" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-primary w-100 mb-2">Unban User</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs for more details -->
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs" id="userTabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" id="posts-tab" data-bs-toggle="tab" data-bs-target="#posts" type="button">Posts (@Model.Posts.Count)</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests" type="button">Requests (@Model.Requests.Count)</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="sessions-tab" data-bs-toggle="tab" data-bs-target="#sessions" type="button">Sessions (@Model.SessionsAsTutor.Count)</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button">Reports</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="achievements-tab" data-bs-toggle="tab" data-bs-target="#achievements" type="button">Achievements (@Model.Achievements.Count)</button>
+                </li>
+            </ul>
+
+            <div class="tab-content p-3 border border-top-0 bg-light">
+                <div class="tab-pane fade show active" id="posts">
+                    @if (Model.Posts.Any())
+                    {
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Views</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var post in Model.Posts)
+                                {
+                                    <tr>
+                                        <td><a asp-controller="Posts" asp-action="Details" asp-route-id="@post.Id">@post.Title</a></td>
+                                        <td>@post.Category?.Name</td>
+                                        <td>@post.ViewCount</td>
+                                        <td>@post.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No posts yet.</p>
+                    }
+                </div>
+
+                <div class="tab-pane fade" id="requests">
+                    @if (Model.Requests.Any())
+                    {
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Points</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var request in Model.Requests)
+                                {
+                                    <tr>
+                                        <td><a asp-controller="Requests" asp-action="Details" asp-route-id="@request.Id">@request.Title</a></td>
+                                        <td>@request.Status</td>
+                                        <td>@request.PointsOffered</td>
+                                        <td>@request.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No requests yet.</p>
+                    }
+                </div>
+
+                <div class="tab-pane fade" id="sessions">
+                    @if (Model.SessionsAsTutor.Any())
+                    {
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Student</th>
+                                    <th>Status</th>
+                                    <th>Points</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var session in Model.SessionsAsTutor)
+                                {
+                                    <tr>
+                                        <td><a asp-controller="Sessions" asp-action="Details" asp-route-id="@session.Id">@session.Subject</a></td>
+                                        <td>@session.Student?.FirstName @session.Student?.LastName</td>
+                                        <td>@session.Status</td>
+                                        <td>@session.PointsEarned</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No sessions yet.</p>
+                    }
+                </div>
+
+                <div class="tab-pane fade" id="reports">
+                    <p><strong>Reports Made:</strong> @Model.ReportsMade.Count</p>
+                    <p><strong>Reports Received:</strong> @Model.ReportsReceived.Count</p>
+                </div>
+
+                <div class="tab-pane fade" id="achievements">
+                    @if (Model.Achievements.Any())
+                    {
+                        <div class="row">
+                            @foreach (var achievement in Model.Achievements)
+                            {
+                                <div class="col-md-3 mb-2">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h6>@achievement.AchievementName</h6>
+                                            <p class="mb-0 small">@achievement.Description</p>
+                                            <small class="text-muted">@achievement.EarnedAt.ToString("MMM dd, yyyy")</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No achievements yet.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
